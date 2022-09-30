@@ -10,10 +10,10 @@ body {
   font-family: sans-serif;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: top;
   flex-direction: column;
   gap: 20px;
-  height: 100vh;
+  height: flex;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   background-color:  rgb(72, 72, 68);
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./signInPage.css";
-import mylogo from "./PurdueTrain.png";
+import mylogo from "../images/PurdueTrain.png";
 //Use states for Sign In
 
 const errors = {
@@ -13,6 +13,13 @@ function SignInPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleSignUp = (event) => {
+        //prevents page reload
+        event.preventDefault();
+    
+        //Call to backend to check validity
+
+    };
+    const handleSignIn = (event) => {
         //prevents page reload
         event.preventDefault();
     
