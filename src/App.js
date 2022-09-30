@@ -1,10 +1,12 @@
 import './App.css';
 import React, { useState } from "react";
-import SignInPage from "./signInPage.js";
+import SignInPage from "./Components/signInPage.js";
+import HomePage from "./Components/HomePage.js";
 function App() {
   return (
-    <div className = "app">
-      <SignInPage />
+    <div className='App'>
+      <HomePage/>
+      {/*<SignInPage /> */}
     </div>
   );
 }

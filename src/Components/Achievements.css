@@ -1,0 +1,27 @@
+.achievement-box {
+    background-color: rgb(72, 72, 68);
+    border-style: solid;
+    border-color: gold;
+    padding-left: 1rem;
+    padding-right: 60px;
+    text-align: top;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+.box {
+    padding-left: 15rem;
+    padding-right: 15rem;
+}
+img {
+    max-width: 6rem;
+    height: auto;
+}
+.section-title {
+    text-align: left;
+    color:  gold;
+    font-size: 2rem;
+}
+.block-achievement {
+    background-color: rgb(72, 72, 68);
+    size: fluid;
+}
