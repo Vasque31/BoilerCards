@@ -1,0 +1,4 @@
+#Makefile for BoilerCards cs307 project
+
+all:
+        gcc -o serverConnection serverConnection.c
