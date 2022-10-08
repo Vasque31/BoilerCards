@@ -24,14 +24,14 @@ function HomePage() {
                 <div className= "library-box">
                     <row>
                         
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
-                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="my image"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+                        <button className= "library-buttons"><img src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
                     </row>
                 </div>
             </div>
