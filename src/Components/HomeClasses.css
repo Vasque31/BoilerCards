@@ -1,4 +1,4 @@
-.achievement-box {
+.home-boxes {
     background-color: rgb(72, 72, 68);
     border-style: solid;
     border-color: gold;
@@ -8,12 +8,12 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
 }
-.box-achievement {
-    padding-left: 10rem;
-    padding-right: 10rem;
+.box-classes {
+    padding-left: 20rem;
+    padding-right: 20rem;
 }
-.img-achievement {
-    max-width: 10rem;
+.img-class {
+    max-width: 12rem;
     height: auto;
 }
 .section-title {
@@ -21,7 +21,7 @@
     color:  gold;
     font-size: 2rem;
 }
-.block-achievement {
+.block-buttons {
     background-color: rgb(72, 72, 68);
     size: fluid;
 }

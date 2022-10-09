@@ -1,0 +1,17 @@
+.settings {
+    align-items: center;
+    text-align: center;
+    position: absolute;
+    padding-left: 30rem;
+    padding-right: 30rem;
+    padding-top: 20rem;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    background-color:  rgb(72, 72, 68);
+}
+.close-button {
+    text-align: left;
+}
