@@ -29,19 +29,28 @@ function Header() {
                             />
                             <Button variant="dark">Search</Button>
                         </Form>
-                        <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                        <NavDropdown title="Create" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#action/3.1">
+                                Class
+                            </NavDropdown.Item>
                             <NavDropdown.Item href="#action/3.2">
-                                Another action
+                                Folder
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">
-                                Separated link
+                            <NavDropdown.Item href="#action/3.3">
+                                Flashcard Set
+                            </NavDropdown.Item> 
+                        </NavDropdown>
+                        
+                        <NavDropdown title="Profile" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#action/3.1">
+                                Account Data
                             </NavDropdown.Item>
+                            <NavDropdown.Item href="#action/3.2">
+                                Settings
+                            </NavDropdown.Item> 
                         </NavDropdown>
                     </Nav>
-                    </Navbar.Collapse>
+                    </Navbar.Collapse>  
                 </Container>
             </Navbar>
         </div>
