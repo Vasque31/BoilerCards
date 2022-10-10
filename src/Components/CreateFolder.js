@@ -15,7 +15,6 @@ function CreateFolder() {
                     <label for = "folderName">Name: </label>
                     <input type = "text" id = "folderName" name = "folderName"> <br></br> </input>
                     <input type = "submit" value = "Submit"></input>
-                    asdf
 
                 </form>
 
