@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./signInPage.css";
 import mylogo from "../images/PurdueTrain.png";
+import { useNavigate } from "react-router-dom";
 //Use states for Sign In
 
 const errors = {
@@ -11,6 +12,7 @@ const errors = {
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const navigate = useNavigate();
 
     const handleSignUp = (event) => {
         //prevents page reload
@@ -22,9 +24,10 @@ function SignInPage() {
     const handleSignIn = (event) => {
         //prevents page reload
         event.preventDefault();
-    
+        
         //Call to backend to check validity
-
+        //if good link to homepage with the persons info
+        navigate("/HomePage");
     };
     return (
         <div className = "login-form">
