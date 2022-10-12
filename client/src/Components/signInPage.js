@@ -17,10 +17,11 @@ function SignInPage() {
     const navigate = useNavigate();
     const [password, setPassword] = useState();
     const [username, setUsername] = useState();
+    
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
-    
+        navigate("/register");
         //Call to backend to check validity
 
     };
