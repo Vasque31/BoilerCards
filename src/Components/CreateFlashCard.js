@@ -23,7 +23,7 @@ function CreateFlashCard() {
             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
             <input type="text" name="flashcardSetName" required />
             {
-            inputList.map((x,i) => {
+            inputList.map((x,i) => { 
                 return(
                 <Form>
                     <Form.Group style={{color: "gold"}}>

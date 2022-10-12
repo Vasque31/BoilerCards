@@ -6,11 +6,11 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import "./Header.css";
 import Form from 'react-bootstrap/Form';
+import { Link } from "react-router-dom";
 
 
 
 function Header() {
-
     return (
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">
@@ -19,7 +19,7 @@ function Header() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href="#home">Home</Nav.Link>
+                        <Nav.Link to= "/">Home</Nav.Link>
                         <Form className="d-flex">
                             <Form.Control
                                 type="search"
@@ -36,8 +36,13 @@ function Header() {
                             <NavDropdown.Item href="#action/3.2">
                                 Folder
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.3">
-                                Flashcard Set
+                            
+                            <NavDropdown.Item to="/createflashcard">
+                                <Link to="/createflashcardset">
+                                    <Button variant="Light">
+                                        Flashcard Set
+                                    </Button>
+                                </Link>
                             </NavDropdown.Item> 
                         </NavDropdown>
                         
