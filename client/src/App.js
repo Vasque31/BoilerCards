@@ -7,7 +7,8 @@ import Header from './Components/Header.js';
 import Settings from "./Components/Settings.js";
 import CreateFlashCard from './Components/CreateFlashCard';
 import RegistrationPage from './Components/RegistrationPage';
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom";
+import CreateFolder from './Components/CreateFolder';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
+        <Route path="/createfolder" element={<CreateFolder/>} />
 
       </Routes>
     </div>
