@@ -4,14 +4,15 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import CloseButton from 'react-bootstrap/CloseButton';
+import { useNavigate } from "react-router-dom";
 
 function Settings() {
-
+    const navigate = useNavigate();
     return (
         <div>
             <div className="settings">
-                <div className="close-button">
-                    <CloseButton variant= "white"/>
+                <div style={{textAlign: "left", fontSize: " 1.5rem"}}>
+                    <CloseButton variant= "white" onClick={() => navigate(-1)}/>
                 </div>
                 <header style={{fontSize: '3.5rem', color: 'gold'}}>BoilerCard Profile Settings</header>
                 <ListGroup>

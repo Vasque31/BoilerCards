@@ -20,6 +20,7 @@ function App() {
         <Route path="/register" element={<RegistrationPage/>} />
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
         <Route path="/mylibrary" element={<MyLibrary/>} />
+        <Route path="/settings" element={<Settings/>} />
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
         <Route path="/createfolder" element={<CreateFolder/>} />
