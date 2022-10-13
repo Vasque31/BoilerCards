@@ -9,6 +9,7 @@ import CreateFlashCard from './Components/CreateFlashCard';
 import RegistrationPage from './Components/RegistrationPage';
 import { Route, Routes } from "react-router-dom";
 import CreateFolder from './Components/CreateFolder';
+import MyLibrary from './Components/MyLibrary';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
 
         <Route path="/register" element={<RegistrationPage/>} />
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
+        <Route path="/mylibrary" element={<MyLibrary/>} />
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
         <Route path="/createfolder" element={<CreateFolder/>} />
