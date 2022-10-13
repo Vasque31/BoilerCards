@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import "./signInPage.css";
 import mylogo from "../images/PurdueTrain.png";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 import axios from "axios";
 //Use states for Sign In
 
@@ -15,8 +16,8 @@ function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
-    const [password, setPassword] = useState();
-    const [username, setUsername] = useState();
+    const usernameRef = useRef();
+    const passwordRef = useRef();
 
     const handleSignUp = (event) => {
         //prevents page reload
@@ -30,8 +31,8 @@ function SignInPage() {
         event.preventDefault();
 
         const logginInfo = {
-            username: username,
-            password: password
+            username: usernameRef.current.value,
+            password: passwordRef.current.value
         }
         console.log(logginInfo);
         //Call to backend to check validity
@@ -44,13 +45,15 @@ function SignInPage() {
         <div className = "login-form">
             <form onSubmit = {handleSignIn}>
                 <img alt = "Logo" className = "photo" src= {mylogo}/>
+                <h1 style={{textAlign: "center", color: "gold"}}>Welcome to BoilerCards</h1>
+                <h2 style={{textAlign: "center", color: "gold"}}>Sign In</h2>
                 <div className = "input-container">
-                    <label>Username</label>
-                    <input type="text" name="username" value={username} onChange={(event) => setUsername(event.target.value)} required />
+                    <label style={{textAlign: "left"}}>Username</label>
+                    <input type="text" name="username" placeholder="Enter Username" ref={usernameRef} required />
                 </div>
                 <div className="input-container">
-                    <label>Password </label>
-                    <input type="password" name="password" value={password} onChange={(event) => setPassword(event.target.value)} required />
+                    <label style={{textAlign: "left"}}>Password </label>
+                    <input type="password" name="password" placeholder="Enter Password" ref={passwordRef} required />
                 </div>
                 
                 <div className="button-container">
