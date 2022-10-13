@@ -26,21 +26,34 @@ function SignInPage() {
         //Call to backend to check validity
 
     };
-    const handleSignIn = (event) => {
+    const handleSignIn = async (event) => {
         //prevents page reload
         event.preventDefault();
-
+        const ip = await axios.get('https://geolocation-db.com/json/');
         const logginInfo = {
-            username: usernameRef.current.value,
-            password: passwordRef.current.value
-        }
+          username: usernameRef.username,
+          password: passwordRef.password,
+          ip:ip.data.IPv4,
+        };
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
-        axios.get('http://localhost:3001/signin', logginInfo)
-        .then(response => console.log(response.data))
-        navigate("/HomePage");
-    };
+        
+        let res = await axios.post("http://localhost:5000/signin", {
+          logginfo: logginInfo,
+        });
+        let data = res.data;
+        if(data===true){
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+          
+            
+            navigate("/HomePage");
+        }      
+        else{
+            alert("incorrect information");
+        }
+    
+      };
     return (
         <div className = "login-form">
             <form onSubmit = {handleSignIn}>
