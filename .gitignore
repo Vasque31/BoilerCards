@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.pack
+client/node_modules/.cache/.eslintcache
+*.old
