@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./CreateFolder.css";
-import Header from "./Header";
 
 function CreateFolder() {
 
@@ -9,8 +8,6 @@ function CreateFolder() {
         
     }
     return (
-        <>
-        <Header/>
         <div className='CreateFolder'>
             <h1> Creating a Folder </h1>
             <div>
@@ -25,8 +22,8 @@ function CreateFolder() {
             </div>
 
         </div>
+  
 
-        </>
     );
 }
 export default CreateFolder;

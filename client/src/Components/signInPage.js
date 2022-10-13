@@ -17,7 +17,7 @@ function SignInPage() {
     const navigate = useNavigate();
     const [password, setPassword] = useState();
     const [username, setUsername] = useState();
-
+    
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -33,7 +33,6 @@ function SignInPage() {
             username: username,
             password: password
         }
-        console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
         axios.get('http://localhost:3001/signin', logginInfo)
