@@ -54,7 +54,7 @@ function CreateFlashCard() {
 
             <div style={{paddingTop: "1rem"}}>
                 <Button variant="primary" type="submit" onClick={handleSave}>
-                    Save FlashCard Set
+                    Create FlashCard Set
                 </Button>
             </div>
         </div>
