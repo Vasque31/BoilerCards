@@ -1,8 +1,6 @@
-.create-folder {
-    text-align: left;
-}
-
-.creation-form {
-    text-align: center
+.general-box-create {
+    padding-left: 30rem;
+    padding-right: 30rem;
+    padding-top: 12rem;
 
 }
