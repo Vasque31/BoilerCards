@@ -20,14 +20,13 @@ client.connect();
 const Flashcarddata = new  FlascardDBService();
 
 recordRoutes.route("/createaccount").post(async function (req, res) {
-  const username = req.body.logginfo.username;
-  const password = req.body.logginfo.password;
+  const username = req.body.registrationInfo.username;
+  const password = req.body.registrationInfo.password;
   if (await userdata.GetAsync(client, username)) {
     console.log("username exist");
     res.json(false);
     return;
   } else {
-    console.log("username: " + str);
     const user = new userinfo(username, password);
     await userdata.AddAsync(client, user);
     res.json(true);
@@ -163,27 +162,36 @@ recordRoutes.route("/deletFlashcardset").delete(async function (req, res) {
 await Flashcarddata.deleteSet(client,ObjectId(setid.toString()));
 res.json(true);
 });
-recordRoutes.route("/flsahcard").get(async function (req, res) {
+recordRoutes.route("/flsahcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
   const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid.toString()));
   res.json(card);
 });
-recordRoutes.route("/flsahcardset").get(async function (req, res) {
+recordRoutes.route("/flsahcardset").post(async function (req, res) {
   const setid = req.body.setid;
   const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
   res.json(set);
 });
-recordRoutes.route("/folder").get(async function (req, res) {
+recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(folderid.toString()));
   res.json(folder);
 });
-recordRoutes.route("/loaduserspace").get(async function (req, res) {
+/*recordRoutes.route("/signin").post(async function (req, res) {
+  const username = req.body.logginfo.username;
+  const password = req.body.logginfo.password;
+  const ip = req.body.logginfo.ip;*/
+recordRoutes.route("/loadspace").post(async function (req, res) {
   const userid = req.body.uid;
-  const user = await userdata.GetAsync(client,userid);
-  res.json(user.folder);
+  const user = await userdata.GetAsyncbyid(client,ObjectId(userid));
+  const fodlerarray = new Array();
+  for(var i=0;i<user.folder.length;i++){
+    const folder = await Flashcarddata.GetFolderasync(client,ObjectId(user.folder[i].toString()));
+    fodlerarray.push(folder);
+  }
+  res.json(fodlerarray);
 });
-recordRoutes.route("/search").get(async function (req, res) {
+recordRoutes.route("/search").post(async function (req, res) {
   const setname = req.body.setname;
   result = await Flashcarddata.searchSet(client,setname);
   res.json(result);

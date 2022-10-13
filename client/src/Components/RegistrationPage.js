@@ -11,14 +11,32 @@ const errors = {
     uname: "Invalid Username",
     pass: "Invalid Password"
 };
-
+ function checkvalidusername(str) {
+    const usernameRegex = /^[a-zA-Z0-9]{4,15}$/;
+    if (usernameRegex.test(str)) {
+        return true;
+    } else {
+      console.log("wrong format of username");
+      return false;
+    }
+  }
+function checkvalidpassword(str) {
+    const passwordRegex = /^[A-Za-z0-9#?!@$%^&*-]{6,25}$/;
+    if (passwordRegex.test(str)) {
+      console.log("nicepassword!: " + str);
+      return true;
+    } else {
+      console.log("wrong format of password");
+      return false;
+    }
+  }
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
-
+    
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -26,7 +44,7 @@ function SignInPage() {
         //Call to backend to check validity
 
     };
-    const handleCreateAccount = (event) => {
+    const handleCreateAccount = async (event) => {
         //prevents page reload
         event.preventDefault();
 
@@ -34,12 +52,21 @@ function SignInPage() {
             username: usernameRef.current.value,
             password: passwordRef.current.value
         }
-        console.log(registrationInfo);
-        //Call to backend to check validity
-        //if good link to homepage with the persons info
-        axios.post('http://localhost:3001/signin', registrationInfo)
-        .then(response => console.log(response.data))
-        navigate("/");
+        if(checkvalidpassword(registrationInfo.password)&&checkvalidusername(registrationInfo.username) ){
+            console.log(registrationInfo);
+            let res = await axios.post("http://localhost:5000/createaccount", {
+                registrationInfo: registrationInfo,
+                });
+            if(res.data===true){
+                navigate("/");
+            }else{
+                alert("username already exist");
+        }
+        }
+        else{
+            alert("wrong format");
+        }
+        
     };
     return (
         <div className = "login-form">
