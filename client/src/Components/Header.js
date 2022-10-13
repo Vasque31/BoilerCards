@@ -15,11 +15,11 @@ function Header() {
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">
                 <Container>
-                    <Navbar.Brand href="#home">BoilerCards</Navbar.Brand>
+                    <Navbar.Brand>BoilerCards</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link to= "/">Home</Nav.Link>
+                        <Nav.Link href= "/HomePage">Home</Nav.Link>
                         <Form className="d-flex">
                             <Form.Control
                                 type="search"
@@ -54,8 +54,12 @@ function Header() {
                             <NavDropdown.Item href="#action/3.1">
                                 Account Data
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">
-                                Settings
+                            <NavDropdown.Item>
+                                <Link to="/settings">
+                                    <Button variant="Light">
+                                        Settings
+                                    </Button>
+                                </Link>
                             </NavDropdown.Item> 
                         </NavDropdown>
                     </Nav>
