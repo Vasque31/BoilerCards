@@ -10,6 +10,7 @@ import RegistrationPage from './Components/RegistrationPage';
 import { Route, Routes } from "react-router-dom";
 import CreateFolder from './Components/CreateFolder';
 import MyLibrary from './Components/MyLibrary';
+import SavedIcon from './Components/SavedIcon';
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
         <Route path="/createfolder" element={<CreateFolder/>} />
+
+        <Route path="/saveicon" element={<SavedIcon/>} />
 
       </Routes>
     </div>

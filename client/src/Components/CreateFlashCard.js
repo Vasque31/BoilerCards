@@ -3,10 +3,13 @@ import "./CreateFlashCard.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Header from "./Header";
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+
 
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
-
+    const navigate = useNavigate();
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -17,9 +20,25 @@ function CreateFlashCard() {
         list[index][name]=value;
         setinputList(list);
     }
-    const handleSave = (event) => {
+    const handleSave = async (event) => {
+	 
         event.preventDefault();
+
+	  const flashcardset = {
+		
+	  }
+
         console.log(inputList);
+//	let res = await axios.post("http://localhost:5000/createflashcardset", {
+//          flashcardset,
+//        });  //Check database operations
+
+	let validOperation = true; //replace with response from database
+	if(validOperation) {
+	  navigate('/saveicon');
+	} else {
+	  alert("Not saved");
+	}
     }
     return (
         <>
