@@ -33,8 +33,12 @@ function Header() {
                             <NavDropdown.Item href="#action/3.1">
                                 Class
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="#action/3.2">
-                                Folder
+                            <NavDropdown.Item>
+                                <Link to="/createFolder">
+                                    <Button variant="Light">
+                                        Folder
+                                    </Button>
+                                </Link>
                             </NavDropdown.Item>
                             
                             <NavDropdown.Item to="/createflashcard">

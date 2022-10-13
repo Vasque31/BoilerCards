@@ -1,29 +1,27 @@
 import React, { useState } from "react";
-import "./CreateFolder.css";
+import "./CreateFlashCard.css";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 
 function CreateFolder() {
+    const [inputList, setinputList] = useState([{front:'', back:''}]);
 
-    const handleCreation = (event) => {
-        event.preventDefault();
-        
-    }
     return (
-        <div className='CreateFolder'>
-            <h1> Creating a Folder </h1>
-            <div>
-                <form action = "/url"> 
-                    <label for = "folderName">Name: </label>
-                    <input type = "text" id = "folderName" name = "folderName"> <br></br> </input>
-                    <input type = "submit" value = "Submit"></input>
-
-                </form>
-
-
-            </div>
-
+        <div className="general-box-create">
+            <header style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Folder</header>
+            <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name of Folder</label>
+            <input type="text" name="folderName" required />
+            <Form>
+                <Form.Group style={{paddingTop: "1rem"}}>
+                    <Button variant="primary" type="submit">
+                        Save Folder
+                    </Button>
+                </Form.Group>
+            </Form>
+                
+            
         </div>
-  
-
     );
 }
+
 export default CreateFolder;

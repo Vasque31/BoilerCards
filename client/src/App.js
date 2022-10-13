@@ -7,7 +7,7 @@ import Header from './Components/Header.js';
 import Settings from "./Components/Settings.js";
 import CreateFlashCard from './Components/CreateFlashCard';
 import { Route, Routes } from "react-router-dom"
-
+import CreateFolder from './Components/CreateFolder';
 function App() {
   return (
     <div  className="App">
@@ -17,6 +17,7 @@ function App() {
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
+        <Route path="/createFolder" element={<CreateFolder/>}/>
       </Routes>
     </div>
   );

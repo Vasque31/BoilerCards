@@ -1,8 +1,19 @@
+/*
 .create-folder {
-    text-align: left;
+    padding-left: 30rem;
+    padding-right: 30rem;
+    padding-top: 12rem;
 }
-
-.creation-form {
-    text-align: center
-
+.input {
+    padding-left: 30rem;
+    padding-right: 30rem;
+    padding-top: 12rem;
+    display: flex;
+    justify-content: center;
+}
+*/
+.general-box-create {
+    padding-left: 30rem;
+    padding-right: 30rem;
+    padding-top: 12rem;
 }
