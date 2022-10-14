@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { libstorage } from './signInPage';
 
-export var folder = null;
+export var folder;
 function HomeLibrary() {
     const navigate = useNavigate();
     const handleSeeMore = (event) => {
         //prevents page reload
         event.preventDefault();
         console.log(libstorage);
-        {/*navigate('/mylibrary');*/}
+        navigate('/mylibrary');
     };
     
     const handleFolderClick = async (id) => {

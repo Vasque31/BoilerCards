@@ -15,8 +15,8 @@ function SavedIcon() {
 	);
 } 
 
-function closeIcon() {
+/*function closeIcon() {
 	navigate("/HomePage");
-}
+}*/
 
 export default SavedIcon;
