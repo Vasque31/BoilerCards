@@ -42,7 +42,6 @@ async  GetFolderasync(client, id){
   const obj = JSON.parse(json);*/
   if (result) {
       console.log(`Found a listing in the collection with the name '${result.foldername}':`);
-      console.log(result);
       return result;
   } else {
       console.log(`No listings found with the name '${id}'`);

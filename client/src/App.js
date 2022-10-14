@@ -11,6 +11,7 @@ import { Route, Routes } from "react-router-dom";
 import CreateFolder from './Components/CreateFolder';
 import MyLibrary from './Components/MyLibrary';
 import SavedIcon from './Components/SavedIcon';
+import ChangeCredentials from './Components/ChangeCredentials';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
         <Route path="/createfolder" element={<CreateFolder/>} />
+        <Route path="/changecredentials" element={<ChangeCredentials/>} />
 
         <Route path="/saveicon" element={<SavedIcon/>} />
 
