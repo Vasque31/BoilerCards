@@ -1,4 +1,3 @@
-import axios from "axios";
 
 
 function getFolders(uid) {
@@ -10,7 +9,7 @@ function getFolders(uid) {
 }
 
 function getFolder(folderid) {
-	 let res = await axios.post("http://localhost:5000/folder", {
+	 let res = await axios.post("http://localhost:5000/signin", {
           folderid,
         });
         let folderObject = res.data;
@@ -18,7 +17,7 @@ function getFolder(folderid) {
 }
 
 function getFlashcardSet(flashcardsetid) {
-	 let res = await axios.post("http://localhost:5000/flsahcardset", {
+	 let res = await axios.post("http://localhost:5000/signin", {
           flashcardsetid,
         });
         let flashcardsetObject = res.data;
@@ -26,11 +25,10 @@ function getFlashcardSet(flashcardsetid) {
 }
 
 function getFlashcard(flashcardid) {
-	 let res = await axios.post("http://localhost:5000/flsahcard", {
+	 let res = await axios.post("http://localhost:5000/signin", {
           flashcardid,
         });
         let folderObject = res.data;
 	  return folderObject;
 
 }
-

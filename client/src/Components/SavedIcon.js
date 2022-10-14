@@ -16,11 +16,7 @@ function SavedIcon() {
 } 
 
 function closeIcon() {
-	var icon = document.getElementsByClass("saveicon");
-	console.log("CLOSE:" + icon);
-	for (var i = 0 ; i < icon.length; i++) {
-		icon[i].innerHTML = "";
-	}
+	navigate("/HomePage");
 }
 
 export default SavedIcon;

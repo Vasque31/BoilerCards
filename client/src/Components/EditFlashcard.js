@@ -3,9 +3,14 @@ import "./CreateFlashCard.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { flashcard } from "./ViewFlashcard";
+
+import { useNavigate } from "react-router-dom";
+
 function EditFlashcard() {
     const handleSave = (event) => {
         
+
+	navigate("/saveicon");
     }
 
     return (
