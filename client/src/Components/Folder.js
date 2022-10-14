@@ -20,6 +20,7 @@ function Folder() {
         });
         flashcards = res.data;
         console.log(flashcards);
+        navigate('/flashcard');
     };
     return (
         <>
