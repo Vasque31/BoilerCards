@@ -7,7 +7,7 @@ const {Folder} = require("../db/Flashcard/Model/Folder.js");
 const {Flashcard} = require("../db/Flashcard/Model/Flashcard.js");
 const {FlascardDBService} = require("../db/Flashcard/Service/ilfashcard.js");
 const uri =
-  "mongodb+srv://wang4633:Wwq010817@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://vasque31:pingpong31@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 const userdata = new userDBService();
 const express = require("express");
@@ -200,7 +200,16 @@ recordRoutes.route("/flsahcardset").post(async function (req, res) {
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(folderid.toString()));
-  res.json(folder);
+  const setarray = new Array();
+  for(var i=0;i<folder.flashcardset.length;i++){
+    const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(folder.flashcardset[i].toString()));
+    setarray.push(set);
+  }
+  const folderinfo = {
+    folder: folder,
+    setarray: setarray,
+  }; 
+  res.json(folderinfo);
 });
 /*recordRoutes.route("/signin").post(async function (req, res) {
   const username = req.body.logginfo.username;
