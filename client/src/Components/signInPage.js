@@ -12,6 +12,7 @@ const errors = {
     uname: "Invalid Username",
     pass: "Invalid Password"
 };
+ export var libstorage = null;
 
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
@@ -47,6 +48,11 @@ function SignInPage() {
         let data = res.data;
         if(data===true){
             // eslint-disable-next-line react-hooks/rules-of-hooks
+            let res = await axios.post("http://localhost:3001/loadspace", {
+                uid:"63489d5d2276af8bc07bb66f"
+            });
+            libstorage = res.data;
+          
           
             
             navigate("/HomePage");
