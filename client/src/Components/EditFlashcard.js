@@ -7,8 +7,9 @@ import { flashcard } from "./ViewFlashcard";
 import { useNavigate } from "react-router-dom";
 
 function EditFlashcard() {
+    const navigate = useNavigate();
     const handleSave = (event) => {
-        
+    
 
 	navigate("/saveicon");
     }
