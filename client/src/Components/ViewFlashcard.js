@@ -6,11 +6,12 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
-
+import axios from "axios";
 function ViewFlashcard() {
 
     const [index, setIndex] = useState(0);
-
+    const [front, setFront] = useState();
+    const [back, setBack] = useState();
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
     };
@@ -21,39 +22,44 @@ function ViewFlashcard() {
         console.log(id);
     }
 
-
+    const handleselectClick = (item) => {
+        setFront(item.front);
+        setBack(item.back);
+        console.log(item);
+        console.log(front);
+        console.log(back);
+    }
     return (
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
-            <Carousel activeIndex={index} onSelect={handleSelect}>
             
+            <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
+                
                 <Carousel.Item>
                     <img
                         className="background-1"
                         src={background}
-                        alt="First slide"
+                        alt="Sides"
                         width="100%"
-                        height="500px"
-                    />
-                    
-                    <Carousel.Caption >
-                        <h3 styling={{fontSize: "5rem", color:"green", textAlign:"center"}}>Front Side of Flashcard</h3>
-
+                        height="500px"/>
+                    <Carousel.Caption>
+                        <h3>{front}</h3>
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
                     <img
                         className="background-2"
                         src={background}
-                        alt="Second slide"
+                        alt="Sides"
                         width="100%"
-                        height="500px"
-                    />
+                        height="500px"/>
                     <Carousel.Caption>
-                        <h2>Back Side of Flashcard</h2>
-
+                        <h3>{back}</h3>
                     </Carousel.Caption>
                 </Carousel.Item>
+            
+
             </Carousel>
+            
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Table striped bordered hover>
                     <thead>
@@ -66,7 +72,9 @@ function ViewFlashcard() {
                         {flashcards.flashcardarray.map((item, index) => {
                             return (
                                 <tr>
-                                    <th>#{index+1}</th>
+                                    <th>
+                                        <Button variant="light" value={item} onClick={(e) => handleselectClick(item)}> #{index+1} </Button>
+                                    </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
                                     <th>
