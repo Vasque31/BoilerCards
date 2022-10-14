@@ -7,14 +7,20 @@ import Header from "./Header";
 import {folder} from './HomeLibrary';
 import axios from 'axios';
 
+
+export var flashcards = null;
+
 function Folder() {
     const navigate = useNavigate();
     const handleFlashcardClick = async (id) => {
         //prevents page reload
         console.log(id);
-        {/*let res = await axios.post("http://localhost:3001/folder", {
-            folderid:id
-        });*/}
+        let res = await axios.post("http://localhost:3001/flsahcardset", {
+            setid:id
+        });
+        flashcards = res.data;
+        console.log(flashcards);
+        navigate('/flashcard');
     };
     return (
         <>
