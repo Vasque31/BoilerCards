@@ -7,7 +7,7 @@ const {Folder} = require("../db/Flashcard/Model/Folder.js");
 const {Flashcard} = require("../db/Flashcard/Model/Flashcard.js");
 const {FlascardDBService} = require("../db/Flashcard/Service/ilfashcard.js");
 const uri =
-  "mongodb+srv://wang4633:Wwq010817@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://vasque31:pingpong31@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 const userdata = new userDBService();
 const express = require("express");
@@ -202,9 +202,10 @@ recordRoutes.route("/flsahcard").post(async function (req, res) {
 });
 recordRoutes.route("/flsahcardset").post(async function (req, res) {
   const setid = req.body.setid;
-  const flashcardset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
+  console.log(setid)
+;  const flashcardset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
   const flashcardarray = new Array();
-  for(var i=0;i<flashcardset.folder.length;i++){
+  for(var i=0;i<flashcardset.flashcard.length;i++){
     const flashcard = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardset.flashcard[i].toString()));
     flashcardarray.push(flashcard);
   }
