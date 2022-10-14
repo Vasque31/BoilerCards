@@ -14,6 +14,7 @@ import SavedIcon from './Components/SavedIcon';
 import ChangeCredentials from './Components/ChangeCredentials';
 import Folder from './Components/Folder';
 import ViewFlashCard from './Components/ViewFlashcard.js'
+import EditFlashcard from './Components/EditFlashcard';
 
 function App() {
   return (
@@ -26,10 +27,13 @@ function App() {
         <Route path="/mylibrary" element={<MyLibrary/>} />
         <Route path="/settings" element={<Settings/>} />
         <Route path="/folder" element={<Folder/>} />
+
+
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
         <Route path="/createfolder" element={<CreateFolder/>} />
         <Route path="/changecredentials" element={<ChangeCredentials/>} />
         <Route path="/flashcard" element={<ViewFlashCard/>} />
+        <Route path="/editflashcard" element={<EditFlashcard/>} />
         <Route path="/saveicon" element={<SavedIcon/>} />
 
       </Routes>

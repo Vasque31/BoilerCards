@@ -6,17 +6,31 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
+import { useNavigate } from "react-router";
+import axios from 'axios';
+export var flashcard = null;
 import axios from "axios";
+
+
 function ViewFlashcard() {
 
     const [index, setIndex] = useState(0);
     const [front, setFront] = useState();
     const [back, setBack] = useState();
+    const navigate = useNavigate();
+
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
     };
-    const handleeditClick = (id) => {
+    const handleeditClick = async (id) => {
         console.log(id);
+        /*let res = await axios.post("http://localhost:3001/edit", {
+            flashcardid:id
+       
+        });*/
+        console.log(flashcards);
+        navigate("/editflashcard");
+
     }
     const handledeleteClick = (id) => {
         console.log(id);
