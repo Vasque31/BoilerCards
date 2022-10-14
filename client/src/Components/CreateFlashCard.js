@@ -15,7 +15,7 @@ function CreateFlashCard() {
         const list = [...inputList];
         list[index][name]=value;
         setinputList(list);
-    }
+    } 
     const handleSave = async(event) => {
         event.preventDefault();
 

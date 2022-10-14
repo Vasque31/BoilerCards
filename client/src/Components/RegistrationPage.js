@@ -29,13 +29,14 @@ function checkvalidpassword(str) {
       console.log("wrong format of password");
       return false;
     }
-  }
+  }  
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
+    
     
     const handleSignUp = (event) => {
         //prevents page reload

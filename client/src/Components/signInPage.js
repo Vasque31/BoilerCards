@@ -36,7 +36,7 @@ function SignInPage() {
           username: usernameRef.current.value,
           password: passwordRef.current.value,
           ip:ip.data.IPv4,
-        };
+        }; 
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
