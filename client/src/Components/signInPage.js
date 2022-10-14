@@ -19,7 +19,6 @@ function SignInPage() {
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
-    const uid = "nasdjfa";
 
     const handleSignUp = (event) => {
         //prevents page reload
@@ -40,7 +39,7 @@ function SignInPage() {
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
-       let res = await axios.post("http://localhost:5000/signin", {
+       let res = await axios.post("http://localhost:3001/signin", {
           logginfo: logginInfo,
         });
 

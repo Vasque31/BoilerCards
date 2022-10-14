@@ -26,7 +26,11 @@ function Settings() {
                         </Link>
                     </ListGroup.Item>
                     <ListGroup.Item action>
-                        Logout
+                    <Link to="/">
+                            <Button variant="Light">
+                                    Logout
+                                </Button>
+                        </Link>
                     </ListGroup.Item>
                 </ListGroup>
             </div>
