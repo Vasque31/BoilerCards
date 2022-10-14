@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import "./HomeLibrary.css";
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
-import {libstorage} from './signInPage.js';
 import axios from 'axios';
+import { libstorage } from './signInPage';
 
 export var folder = null;
-async function HomeLibrary() {
+function HomeLibrary() {
     const navigate = useNavigate();
     const handleSeeMore = (event) => {
         //prevents page reload
