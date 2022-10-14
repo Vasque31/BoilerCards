@@ -5,7 +5,7 @@ import background from '../images/bk.png';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-
+import { flashcards } from "./Folder.js";
 
 function ViewFlashcard() {
 
@@ -14,6 +14,12 @@ function ViewFlashcard() {
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
     };
+    const handleeditClick = (id) => {
+        console.log(id);
+    }
+    const handledeleteClick = (id) => {
+        console.log(id);
+    }
 
 
     return (
@@ -57,17 +63,21 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
-                        <tr>
-                            <th>Testing</th>
-                            <th>Sample front</th>
-                            <th>Sample Back side</th>
-                            <th>
-                                <ButtonGroup aria-label="Edit/Delete">
-                                    <Button variant="primary"> Edit </Button>
-                                    <Button variant="primary"> Delete </Button>
-                                </ButtonGroup>
-                            </th>
-                        </tr>
+                        {flashcards.flashcardarray.map((item, index) => {
+                            return (
+                                <tr>
+                                    <th>#{index+1}</th>
+                                    <th>{item.front}</th>
+                                    <th>{item.back}</th>
+                                    <th>
+                                        <ButtonGroup aria-label="Edit/Delete">
+                                            <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
+                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value)}> Delete </Button>
+                                        </ButtonGroup>
+                                    </th>
+                                </tr>
+                            );
+                        })}
                     </thead>
 
                 </Table>
