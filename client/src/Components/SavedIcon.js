@@ -6,6 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 function SavedIcon() {
 	const navigate = useNavigate();
+	function closeIcon() {
+		navigate("/HomePage");
+	}
+
 	return (
 	  <div className="saveicon">
 		<CloseButton variant= "black" onClick={() => navigate(-1)}/>
