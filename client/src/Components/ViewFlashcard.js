@@ -6,16 +6,27 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
+import { useNavigate } from "react-router";
+import axios from 'axios';
+
+export var flashcard = null;
 
 function ViewFlashcard() {
 
     const [index, setIndex] = useState(0);
-
+    const navigate = useNavigate();
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
     };
-    const handleeditClick = (id) => {
+    const handleeditClick = async (id) => {
         console.log(id);
+        /*let res = await axios.post("http://localhost:3001/edit", {
+            flashcardid:id
+       
+        });*/
+        console.log(flashcards);
+        navigate("/editflashcard");
+
     }
     const handledeleteClick = (id) => {
         console.log(id);
@@ -24,8 +35,7 @@ function ViewFlashcard() {
 
     return (
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
-            <Carousel activeIndex={index} onSelect={handleSelect}>
-            
+            <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
                 <Carousel.Item>
                     <img
                         className="background-1"
@@ -37,7 +47,6 @@ function ViewFlashcard() {
                     
                     <Carousel.Caption >
                         <h3 styling={{fontSize: "5rem", color:"green", textAlign:"center"}}>Front Side of Flashcard</h3>
-
                     </Carousel.Caption>
                 </Carousel.Item>
                 <Carousel.Item>
