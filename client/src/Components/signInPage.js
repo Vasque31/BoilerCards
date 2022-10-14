@@ -43,16 +43,19 @@ function SignInPage() {
        let res = await axios.post("http://localhost:3001/signin", {
           logginfo: logginInfo,
         });
-
+        
         console.log(res.data);
         let data = res.data;
         if(data===true){
             // eslint-disable-next-line react-hooks/rules-of-hooks
+            const currentuser = await axios.get("http://localhost:3001/getcuurrentuser");
+            console.log(currentuser);
             let res = await axios.post("http://localhost:3001/loadspace", {
-                uid:"63489d5d2276af8bc07bb66f"
+                uid:currentuser.data._id,
             });
+
+            console.log(res.data);
             libstorage = res.data;
-          
           
             
             navigate("/HomePage");

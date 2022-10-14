@@ -52,7 +52,7 @@ function ChangeCredentials() {
             alert("success");
             window.location.reload();
         }else{
-            alert("Username exist or password does not match")
+            alert("password does not match")
         }
         console.log(newAccountInfo);
         }else{

@@ -27,8 +27,11 @@ function CreateFlashCard() {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
         });
-
-        window.location.reload();
+        if(res.data===true){
+            alert("success");
+            window.location.reload();
+        }
+        
         console.log(flashcardInfo);
     }
     return (
