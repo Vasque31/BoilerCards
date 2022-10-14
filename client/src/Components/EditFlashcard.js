@@ -17,6 +17,11 @@ function EditFlashcard() {
             newfront:newfront,
             newback:newback,
         });
+    const navigate = useNavigate();
+    const handleSave = (event) => {
+    
+
+	    navigate("/saveicon");
     }
 
     return (
