@@ -8,6 +8,7 @@ class userDBService {
     console.log(
       `New listing created with the following id: ${result.insertedId}`
     );
+    return result;
   }
   async AddLogAsync(client, newListing) {
     const result = await client
@@ -28,6 +29,7 @@ class userDBService {
     );
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
   }
+  
   async GetAsync(client, nameOfListing) {
     const result = await client
       .db("User")

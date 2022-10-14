@@ -16,6 +16,7 @@ const recordRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require("../db/conn");
 client.connect();
+
 // This section will help you get a list of all the records.
 const Flashcarddata = new  FlascardDBService();
 
@@ -28,7 +29,14 @@ recordRoutes.route("/createaccount").post(async function (req, res) {
     return;
   } else {
     const user = new userinfo(username, password);
-    await userdata.AddAsync(client, user);
+    const res2 = await userdata.AddAsync(client, user);
+    const newfolder = new Folder("Home",res2.insertedId);
+    const res3 = await Flashcarddata.Createfolder(client,newfolder);
+    user.defaultfolder = res3.insertedId.toString();
+    const array = user.folder;
+    array.push(user.defaultfolder);
+    user.folder = array;
+    await userdata.UpdateUser(client,res2.insertedId,user);
     res.json(true);
     return;
   }
@@ -40,9 +48,10 @@ recordRoutes.route("/signin").post(async function (req, res) {
   const ip = req.body.logginfo.ip;
   const result = await userdata.GetAsync(client, username);
   if (result) {
+    
     if (result.password == password) {
+      currentuser = result;
       console.log("account login sucessful");
-      console.log(result);
       const newuserlog = new userlog(result._id, username,ip);
       await userdata.AddLogAsync(client, newuserlog);
       res.json(true);
@@ -84,23 +93,39 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
   const folderarray = user.folder;
   folderarray.push(myObjectId.toString());
   user.folder = folderarray;
-  userdata.UpdateUser(client,ObjectId(uid.toString()),user);
+  await userdata.UpdateUser(client,ObjectId(uid.toString()),user);
   res.json(true);
 });
-
-recordRoutes.route("/createflashcardset").post(async function (req, res) {
-  const setname = req.body.setinfo.setname;
+async function createFlashcard(front,back,belongsetid){
+  const newflashcard = new Flashcard(front,back);
+  const card = await Flashcarddata.CreateFlashcard(client,newflashcard);
+  const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(belongsetid));
+  const json = JSON.stringify(belongset);
+  const obj = JSON.parse(json);
+  const array = obj.flashcard;
+  const myObjectId = ObjectId(card.insertedId);
+  array.push(myObjectId.toString());
+  belongset.flashcard = array;
+  Flashcarddata.UpdateSet(client,ObjectId(belongsetid),belongset);
+}
+recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
+  var currentuser = await userdata.GetAsync(client, "testaccount");
+  const list = req.body.inputList;
+  const setname = req.body.name;
   const newset = new Flashcardset(setname);
-  newset.belongfolder = req.body.setinfo.belongfolder;
+  newset.belongfolder = currentuser.defaultfolder;
   const set = await Flashcarddata.CreateSet(client,newset);
-  const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(req.body.setinfo.belongfolder.toString()));
+  const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(currentuser.defaultfolder.toString()));
   const json = JSON.stringify(belongfolder);
   const obj = JSON.parse(json);
   const array = obj.flashcardset;
   const myObjectId = ObjectId(set.insertedId);
   array.push(myObjectId.toString());
   belongfolder.flashcardset = array;
-  Flashcarddata.UpdateFolder(client,ObjectId(req.body.setinfo.belongfolder.toString()),belongfolder);
+  await Flashcarddata.UpdateFolder(client,ObjectId(currentuser.defaultfolder.toString()),belongfolder);
+  for(var i=0;i<list.length;i++){
+    await createFlashcard(list[i].front,list[i].back,myObjectId.toString())
+  }
   res.json(true);
 });
 
@@ -117,7 +142,7 @@ recordRoutes.route("/createFlashcard").post(async function (req, res) {
   const myObjectId = ObjectId(card.insertedId);
   array.push(myObjectId.toString());
   belongset.flashcard = array;
-  Flashcarddata.UpdateSet(client,ObjectId(req.body.flashcardinfo.belongset.toString()),belongset);
+  await Flashcarddata.UpdateSet(client,ObjectId(req.body.flashcardinfo.belongset.toString()),belongset);
   res.json(true);
 });
 
@@ -136,7 +161,7 @@ recordRoutes.route("/deletFlashcard").delete(async function (req, res) {
         }
     }
     belongset.flashcard = obj;
-    Flashcarddata.UpdateSet(client,ObjectId(card.belongset),belongset);
+    await Flashcarddata.UpdateSet(client,ObjectId(card.belongset),belongset);
   }
 await Flashcarddata.deleteFlashcard(client,ObjectId(flashcardid.toString()));
 res.json(true);
@@ -157,7 +182,7 @@ recordRoutes.route("/deletFlashcardset").delete(async function (req, res) {
         }
     }
     belongfolder.flashcardset = obj;
-    Flashcarddata.UpdateFolder(client,belongfolder._id,belongfolder);
+    await Flashcarddata.UpdateFolder(client,belongfolder._id,belongfolder);
 }
 await Flashcarddata.deleteSet(client,ObjectId(setid.toString()));
 res.json(true);

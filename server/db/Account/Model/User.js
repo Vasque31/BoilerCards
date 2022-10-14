@@ -4,6 +4,7 @@ class userinfo {
     this.username = username;
     this.password = password;
     this.AccountCreateTime = moment().format("YYYY-MM-DD HH:mm:ss");
+    this.defaultfolder =  null;
     this.folder = new Array();
   }
 }

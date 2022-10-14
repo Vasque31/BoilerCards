@@ -36,18 +36,16 @@ function SignInPage() {
           username: usernameRef.current.value,
           password: passwordRef.current.value,
           ip:ip.data.IPv4,
-        };
+        }; 
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
-       /* let res = await axios.post("http://localhost:5000/signin", {
+       let res = await axios.post("http://localhost:5000/signin", {
           logginfo: logginInfo,
-        });*/
-        let res =  await axios.post("http://localhost:5000/loadspace", {
-          uid:"63485bead753983e00dfad58",
         });
+
         console.log(res.data);
-        /*let data = res.data;
+        let data = res.data;
         if(data===true){
             // eslint-disable-next-line react-hooks/rules-of-hooks
           
@@ -56,7 +54,7 @@ function SignInPage() {
         }      
         else{
             alert("incorrect information");
-        }*/
+        }
         
       };
     return (
