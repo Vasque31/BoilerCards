@@ -5,6 +5,7 @@ import mylogo from "../images/PurdueTrain.png";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
+
 //Use states for Sign In
 
 const errors = {
@@ -18,6 +19,7 @@ function SignInPage() {
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
+    const uid = "nasdjfa";
 
     const handleSignUp = (event) => {
         //prevents page reload
@@ -26,21 +28,37 @@ function SignInPage() {
         //Call to backend to check validity
 
     };
-    const handleSignIn = (event) => {
+    const handleSignIn = async (event) => {
         //prevents page reload
         event.preventDefault();
-
+        const ip = await axios.get('https://geolocation-db.com/json/');
         const logginInfo = {
-            username: usernameRef.current.value,
-            password: passwordRef.current.value
-        }
+          username: usernameRef.current.value,
+          password: passwordRef.current.value,
+          ip:ip.data.IPv4,
+        };
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
-        axios.get('http://localhost:3001/signin', logginInfo)
-        .then(response => console.log(response.data))
-        navigate("/HomePage");
-    };
+       /* let res = await axios.post("http://localhost:5000/signin", {
+          logginfo: logginInfo,
+        });*/
+        let res =  await axios.post("http://localhost:5000/loadspace", {
+          uid:"63485bead753983e00dfad58",
+        });
+        console.log(res.data);
+        /*let data = res.data;
+        if(data===true){
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+          
+            
+            navigate("/HomePage");
+        }      
+        else{
+            alert("incorrect information");
+        }*/
+        
+      };
     return (
         <div className = "login-form">
             <form onSubmit = {handleSignIn}>
