@@ -16,7 +16,7 @@ const recordRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require("../db/conn");
 client.connect();
-
+var currentuser;
 // This section will help you get a list of all the records.
 const Flashcarddata = new  FlascardDBService();
 
@@ -75,18 +75,15 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
   const oldpassword = req.body.oldpassword;
 
   const result = await userdata.GetAsync(client, oldusername);
+  
   if (result.password == oldpassword) {
+    const newuserinfo = result;
     const newpassword = req.body.newpassword;
     const newusername = req.body.newusername;
-    if (await userdata.GetAsync(client, newusername)) {
-      console.log("username exist");
-      res.json(false);
-      return;
-    }else{
-      const newuserinfo = new userinfo(newusername, newpassword);
-      await userdata.UpdateAsync(client, oldusername, newuserinfo);
-      res.json(true);
-    }
+    newuserinfo.username = newusername;
+    newuserinfo.password = newpassword;
+    await userdata.UpdateAsync(client, oldusername, newuserinfo);
+    res.json(true);
   }else{
     res.json(false);
   }
@@ -135,6 +132,9 @@ recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
     await createFlashcard(list[i].front,list[i].back,myObjectId.toString())
   }
   res.json(true);
+});
+recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
+  res.json(currentuser);
 });
 
 recordRoutes.route("/createFlashcard").post(async function (req, res) {
