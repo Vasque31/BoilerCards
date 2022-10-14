@@ -6,7 +6,7 @@ import {libstorage} from './signInPage.js';
 import axios from 'axios';
 
 export var folder = null;
-function HomeLibrary() {
+async function HomeLibrary() {
     const navigate = useNavigate();
     const handleSeeMore = (event) => {
         //prevents page reload
@@ -14,6 +14,7 @@ function HomeLibrary() {
         console.log(libstorage);
         {/*navigate('/mylibrary');*/}
     };
+    
     const handleFolderClick = async (id) => {
         //prevents page reload
         console.log(id);
