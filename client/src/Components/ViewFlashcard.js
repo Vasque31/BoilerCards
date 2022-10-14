@@ -9,7 +9,6 @@ import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
 export var flashcard = null;
-import axios from "axios";
 
 
 function ViewFlashcard() {
