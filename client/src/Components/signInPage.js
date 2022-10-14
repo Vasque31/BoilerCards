@@ -36,14 +36,14 @@ function SignInPage() {
           username: usernameRef.current.value,
           password: passwordRef.current.value,
           ip:ip.data.IPv4,
-        }; 
+        };
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
        let res = await axios.post("http://localhost:3001/signin", {
           logginfo: logginInfo,
         });
-        
+       
         console.log(res.data);
         let data = res.data;
         if(data===true){
@@ -56,14 +56,14 @@ function SignInPage() {
 
             console.log(res.data);
             libstorage = res.data;
-          
-            
+         
+           
             navigate("/HomePage");
         }      
         else{
             alert("incorrect information");
         }
-        
+       
       };
     return (
         <div className = "login-form">
@@ -79,7 +79,7 @@ function SignInPage() {
                     <label style={{textAlign: "left"}}>Password </label>
                     <input type="password" name="password" placeholder="Enter Password" ref={passwordRef} required />
                 </div>
-                
+               
                 <div className="button-container">
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
