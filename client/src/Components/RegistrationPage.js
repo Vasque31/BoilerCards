@@ -29,7 +29,7 @@ function checkvalidpassword(str) {
       console.log("wrong format of password");
       return false;
     }
-  }
+  }  
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -37,6 +37,7 @@ function SignInPage() {
     const usernameRef = useRef();
     const passwordRef = useRef();
     
+
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -54,7 +55,7 @@ function SignInPage() {
         }
         if(checkvalidpassword(registrationInfo.password)&&checkvalidusername(registrationInfo.username) ){
             console.log(registrationInfo);
-            let res = await axios.post("http://localhost:5000/createaccount", {
+            let res = await axios.post("http://localhost:3001/createaccount", {
                 registrationInfo: registrationInfo,
                 });
             if(res.data===true){

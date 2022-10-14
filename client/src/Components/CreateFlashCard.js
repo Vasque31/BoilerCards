@@ -3,42 +3,36 @@ import "./CreateFlashCard.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Header from "./Header";
-import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-
-
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
-    const navigate = useNavigate();
+    const [name, setName] = useState();
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
-
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
         const list = [...inputList];
         list[index][name]=value;
         setinputList(list);
-    }
-    const handleSave = async (event) => {
-	 
+    } 
+    const handleSave = async(event) => {
         event.preventDefault();
 
-	  const flashcardset = {
-		
-	  }
-
-        console.log(inputList);
-//	let res = await axios.post("http://localhost:5000/createflashcardset", {
-//          flashcardset,
-//        });  //Check database operations
-
-	let validOperation = true; //replace with response from database
-	if(validOperation) {
-	  navigate('/saveicon');
-	} else {
-	  alert("Not saved");
-	}
+        const flashcardInfo = {
+            inputList:inputList,
+            name:name
+        }
+        let res = await axios.post("http://localhost:3001/createflashcardsethome", {
+            inputList:flashcardInfo.inputList,
+            name:flashcardInfo.name,
+        });
+        if(res.data===true){
+            alert("success");
+            window.location.reload();
+        }
+        
+        console.log(flashcardInfo);
     }
     return (
         <>
@@ -47,7 +41,7 @@ function CreateFlashCard() {
             <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
             <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
-            <input type="text" name="flashcardSetName" required />
+            <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
             {
             inputList.map((x,i) => { 
                 return(

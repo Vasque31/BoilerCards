@@ -2,14 +2,32 @@ import React, { useState } from "react";
 import "./HomeLibrary.css";
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
+import {libstorage} from './signInPage.js';
+import axios from 'axios';
 
-function HomeLibrary() {
+export var folder = null;
+async function HomeLibrary() {
     const navigate = useNavigate();
     const handleSeeMore = (event) => {
         //prevents page reload
         event.preventDefault();
-        navigate('/mylibrary');
+        console.log(libstorage);
+        {/*navigate('/mylibrary');*/}
     };
+    
+    const handleFolderClick = async (id) => {
+        //prevents page reload
+        console.log(id);
+        let res = await axios.post("http://localhost:3001/folder", {
+            folderid:id
+        });
+        folder = res.data;
+        console.log(res.data);
+        navigate('/folder');
+    };
+    {/*const listOfItems = {libstorage.map((item, index) =>
+    <button className= "library-buttons" key={index} onClick={handleFolderClick(item._id)}><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+    )};*/}
     return (
         <div className="box">
         <h1 className="section-title">My Library</h1>
@@ -17,14 +35,16 @@ function HomeLibrary() {
             <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
         </div>
         <div className= "library-box">
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
-                <button className= "library-buttons"><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
+            {libstorage.map(item => {
+                return (
+                    <div>
+                        {/*<h1>{item._id}</h1>*/}
+                        <button className= "library-buttons" value={item._id} onClick={(e) => handleFolderClick(e.target.value)}>
+                            {item.foldername}
+                        </button>
+                    </div>
+                );
+            })}
         </div>
     </div>
     );
