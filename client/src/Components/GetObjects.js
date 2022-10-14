@@ -1,4 +1,4 @@
-
+import axios from "axios";
 
 function getFolders(uid) {
 	 let res = await axios.post("http://localhost:5000/signin", {
