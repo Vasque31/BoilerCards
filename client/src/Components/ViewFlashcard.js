@@ -8,7 +8,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
-export var flashcard = null;
+
+export var flashcardid;
 
 
 function ViewFlashcard() {
@@ -23,16 +24,15 @@ function ViewFlashcard() {
     };
     const handleeditClick = async (id) => {
         console.log(id);
-        /*let res = await axios.post("http://localhost:3001/edit", {
-            flashcardid:id
-       
-        });*/
         console.log(flashcards);
+        flashcardid = id;
         navigate("/editflashcard");
 
     }
-    const handledeleteClick = (id) => {
-        console.log(id);
+    const handledeleteClick = async (id) => {
+        await axios.post("http://localhost:3001/deletFlashcard",{
+            flashcardid:id,
+        });
     }
 
     const handleselectClick = (item) => {

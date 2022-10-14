@@ -31,7 +31,7 @@ async  UpdateSet(client, nameOfListing, updatedListing){
   console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
 async  UpdateFlashcard(client, nameOfListing, updatedListing){
-  const result = await client.db("Flashcard").collection("FlashCard")
+  const result = await client.db("Flashcard").collection("Flashcard")
                       .updateOne({ _id: nameOfListing }, { $set: updatedListing });
   console.log(`${result.matchedCount} document(s) matched the query criteria.`);
   console.log(`${result.modifiedCount} document(s) was/were updated.`);

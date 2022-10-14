@@ -1,10 +1,10 @@
 class Flashcard{ 
     
-    constructor(front,back) {
+    constructor(front,back,belongsetid) {
         this.front = front;
         this.back = back;
         this.flagged = false;
-        this.belongset = null;
+        this.belongset = belongsetid;
     }
    
 }
