@@ -19,7 +19,13 @@ function Header() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link href= "/HomePage">Home</Nav.Link>
+                        <Nav.Link>
+                            <Link to="/HomePage">
+                                <Button variant="Light">
+                                    Home
+                                </Button>
+                            </Link>
+                        </Nav.Link>
                         <Form className="d-flex">
                             <Form.Control
                                 type="search"
