@@ -4,19 +4,27 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {flashcardid} from "./ViewFlashcard";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 function EditFlashcard() {
     const newflashcard = flashcardid;
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
+    const navigate = useNavigate();
+    
     const handleSave = async(event) => {
-    console.log(newfront);
-    console.log(flashcardid);
-    console.log(newback);
-    let res = await axios.post("http://localhost:3001/edit", {
+    	console.log(newfront);
+    	console.log(flashcardid);
+    	console.log(newback);
+    
+	let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:newflashcard,
             newfront:newfront,
             newback:newback,
         });
+    
+
+	    navigate("/saveicon");
     }
 
     return (
