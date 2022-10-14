@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import CloseButton from 'react-bootstrap/CloseButton';
 import axios from "axios";
+
 function CreateFolder() {
     const [folderName, setFoldername] = useState();
     const navigate = useNavigate();
@@ -14,9 +15,14 @@ function CreateFolder() {
         let res = await axios.post("http://localhost:3001/createfolder", {
             folderName:folderName,        
         });
+
         if(res){
             alert("success");
-            window.location.reload();
+            const currentuser = await axios.get("http://localhost:3001/getcuurrentuser");
+            let res = await axios.post("http://localhost:3001/loadspace", {
+                uid:currentuser.data._id,
+            });
+
         }
         console.log(folderName);
         
@@ -36,7 +42,7 @@ function CreateFolder() {
                     </Button>
                 </Form.Group>
             </Form>
-            </div>
+        </div>
     );
 }
 
