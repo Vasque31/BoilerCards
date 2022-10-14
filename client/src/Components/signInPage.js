@@ -12,6 +12,7 @@ const errors = {
     uname: "Invalid Username",
     pass: "Invalid Password"
 };
+ export var libstorage = null;
 
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
@@ -19,7 +20,6 @@ function SignInPage() {
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
-    const uid = "nasdjfa";
 
     const handleSignUp = (event) => {
         //prevents page reload
@@ -40,14 +40,22 @@ function SignInPage() {
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
-       let res = await axios.post("http://localhost:5000/signin", {
+       let res = await axios.post("http://localhost:3001/signin", {
           logginfo: logginInfo,
         });
-
+        
         console.log(res.data);
         let data = res.data;
         if(data===true){
             // eslint-disable-next-line react-hooks/rules-of-hooks
+            const currentuser = await axios.get("http://localhost:3001/getcuurrentuser");
+            console.log(currentuser);
+            let res = await axios.post("http://localhost:3001/loadspace", {
+                uid:currentuser.data._id,
+            });
+
+            console.log(res.data);
+            libstorage = res.data;
           
             
             navigate("/HomePage");

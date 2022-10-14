@@ -23,11 +23,15 @@ function CreateFlashCard() {
             inputList:inputList,
             name:name
         }
-        let res = await axios.post("http://localhost:5000/createflashcardsethome", {
+        let res = await axios.post("http://localhost:3001/createflashcardsethome", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
         });
-        window.location.reload();
+        if(res.data===true){
+            alert("success");
+            window.location.reload();
+        }
+        
         console.log(flashcardInfo);
     }
     return (

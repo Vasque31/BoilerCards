@@ -5,6 +5,6 @@ class Flashcardset{
         this.flashcard = new Array();
         this.belongfolder = null;
     }
-   
+
 }
 exports.Flashcardset = Flashcardset;
