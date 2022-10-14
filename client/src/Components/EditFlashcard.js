@@ -3,6 +3,7 @@ import "./CreateFlashCard.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {flashcardid} from "./ViewFlashcard";
+import CloseButton from "react-bootstrap/esm/CloseButton";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -17,20 +18,22 @@ function EditFlashcard() {
     	console.log(flashcardid);
     	console.log(newback);
     
-	let res = await axios.post("http://localhost:3001/edit", {
+        await axios.post("http://localhost:3001/edit", {
             flashcardid:newflashcard,
             newfront:newfront,
             newback:newback,
         });
-    
-
-	    navigate("/saveicon");
+        console.log("success");
+        alert("success");
     }
 
     return (
         <div className="general-box-create">
          <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
         <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Edit Flashcard</h2>
+        <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
+                <CloseButton variant= "white" onClick={() => navigate(-1)}/>
+            </div>
         <Form>
             <Form.Group style={{color: "gold"}}>
                 <Form.Label>Front of Card</Form.Label>

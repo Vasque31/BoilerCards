@@ -29,7 +29,12 @@ class userDBService {
     );
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
   }
-  
+  async GetcurrentuserAsync(client){
+    const result = await client
+      .db("User")
+      .collection("currentuser")
+      .findOne({}).sort({"_id":1}).limit(1);
+  }
   async GetAsync(client, nameOfListing) {
     const result = await client
       .db("User")

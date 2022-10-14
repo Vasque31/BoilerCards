@@ -4,9 +4,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Header from "./Header";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import CloseButton from "react-bootstrap/esm/CloseButton";
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [name, setName] = useState();
+    const navigate = useNavigate();
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -29,7 +32,7 @@ function CreateFlashCard() {
         });
         if(res.data===true){
             alert("success");
-            window.location.reload();
+
         }
         
         console.log(flashcardInfo);
@@ -38,6 +41,9 @@ function CreateFlashCard() {
         <>
             <Header/>
         <div className="general-box-create">
+        <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
+                <CloseButton variant= "white" onClick={() => navigate(-1)}/>
+            </div>
             <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
             <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>

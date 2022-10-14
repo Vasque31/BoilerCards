@@ -260,5 +260,6 @@ recordRoutes.route("/edit").post(async function (req, res) {
   const newback = req.body.newback;
   const newflashcard = new Flashcard(newfront,newback);
   result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),newflashcard);
+  res.json(true);
 });
 module.exports = recordRoutes;

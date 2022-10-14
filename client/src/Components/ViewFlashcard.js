@@ -8,7 +8,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
-
+import CloseButton from "react-bootstrap/esm/CloseButton";
 export var flashcardid;
 
 
@@ -43,8 +43,11 @@ function ViewFlashcard() {
         console.log(back);
     }
     return (
+        
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
-            
+            <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
+                <CloseButton variant= "white" onClick={() => navigate(-1)}/>
+            </div>
             <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
                 
                 <Carousel.Item>

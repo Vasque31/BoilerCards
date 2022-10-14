@@ -17,7 +17,11 @@ function MyLibrary() {
     };
 
     return (
+        
         <div className="box">
+            <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
+                <CloseButton variant= "white" onClick={() => navigate(-1)}/>
+            </div>
         <h1 className="section-title">My Library</h1>
         <div style ={{paddingTop: "0.5rem"}}>
             <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
