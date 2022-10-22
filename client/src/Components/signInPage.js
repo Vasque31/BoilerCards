@@ -28,6 +28,7 @@ function SignInPage() {
         //Call to backend to check validity
 
     };
+    
     const handleSignIn = async (event) => {
         //prevents page reload
         event.preventDefault();
