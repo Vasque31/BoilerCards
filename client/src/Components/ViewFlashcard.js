@@ -8,7 +8,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
-export var flashcard = null;
+export var flashcardid = null;
 
 
 function ViewFlashcard() {
@@ -16,6 +16,7 @@ function ViewFlashcard() {
     const [index, setIndex] = useState(0);
     const [front, setFront] = useState();
     const [back, setBack] = useState();
+    const [update, setUpdate] = useState(flashcards);
     const navigate = useNavigate();
 
     const handleSelect = (selectedIndex, e) => {
@@ -27,9 +28,17 @@ function ViewFlashcard() {
             flashcardid:id
        
         });*/
+        
+        flashcardid = id;
         console.log(flashcards);
         navigate("/editflashcard");
 
+    }
+    const handlerefresh = async (id) => {      
+        let res = await axios.post("http://localhost:3001/flsahcardset", {
+            setid:id
+        });
+        setUpdate(res.data);
     }
     const handledeleteClick = (id) => {
         console.log(id);
@@ -74,6 +83,7 @@ function ViewFlashcard() {
             </Carousel>
             
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
+            <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
@@ -82,7 +92,7 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
-                        {flashcards.flashcardarray.map((item, index) => {
+                        {update.flashcardarray.map((item, index) => {
                             return (
                                 <tr>
                                     <th>

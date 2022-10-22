@@ -103,7 +103,7 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
   res.json(true);
 });
 async function createFlashcard(front,back,belongsetid){
-  const newflashcard = new Flashcard(front,back);
+  const newflashcard = new Flashcard(front,back,belongsetid);
   const card = await Flashcarddata.CreateFlashcard(client,newflashcard);
   const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(belongsetid));
   const json = JSON.stringify(belongset);
@@ -154,9 +154,10 @@ recordRoutes.route("/createFlashcard").post(async function (req, res) {
   res.json(true);
 });
 
-recordRoutes.route("/deletFlashcard").delete(async function (req, res) {
-  const flashcardid = req.body.flashcardinfo.flashcardid;
-  const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid.toString()));
+recordRoutes.route("/deletFlashcard").post(async function (req, res) {
+  const flashcardid = req.body.flashcardid;
+  console.log(flashcardid);
+  const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
   if (card){
     const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(card.belongset));
     const json = JSON.stringify(belongset);
@@ -171,7 +172,8 @@ recordRoutes.route("/deletFlashcard").delete(async function (req, res) {
     belongset.flashcard = obj;
     await Flashcarddata.UpdateSet(client,ObjectId(card.belongset),belongset);
   }
-await Flashcarddata.deleteFlashcard(client,ObjectId(flashcardid.toString()));
+console.log(flashcardid);
+await Flashcarddata.deleteFlashcard(client,ObjectId(flashcardid));
 res.json(true);
 });
 
@@ -251,5 +253,13 @@ recordRoutes.route("/search").post(async function (req, res) {
 recordRoutes.route("/logout").post(async function (req, res) {
   currentuser = null;
   res.json(false);
+});
+recordRoutes.route("/edit").post(async function (req, res) {
+  const flashcardid = req.body.flashcardid;
+  const newfront = req.body.newfront;
+  const newback = req.body.newback;
+  const newflashcard = new Flashcard(newfront,newback);
+  result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),newflashcard);
+  res.json(true);
 });
 module.exports = recordRoutes;

@@ -4,9 +4,12 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Header from "./Header";
 import axios from "axios";
+import { useNavigate } from "react-router";
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
+    
     const [name, setName] = useState();
+    const navigate = useNavigate();
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -29,7 +32,7 @@ function CreateFlashCard() {
         });
         if(res.data===true){
             alert("success");
-            window.location.reload();
+            navigate('/HomePage');
         }
         
         console.log(flashcardInfo);
