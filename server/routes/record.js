@@ -262,8 +262,4 @@ recordRoutes.route("/edit").post(async function (req, res) {
   result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),newflashcard);
   res.json(true);
 });
-<<<<<<< HEAD
 module.exports = recordRoutes;
-=======
-module.exports = recordRoutes;
->>>>>>> last

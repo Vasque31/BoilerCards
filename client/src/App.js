@@ -26,7 +26,7 @@ function App() {
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
         <Route path="/mylibrary" element={<MyLibrary/>} />
         <Route path="/settings" element={<Settings/>} />
-        <Route path="/folder" element={<Folder/>} />
+        
 
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>

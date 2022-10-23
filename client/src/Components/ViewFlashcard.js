@@ -8,16 +8,11 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
-<<<<<<< HEAD
 import CloseButton from "react-bootstrap/esm/CloseButton";
-export var flashcardid;
-=======
 export var flashcardid = null;
->>>>>>> last
 
 
 function ViewFlashcard() {
-
     const [index, setIndex] = useState(0);
     const [front, setFront] = useState();
     const [back, setBack] = useState();
@@ -29,26 +24,17 @@ function ViewFlashcard() {
     };
     const handleeditClick = async (id) => {
         console.log(id);
-<<<<<<< HEAD
-=======
         /*let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:id
        
         });*/
         
         flashcardid = id;
->>>>>>> last
         console.log(flashcards);
         flashcardid = id;
         navigate("/editflashcard");
 
     }
-<<<<<<< HEAD
-    const handledeleteClick = async (id) => {
-        await axios.post("http://localhost:3001/deletFlashcard",{
-            flashcardid:id,
-        });
-=======
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
@@ -57,7 +43,6 @@ function ViewFlashcard() {
     }
     const handledeleteClick = (id) => {
         console.log(id);
->>>>>>> last
     }
 
     const handleselectClick = (item) => {
