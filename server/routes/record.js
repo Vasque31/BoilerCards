@@ -278,3 +278,25 @@ module.exports = recordRoutes;
         await userdata.UpdateUser(client,ObjectId(uid.toString()),user);
     }
 }*/
+/*recordRoutes.route("/createaccount").post(async function (req, res) {
+  const username = req.body.registrationInfo.username;
+  const password = req.body.registrationInfo.password;
+  if (await userdata.GetAsync(client, username)) {
+    console.log("username exist");
+    res.json(false);
+    return;
+  } else {
+    const user = new userinfo(username, password);
+    const res2 = await userdata.AddAsync(client, user);
+    const newfolder = new Folder("Home",res2.insertedId);
+    const res3 = await Flashcarddata.Createfolder(client,newfolder);
+    user.defaultfolder = res3.insertedId.toString();
+    const map = user.folder;
+    map.set(res3.insertedId,Flashcarddata.GetFolderasync(client,res3.insertedId));
+    const obj = Object.fromEntries(map);
+    user.folder = obj;
+    await userdata.UpdateUser(client,res2.insertedId,user);
+    res.json(true);
+    return;
+  }
+});*/
