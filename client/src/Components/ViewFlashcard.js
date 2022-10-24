@@ -9,8 +9,8 @@ import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
 import CloseButton from "react-bootstrap/esm/CloseButton";
-import { Modal } from "bootstrap";
-import { Form } from "react-router-dom";
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 export var flashcardid = null;
 
 
@@ -75,6 +75,7 @@ function ViewFlashcard() {
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
+            
             <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
                 
                 <Carousel.Item>
@@ -104,9 +105,9 @@ function ViewFlashcard() {
             </Carousel>
             
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-            <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
-            <Button varient="primary" onClick={handleShow}>+</Button>
-            <Modal show={show} onHide={handleClose} backdrop="static">
+                <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={handleShow}>+</Button>
+                <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
                         <h1 style = {{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
