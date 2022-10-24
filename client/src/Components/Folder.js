@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from "./Header";
 import {folder} from './HomeLibrary';
 import axios from 'axios';
-
+import Deletepopup from './Deletepopup';
+import { handleShowDelete } from "./Deletepopup";
 
 export var flashcards = null;
 
@@ -24,6 +25,7 @@ function Folder() {
     };
     return (
         <>
+            <Deletepopup/>
             <Header/>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
@@ -37,6 +39,9 @@ function Folder() {
                                 {/*<h1>{item._id}</h1>*/}
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
+                                </button>
+                                <button className="library-buttons" value={item} onClick={(e)=>handleShowDelete(e.target.value)}>
+                                    Delete
                                 </button>
                             </div>
                         );
