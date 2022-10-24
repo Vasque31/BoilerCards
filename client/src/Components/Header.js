@@ -48,7 +48,7 @@ function Header() {
         setShow(false);
         setinputList([{front:'', back:''}]);
     }
-        const handleShow = () => setShow(true);
+    const handleShow = () => setShow(true);
     return (
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">

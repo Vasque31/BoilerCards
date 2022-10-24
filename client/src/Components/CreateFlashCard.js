@@ -4,12 +4,8 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Header from "./Header";
 import axios from "axios";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import CloseButton from "react-bootstrap/esm/CloseButton";
-=======
-import { useNavigate } from "react-router";
->>>>>>> last
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     
@@ -37,11 +33,6 @@ function CreateFlashCard() {
         });
         if(res.data===true){
             alert("success");
-<<<<<<< HEAD
-
-=======
-            navigate('/HomePage');
->>>>>>> last
         }
         
         console.log(flashcardInfo);
