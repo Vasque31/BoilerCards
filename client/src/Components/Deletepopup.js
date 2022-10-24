@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import axios from 'axios';
 
 var dummy = {
     foldername: "blank folder",
@@ -16,8 +17,9 @@ function Deletepopup() {
 
 const handleClose = () => setShow(false); //remove Modal 
 
-const handleDelete = () => {
-    console.log()
+const handleDelete = async () => {
+    console.log();
+    deleteByType(deleteObject); //may have problems due to global var
     setShow(false); //close popup upon deletion
 };
 
@@ -38,7 +40,7 @@ return(
 </div>);
 }
 //invoked on button to show Modal
-export const handleShowDelete = async (toDelete) => {
+export const handleShowDelete = (toDelete) => {
     setDeleteObject(toDelete);
     console.log(toDelete+"\n");
     console.log(deleteObject+"\n");
@@ -68,11 +70,15 @@ export function getObjectName(object) {
 }
 
 //deletes an element from Flashcard database of any type
-function deleteByType(object) {
+async function deleteByType(object) {
 
     //delete flashcard
     if (object.front != null) {
-
+        const id = object._id;
+        await axios.post("http://localhost:3001/deletFlashcard",{
+            flashcardid:id,
+        });
+        return;
     }
 
     //delete flashcardset
