@@ -263,3 +263,18 @@ recordRoutes.route("/edit").post(async function (req, res) {
   res.json(true);
 });
 module.exports = recordRoutes;
+/*async function createfolder(foldername,uid){
+    const newfolder = new Folder(foldername,uid);
+    const object = await Flashcarddata.Createfolder(client,newfolder);
+    const folder = await Flashcarddata.GetFolderasync(client,object.insertedId);
+    if(object){
+        const myuserobjectid = ObjectId(uid);
+        const user = await userdata.GetAsyncbyid(client,myuserobjectid);
+        const map = new Map(Object.entries(user.folder));
+        map.set(object.insertedId,object.insertedId);
+        const obj = Object.fromEntries(map);
+        user.folder = obj;
+        console.log(user.folder);
+        await userdata.UpdateUser(client,ObjectId(uid.toString()),user);
+    }
+}*/
