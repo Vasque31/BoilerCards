@@ -8,47 +8,41 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { flashcards } from "./Folder.js";
 import { useNavigate } from "react-router";
 import axios from 'axios';
-<<<<<<< HEAD
 import CloseButton from "react-bootstrap/esm/CloseButton";
-export var flashcardid;
-=======
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 export var flashcardid = null;
->>>>>>> last
 
 
 function ViewFlashcard() {
-
     const [index, setIndex] = useState(0);
     const [front, setFront] = useState();
     const [back, setBack] = useState();
     const [update, setUpdate] = useState(flashcards);
+    const [show, setShow] = useState(false);
+    const [inputList, setinputList] = useState([{front:'', back:''}]);
     const navigate = useNavigate();
-
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const handleaddmore = () => {
+        setinputList([...inputList, {front:'', back:''}]);
+    }
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
     };
     const handleeditClick = async (id) => {
         console.log(id);
-<<<<<<< HEAD
-=======
         /*let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:id
        
         });*/
         
         flashcardid = id;
->>>>>>> last
         console.log(flashcards);
         flashcardid = id;
         navigate("/editflashcard");
 
     }
-<<<<<<< HEAD
-    const handledeleteClick = async (id) => {
-        await axios.post("http://localhost:3001/deletFlashcard",{
-            flashcardid:id,
-        });
-=======
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
@@ -57,7 +51,6 @@ function ViewFlashcard() {
     }
     const handledeleteClick = (id) => {
         console.log(id);
->>>>>>> last
     }
 
     const handleselectClick = (item) => {
@@ -67,12 +60,22 @@ function ViewFlashcard() {
         console.log(front);
         console.log(back);
     }
+    const handleinputchange = (e, index) => {
+        const {name, value} = e.target;
+        const list = [...inputList];
+        list[index][name]=value;
+        setinputList(list);
+    }
+    const handleSave = async(event) => {
+        console.log("something");
+    }
     return (
         
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
+            
             <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
                 
                 <Carousel.Item>
@@ -102,7 +105,50 @@ function ViewFlashcard() {
             </Carousel>
             
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-            <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={handleShow}>+</Button>
+                <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <h1 style = {{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
+                        <h2 style = {{fontSize: "2rem", color:"gold", textAlign: "center"}}>Add New Flashcards</h2>
+                    </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    {
+                        inputList.map((x,i) => {
+                            return(
+                                <Form>
+                                    <Form.Group style={{color: "gold"}}>
+                                        <h1>#{i+1}</h1>
+                                        <Form.Label>Front of Card</Form.Label>
+                                        <Form.Control type="text" name = "front" placeholder="Front of FlashCard" onChange={e =>handleinputchange(e,i)}/>
+                                    </Form.Group>
+                                    
+                                    <Form.Group style={{color: "gold"}}>
+                                        <Form.Label>Back of Card</Form.Label>
+                                        <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                    </Form.Group>
+                                </Form>
+                            )
+                        })
+                    }
+                        <div style={{paddingTop: "1rem"}}>
+                            <Button varient="primary" type = "button" onClick={handleaddmore}>
+                                Add Flashcard
+                            </Button>
+                        </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSave}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+             
+            </Modal>
                 <Table striped bordered hover>
                     <thead>
                         <tr>

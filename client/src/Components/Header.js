@@ -13,8 +13,9 @@ import axios from 'axios';
 
 function Header() {
     const [show, setShow] = useState(false);
+    const [showFolder, setShowFolder] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
-    
+    const [folderName, setFoldername] = useState();
     const [name, setName] = useState();
     const navigate = useNavigate();
     const handleaddmore = () => {
@@ -48,7 +49,12 @@ function Header() {
         setShow(false);
         setinputList([{front:'', back:''}]);
     }
-        const handleShow = () => setShow(true);
+    const handleShow = () => setShow(true);
+    const handleShowFolder = () => setShowFolder(true);
+    const handleCloseFolder = () => {
+        setShowFolder(false);
+
+    }
     return (
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">
@@ -78,11 +84,30 @@ function Header() {
                                 Class
                             </NavDropdown.Item>
                             <NavDropdown.Item>
-                                <Link to="/createfolder">
-                                    <Button variant="Light">
-                                        Folder
-                                    </Button>
-                                </Link>
+                                <Button variant="Light" onClick={handleShowFolder}>
+                                    Folder
+                                </Button>
+                                <Modal show={showFolder} onHide={handleCloseFolder} backdrop="static" dialogClassName="general-box-createfolder">
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>
+                                            <h1 style ={{fontSize: "3rem", color:"gold", textAlign:"center"}}>BOILERCARDS</h1>
+                                            <h2 style ={{fontSize: "1rem", color:"gold", textAlign:"center"}}>Create Folder</h2>
+                                        </Modal.Title>
+                                        
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                            <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name of New Folder: </label>
+                                            <input type="text" name = "folderName" onChange={(e) => setFoldername(e.target.value)} required />
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                            <Button variant="secondary" onClick={handleClose}>
+                                                Close
+                                            </Button>
+                                            <Button variant="primary" onClick={handleSave}>
+                                                Save New Folder
+                                            </Button>
+                                    </Modal.Footer>
+                                </Modal>
                             </NavDropdown.Item>
                             
                             <NavDropdown.Item>
