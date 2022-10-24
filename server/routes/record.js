@@ -271,7 +271,7 @@ module.exports = recordRoutes;
         const myuserobjectid = ObjectId(uid);
         const user = await userdata.GetAsyncbyid(client,myuserobjectid);
         const map = new Map(Object.entries(user.folder));
-        map.set(object.insertedId,object.insertedId);
+        map.set(object.insertedId,folder);
         const obj = Object.fromEntries(map);
         user.folder = obj;
         console.log(user.folder);
@@ -299,4 +299,11 @@ module.exports = recordRoutes;
     res.json(true);
     return;
   }
+});*/
+/*
+recordRoutes.route("/loadspace").post(async function (req, res) {
+  const userid = req.body.uid;
+  const user = await userdata.GetAsyncbyid(client,ObjectId(userid));
+  const fodlerarray = new Array();
+  res.json(user.folder);
 });*/
