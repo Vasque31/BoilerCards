@@ -11,14 +11,18 @@ import axios from 'axios';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Deletepopup from "./Deletepopup";
+import { handleShowDelete } from "./Deletepopup";
+
 export var flashcardid = null;
 
 
 function ViewFlashcard() {
+    
     const [index, setIndex] = useState(0);
     const [front, setFront] = useState();
     const [back, setBack] = useState();
-    const [update, setUpdate] = useState(flashcards);
+    const [update, setUpdate] = useState(flashcards); //update is the flashcard set
     const [show, setShow] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const navigate = useNavigate();
@@ -49,8 +53,9 @@ function ViewFlashcard() {
         });
         setUpdate(res.data);
     }
-    const handledeleteClick = (id) => {
+    const handledeleteClick = (id, type) => {
         console.log(id);
+        handleShowDelete(id, type);
     }
 
     const handleselectClick = (item) => {
@@ -75,7 +80,7 @@ function ViewFlashcard() {
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
-            
+            <Deletepopup />
             <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
                 
                 <Carousel.Item>
@@ -105,7 +110,7 @@ function ViewFlashcard() {
             </Carousel>
             
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-                <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={handlerefresh(update._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
@@ -168,7 +173,7 @@ function ViewFlashcard() {
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value)}> Delete </Button>
+                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>

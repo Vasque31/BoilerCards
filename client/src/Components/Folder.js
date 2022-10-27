@@ -11,6 +11,7 @@ import Form from 'react-bootstrap/Form';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import Deletepopup, { handleShowDelete } from "./Deletepopup";
 export var flashcards = null;
 
 function Folder() {
@@ -69,6 +70,7 @@ function Folder() {
     return (
         <>
             <Header/>
+            <Deletepopup/>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
@@ -92,6 +94,9 @@ function Folder() {
                                 {/*<h1>{item._id}</h1>*/}
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
+                                </button>
+                                <button className= "library-buttons" value={item._id} onClick={(e) => handleShowDelete(e.target.value, "flashcardset")}>
+                                    Delete {item.setname}
                                 </button>
                             </div>
                         );
