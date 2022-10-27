@@ -43,7 +43,8 @@ function Folder() {
         setinputList(list);
     } 
     const handleFolderNameChange = (e) => {
-        setTMPName(e.target);
+        setTMPName(e.target.value);
+        console.log(TMPName);
     }
     const handleCreateFlashCardSet = async(event) => {
         event.preventDefault();
@@ -64,21 +65,16 @@ function Folder() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
-        info.folder.foldername = TMPName;
-        const updatedFolder = {
-            shared:statePrivate,
-            name:info.folder.foldername
-        }
-        
-        let res = await axios.post("http://localhost:3001/updatefolder", {
-            shared:updatedFolder.shared,
-            name:updatedFolder.name,
+        console.log(info);
+        info.foldername = TMPName;
+    
+        let res = await axios.post("http://localhost:3001/editfolder", {
+            folder: info
         });
         if(res.data===true){
             alert("success");
         }
         handleClose();
-        console.log(updatedFolder);
     }
 
     const handleClose = () => {
@@ -175,8 +171,7 @@ function Folder() {
                 <Modal.Body>
                     <Form>
                         <Form.Group style={{color: "gold"}}>
-                            <Form.Label>Folder Name</Form.Label>
-                            <Form.Control type="text" name="foldername" placeholder="Front of FlashCard" onChange={(e) => handleFolderNameChange(e)}/>
+                            <input onChange={e => handleFolderNameChange(e)}></input>
                         </Form.Group>
                     </Form>                    
                 </Modal.Body>
