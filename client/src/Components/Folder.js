@@ -8,6 +8,9 @@ import {folder} from './HomeLibrary';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
+import ToggleButton from "react-bootstrap/ToggleButton";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 export var flashcards = null;
 
 function Folder() {
@@ -23,6 +26,7 @@ function Folder() {
         navigate('/flashcard');
     };
     const [show, setShow] = useState(false);
+    const [showSetting, setShowSetting] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     
     const [name, setName] = useState();
@@ -58,17 +62,44 @@ function Folder() {
         setinputList([{front:'', back:''}]);
     }
     const handleShow = () => setShow(true);
+    const handleCloseSetting = () => {
+        setShowSetting(false);
+    }
+    const handleShowSetting = () => setShowSetting(true);
     return (
         <>
             <Header/>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
-            <Button variant="Light" onClick={handleShow}>
-                Flashcard Set
-            </Button>
+            
+            <div className="box">
+
+                <heading className="section-title">{folder.folder.foldername}</heading>
+                <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
+                    <Button variant="warning" onClick={handleShow}>
+                        Create Flashcard Set
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant="warning" onClick={handleShowSetting}>
+                        Folder Settings
+                    </Button>
+                </div>
+                <div className= "library-box">
+                    {folder.setarray.map(item => {
+                        return (
+                            <div>
+                                {/*<h1>{item._id}</h1>*/}
+                                <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
+                                    {item.setname}
+                                </button>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
             <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>
                         <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
                         <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
@@ -88,12 +119,12 @@ function Folder() {
 
                                 <Form.Group style={{color: "gold"}}>
                                     <Form.Label>Back of Card</Form.Label>
-                                    <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
                                 </Form.Group>
                             </Form>
                         );
                         })}
-                        <div style={{paddingTop: "1rem"}}>
+                   <div style={{paddingTop: "1rem"}}>
                             <Button varient= "primary" type="button" onClick={handleaddmore}>
                                 Add FlashCard
                             </Button>
@@ -104,25 +135,44 @@ function Folder() {
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSave}>
-                            Save Changes
+                        Create FlashCard Set
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <div className="box">
-                <heading className="section-title">{folder.folder.foldername}</heading>
-                <div className= "library-box">
-                    {folder.setarray.map(item => {
-                        return (
-                            <div>
-                                {/*<h1>{item._id}</h1>*/}
-                                <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
-                                    {item.setname}
-                                </button>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+            <Modal show={showSetting} onHide={handleCloseSetting} dialogClassName="general-box-createflash">
+                <Modal.Header>
+                    <Modal.Title>
+                        <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
+                        <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Folder Settings</h2>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group style={{color: "gold"}}>
+                            <Form.Label>Folder Name</Form.Label>
+                            <Form.Control type="text" name= "front" placeholder="Front of FlashCard"/>
+                        </Form.Group>
+                        <Form.Group style={{color: "gold"}}>
+                        <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
+                            <ToggleButton id="private-button" value={1}>
+                                Private
+                            </ToggleButton>
+                            <ToggleButton id="public-button" value={2}>
+                                Public
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+                        </Form.Group>
+                    </Form>                    
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSave}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 }

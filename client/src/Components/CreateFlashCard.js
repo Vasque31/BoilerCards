@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import Header from "./Header";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import CloseButton from "react-bootstrap/esm/CloseButton";
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     
