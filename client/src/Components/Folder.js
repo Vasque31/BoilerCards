@@ -42,7 +42,10 @@ function Folder() {
         list[index][name]=value;
         setinputList(list);
     } 
-    const handleSave = async(event) => {
+    const handleFolderNameChange = (e) => {
+        setTMPName(e.target);
+    }
+    const handleCreateFlashCardSet = async(event) => {
         event.preventDefault();
 
         const flashcardInfo = {
@@ -98,11 +101,7 @@ function Folder() {
             
             <div className="box">
 
-<<<<<<< HEAD
-                <heading className="section-title">{folder.foldername}</heading>
-=======
                 <heading className="section-title">{info.folder.foldername}</heading>
->>>>>>> last
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
@@ -113,11 +112,7 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
-<<<<<<< HEAD
-                    {Object.values(folder.flashcardset).map(item => {
-=======
                     {info.setarray.map(item => {
->>>>>>> last
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}
