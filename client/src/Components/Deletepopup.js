@@ -30,7 +30,9 @@ return(
 <Modal.Header closeButton>
     <Modal.Title>Delete Confirmation</Modal.Title>
 </Modal.Header>
-<Modal.Body> Are you sure you want to delete {getObjectName(deleteObject)}?</Modal.Body>
+<Modal.Body> Are you sure you want to delete {getObjectName(deleteObject)}?\n
+        {deleteObject}
+    </Modal.Body>
 <Modal.Footer>
     <Button onClick={handleDelete}> Delete </Button>
     <Button onClick={handleClose}> Cancel </Button>
@@ -40,28 +42,50 @@ return(
 </div>);
 }
 //invoked on button to show Modal
-export const handleShowDelete = (toDelete) => {
-    setDeleteObject(toDelete);
-    console.log(toDelete+"\n");
-    console.log(deleteObject+"\n");
-    /*const elementObject = document.getElementById('deletename');
-    elementObject.innerHTML = getObjectName(deleteObject);*/
-    setShow(true); //Modal pop-up
+export const handleShowDelete = async (toDeleteID, type) => {
+    //get object
+    var object
+    if (type == "flashcard") {
+        let res =await axios.post("http://localhost:3001/flsahcard",{
+            flashcardid:toDeleteID,
+        });
+        object = res.data;     
+    }
+    
+    if (type == "flashcardset") {
+        let res = await axios.post("http://localhost:3001/flsahcardset",{
+            flashcardsetid:toDeleteID,
+        });
+        object = res.data;
+    }
+
+    if (type == "folder") {
+        let res = await axios.post("http://localhost:3001/folder",{
+            folderid:toDeleteID,
+        });
+        object = res.data;
+    }
+ 
+
+    //update popup
+    object.type = type; //set type for other functions
+    setDeleteObject(object); //put object 
+    setShow(true); //Modal pop-up shows
 };
 
 // Works for folder, flashcardset, flashcard
 export function getObjectName(object) {
 
 
-    if (object.front != null) {
+    if (object.type == "flashcard") {
         return object.front; // Assume flashcard front approximates a "name"
     }
     
-    if (object.setname != null) {
+    if (object.type == "flashcardset") {
         return object.setname;
     } 
     
-    if (object.foldername != null) {
+    if (object.type == "folder") {
         return object.foldername;
     }
 
@@ -70,10 +94,11 @@ export function getObjectName(object) {
 }
 
 //deletes an element from Flashcard database of any type
+//add booleans for delete returns
 async function deleteByType(object) {
 
     //delete flashcard
-    if (object.front != null) {
+    if (object.type = "flashcard") {
         const id = object._id;
         await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,
@@ -82,13 +107,21 @@ async function deleteByType(object) {
     }
 
     //delete flashcardset
-    if (object.setname != null) {
-
+    if (object.type = "flashcardset") {
+        const id = object._id;
+        await axios.post("http://localhost:3001/deletFlashcardset",{
+            flashcardid:id,
+        });
+        return;
     }
 
     //delete folder
-    if (object.foldername != null) {
-
+    if (object.foldername == "folder") {
+        const id = object._id;
+        /*await axios.post("http://localhost:3001/deletFlashcard",{
+            flashcardid:id,
+        }); add when service available*/
+        return;
     }
 }
 
