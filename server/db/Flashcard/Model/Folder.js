@@ -4,9 +4,8 @@ class Folder{
         this.owner = owner;
         this.foldername = foldername;
         this.private = true;
-        this.flashcardset = new Array();
-        this.timespent = new Array();
-        this.folder = new Array();
+        this.flashcardset = new Map();
+        this.timespent = new Map();
     }
    
 }

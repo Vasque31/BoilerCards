@@ -44,7 +44,7 @@ function HomeLibrary() {
             <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
         </div>
         <div className= "library-box">
-            {storage.map(item => {
+            {Object.values(storage).map(item => {
                 return (
                     <div>
                         {/*<h1>{item._id}</h1>*/}
