@@ -250,8 +250,9 @@ recordRoutes.route("/setpublic").post(async function (req, res) {
 });
 recordRoutes.route("/editfolder").post(async function (req, res) {
   const folder = req.body.folder;
-  result = await Flashcarddata.UpdateFlashcard(client,folder._id,folder);
+  const newfolder = await Flashcarddata.GetFolderasync(client,ObjectId(folder._id));
+  newfolder.name = folder.name;
+  result = await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),newfolder);
   res.json(true);
 });
 module.exports = recordRoutes;
- 
