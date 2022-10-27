@@ -15,7 +15,7 @@ function HomeLibrary() {
         console.log(libstorage);
         navigate('/mylibrary');
     };
-    
+     
     const handleFolderClick = async (id) => {
         //prevents page reload
         console.log(id);

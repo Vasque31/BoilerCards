@@ -12,7 +12,7 @@ import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 export var flashcards = null;
-
+ 
 function Folder() {
     const navigate = useNavigate();
     const handleFlashcardClick = async (id) => {
