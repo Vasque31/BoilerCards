@@ -178,16 +178,6 @@ function Folder() {
                             <Form.Label>Folder Name</Form.Label>
                             <Form.Control type="text" name="foldername" placeholder="Front of FlashCard" onChange={(e) => handleFolderNameChange(e)}/>
                         </Form.Group>
-                        <Form.Group style={{color: "gold", paddingTop: "1rem"}}>
-                        <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                Private
-                            </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                Public
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                        </Form.Group>
                     </Form>                    
                 </Modal.Body>
                 <Modal.Footer>

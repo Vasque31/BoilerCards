@@ -11,6 +11,8 @@ import axios from 'axios';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import ToggleButton from "react-bootstrap/ToggleButton";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 export var flashcardid = null;
 
 
@@ -24,6 +26,7 @@ function ViewFlashcard() {
     const navigate = useNavigate();
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const [statePrivate, setPrivate] = useState(false);
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -43,6 +46,7 @@ function ViewFlashcard() {
         navigate("/editflashcard");
 
     }
+
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
@@ -68,6 +72,13 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         console.log("something");
+    }
+    const handleSaveFlashcardStatus = (e) => {
+        const updatedflashcardstatus = {
+            shared:statePrivate,
+            id:update._id
+        }
+
     }
     return (
         
@@ -157,6 +168,14 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
+                        <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Private
+                            </ToggleButton>
+                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Public
+                            </ToggleButton>
+                        </ToggleButtonGroup>
                         {update.flashcardarray.map((item, index) => {
                             return (
                                 <tr>
