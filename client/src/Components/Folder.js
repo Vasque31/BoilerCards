@@ -26,6 +26,9 @@ function Folder() {
         navigate('/flashcard');
     };
     const [show, setShow] = useState(false);
+    const [info, setInfo] = useState(folder);
+    const [statePrivate, setPrivate] = useState(false);
+    const [TMPName, setTMPName] = useState("");
     const [showSetting, setShowSetting] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     
@@ -56,6 +59,24 @@ function Folder() {
         handleClose();
         console.log(flashcardInfo);
     }
+    const handleSave = async(event) => {
+        event.preventDefault();
+        info.folder.foldername = TMPName;
+        const updatedFolder = {
+            shared:statePrivate,
+            name:info.folder.foldername
+        }
+        
+        let res = await axios.post("http://localhost:3001/updatefolder", {
+            shared:updatedFolder.shared,
+            name:updatedFolder.name,
+        });
+        if(res.data===true){
+            alert("success");
+        }
+        handleClose();
+        console.log(updatedFolder);
+    }
 
     const handleClose = () => {
         setShow(false);
@@ -64,6 +85,8 @@ function Folder() {
     const handleShow = () => setShow(true);
     const handleCloseSetting = () => {
         setShowSetting(false);
+        setTMPName("");
+        setPrivate(false);
     }
     const handleShowSetting = () => setShowSetting(true);
     return (
@@ -75,7 +98,11 @@ function Folder() {
             
             <div className="box">
 
+<<<<<<< HEAD
                 <heading className="section-title">{folder.foldername}</heading>
+=======
+                <heading className="section-title">{info.folder.foldername}</heading>
+>>>>>>> last
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
@@ -86,7 +113,11 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
+<<<<<<< HEAD
                     {Object.values(folder.flashcardset).map(item => {
+=======
+                    {info.setarray.map(item => {
+>>>>>>> last
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}
@@ -134,7 +165,7 @@ function Folder() {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    <Button variant="primary" onClick={handleCreateFlashCardSet}>
                         Create FlashCard Set
                     </Button>
                 </Modal.Footer>
@@ -150,14 +181,14 @@ function Folder() {
                     <Form>
                         <Form.Group style={{color: "gold"}}>
                             <Form.Label>Folder Name</Form.Label>
-                            <Form.Control type="text" name= "front" placeholder="Front of FlashCard"/>
+                            <Form.Control type="text" name="foldername" placeholder="Front of FlashCard" onChange={(e) => handleFolderNameChange(e)}/>
                         </Form.Group>
-                        <Form.Group style={{color: "gold"}}>
+                        <Form.Group style={{color: "gold", paddingTop: "1rem"}}>
                         <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                            <ToggleButton id="private-button" value={1}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
                             </ToggleButton>
-                            <ToggleButton id="public-button" value={2}>
+                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
                         </ToggleButtonGroup>
@@ -165,7 +196,7 @@ function Folder() {
                     </Form>                    
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleCloseSetting}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSave}>
