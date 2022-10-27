@@ -11,6 +11,10 @@ import axios from 'axios';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Deletepopup from './Deletepopup';
+import {handleShowDelete, handleClose} from './Deletepopup';
+
+
 export var flashcardid = null;
 
 
@@ -38,19 +42,23 @@ function ViewFlashcard() {
         });*/
         
         flashcardid = id;
-        console.log(flashcards);
-        flashcardid = id;
         navigate("/editflashcard");
 
     }
+    
+    const handledeleteClick = async (flashcard) => {
+        /*await axios.post("http://localhost:3001/deletFlashcard",{
+            flashcardid:id,
+        });
+        console.log(id + " deleted\n");*/
+        handleShowDelete(flashcard); //show delete passing flashcard object
+    }
+
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
         });
         setUpdate(res.data);
-    }
-    const handledeleteClick = (id) => {
-        console.log(id);
     }
 
     const handleselectClick = (item) => {
@@ -160,6 +168,7 @@ function ViewFlashcard() {
                         {update.flashcardarray.map((item, index) => {
                             return (
                                 <tr>
+                                    <Deletepopup/>
                                     <th>
                                         <Button variant="light" value={item} onClick={(e) => handleselectClick(item)}> #{index+1} </Button>
                                     </th>
@@ -168,7 +177,7 @@ function ViewFlashcard() {
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value)}> Delete </Button>
+                                            <Button variant="primary" value={item} onClick={(e) => handledeleteClick(e.target.value)}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>
