@@ -9,3 +9,4 @@ class userinfo {
   }
 }
 exports.userinfo = userinfo;
+  
