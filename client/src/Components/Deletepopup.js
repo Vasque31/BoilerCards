@@ -30,9 +30,7 @@ return(
 <Modal.Header closeButton>
     <Modal.Title>Delete Confirmation</Modal.Title>
 </Modal.Header>
-<Modal.Body> Are you sure you want to delete {getObjectName(deleteObject)}?\n
-        {deleteObject}
-    </Modal.Body>
+<Modal.Body> Are you sure you want to delete {getObjectName(deleteObject)}?</Modal.Body>
 <Modal.Footer>
     <Button onClick={handleDelete}> Delete </Button>
     <Button onClick={handleClose}> Cancel </Button>
@@ -77,15 +75,15 @@ export const handleShowDelete = async (toDeleteID, type) => {
 export function getObjectName(object) {
 
 
-    if (object.type == "flashcard") {
+    if (object.front != null) {
         return object.front; // Assume flashcard front approximates a "name"
     }
     
-    if (object.type == "flashcardset") {
+    if (object.setname != null) {
         return object.setname;
     } 
     
-    if (object.type == "folder") {
+    if (object.foldername != null) {
         return object.foldername;
     }
 
@@ -98,7 +96,7 @@ export function getObjectName(object) {
 async function deleteByType(object) {
 
     //delete flashcard
-    if (object.type = "flashcard") {
+    if (object.front != null) {
         const id = object._id;
         await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,

@@ -173,7 +173,7 @@ function ViewFlashcard() {
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
+                                            <Button variant="primary" value={item} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>
