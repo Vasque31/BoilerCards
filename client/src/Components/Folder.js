@@ -75,7 +75,7 @@ function Folder() {
             
             <div className="box">
 
-                <heading className="section-title">{folder.folder.foldername}</heading>
+                <heading className="section-title">{folder.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
@@ -86,7 +86,7 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
-                    {folder.setarray.map(item => {
+                    {Object.values(folder.flashcardset).map(item => {
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}
