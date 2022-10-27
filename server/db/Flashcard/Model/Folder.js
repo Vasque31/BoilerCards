@@ -5,7 +5,7 @@ class Folder{
         this.foldername = foldername;
         this.private = true;
         this.flashcardset = new Map();
-        this.timespent = new Array();
+        this.timespent = new Map();
     }
    
 }
