@@ -56,8 +56,10 @@ function Header() {
 
     }
     const handleSaveFolder = async(event) => {
-        event.preventDefault();
-    }
+        await axios.post("http://localhost:3001/createfolder",{
+            folderName:folderName,   
+        });
+    } 
     return (
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">
