@@ -112,7 +112,7 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
-                    {info.setarray.map(item => {
+                    {Object.values(folder.flashcardset).map(item => {
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}

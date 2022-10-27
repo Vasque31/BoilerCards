@@ -236,5 +236,22 @@ recordRoutes.route("/edit").post(async function (req, res) {
   result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),newflashcard);
   res.json(true);
 });
+recordRoutes.route("/setpublic").post(async function (req, res) {
+  const setid = req.body.flashcardid;
+  const bool = req.body.public;
+  const set = await Flashcarddata.GetFlashcardsetasync(client,setid);
+  if(bool==0){
+    set.private = false;
+  }else{
+    set.public = true;
+  }
+  await Flashcarddata.UpdateSet(client,setid,set);
+  res.json(true);
+});
+recordRoutes.route("/editfolder").post(async function (req, res) {
+  const folder = req.body.folder;
+  result = await Flashcarddata.UpdateFlashcard(client,folder._id,folder);
+  res.json(true);
+});
 module.exports = recordRoutes;
  
