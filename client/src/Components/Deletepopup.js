@@ -44,21 +44,31 @@ return(
 //invoked on button to show Modal
 export const handleShowDelete = async (toDeleteID, type) => {
     //get object
+    var object
     if (type == "flashcard") {
-        
+        let res =await axios.post("http://localhost:3001/flsahcard",{
+            flashcardid:toDeleteID,
+        });
+        object = res.data;     
     }
     
     if (type == "flashcardset") {
-
+        let res = await axios.post("http://localhost:3001/flsahcardset",{
+            flashcardsetid:toDeleteID,
+        });
+        object = res.data;
     }
 
     if (type == "folder") {
-
+        let res = await axios.post("http://localhost:3001/folder",{
+            folderid:toDeleteID,
+        });
+        object = res.data;
     }
  
 
     //update popup
-    oject.type = type; //set type for other functions
+    object.type = type; //set type for other functions
     setDeleteObject(object); //put object 
     setShow(true); //Modal pop-up shows
 };
@@ -84,6 +94,7 @@ export function getObjectName(object) {
 }
 
 //deletes an element from Flashcard database of any type
+//add booleans for delete returns
 async function deleteByType(object) {
 
     //delete flashcard
@@ -97,12 +108,20 @@ async function deleteByType(object) {
 
     //delete flashcardset
     if (object.type = "flashcardset") {
-
+        const id = object._id;
+        await axios.post("http://localhost:3001/deletFlashcardset",{
+            flashcardid:id,
+        });
+        return;
     }
 
     //delete folder
     if (object.foldername == "folder") {
-
+        const id = object._id;
+        /*await axios.post("http://localhost:3001/deletFlashcard",{
+            flashcardid:id,
+        }); add when service available*/
+        return;
     }
 }
 

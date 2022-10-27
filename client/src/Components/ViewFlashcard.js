@@ -46,12 +46,8 @@ function ViewFlashcard() {
 
     }
     
-    const handledeleteClick = async (flashcardid) => {
-        /*await axios.post("http://localhost:3001/deletFlashcard",{
-            flashcardid:id,
-        });
-        console.log(id + " deleted\n");*/
-        handleShowDelete(flashcardid); //show delete passing flashcard object
+    const handledeleteClick = async (flashcardid, type) => {
+        handleShowDelete(flashcardid, type); //show delete passing flashcard object
     }
 
     const handlerefresh = async (id) => {      
