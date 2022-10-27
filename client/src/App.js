@@ -30,7 +30,6 @@ function App() {
 
 
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
-        <Route path="/createfolder" element={<CreateFolder/>} />
         <Route path="/changecredentials" element={<ChangeCredentials/>} />
         <Route path="/flashcard" element={<ViewFlashCard/>} />
         <Route path="/editflashcard" element={<EditFlashcard/>} />
