@@ -55,6 +55,9 @@ function Header() {
         setShowFolder(false);
 
     }
+    const handleSaveFolder = async(event) => {
+        event.preventDefault();
+    }
     return (
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">
@@ -103,7 +106,7 @@ function Header() {
                                             <Button variant="secondary" onClick={handleClose}>
                                                 Close
                                             </Button>
-                                            <Button variant="primary" onClick={handleSave}>
+                                            <Button variant="primary" onClick={handleSaveFolder}>
                                                 Save New Folder
                                             </Button>
                                     </Modal.Footer>
