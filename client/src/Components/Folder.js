@@ -101,7 +101,7 @@ function Folder() {
             
             <div className="box">
 
-            <heading className="section-title">{info.folder.foldername}</heading>
+                <heading className="section-title">{info.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
@@ -112,7 +112,7 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
-                {Object.values(folder.flashcardset).map(item => {
+                    {Object.values(info.flashcardset).map(item => {
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}
