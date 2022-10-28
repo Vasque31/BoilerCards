@@ -4,11 +4,13 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { libstorage } from './signInPage';
-
+import { useCookies } from 'react-cookie';
+import { getCookie } from 'react-use-cookie';
 export var folder;
 function HomeLibrary() {
     const navigate = useNavigate();
     const [storage, setStorage] = useState(libstorage);
+    const [cookie, setCookie, removeCookie] = useCookies(['userid']);
     const handleSeeMore = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -27,9 +29,9 @@ function HomeLibrary() {
         navigate('/folder');
     };
     const handlerefresh = async (e) => {      
-        const currentuser = await axios.get("http://localhost:3001/getcuurrentuser");
+        const currentuser = getCookie("userid");
         let res = await axios.post("http://localhost:3001/loadspace", {
-            uid:currentuser.data._id,
+            uid:currentuser,
         });
         setStorage(res.data);
         console.log(storage);

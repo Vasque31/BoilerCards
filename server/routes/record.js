@@ -6,17 +6,19 @@ const {Flashcardset} = require ("../db/Flashcard/Model/Flashcardset.js")
 const {Folder} = require("../db/Flashcard/Model/Folder.js");
 const {Flashcard} = require("../db/Flashcard/Model/Flashcard.js");
 const {FlascardDBService} = require("../db/Flashcard/Service/ilfashcard.js");
+const cookieParser = require('cookie-parser');
 const uri =
   "mongodb+srv://wang4633:Wwq010817@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 const userdata = new userDBService();
 const express = require("express");
+const app = express();
+app.use(cookieParser());
 // recordRoutes is an instance of the express router.
 const recordRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require("../db/conn");
 client.connect();
-var currentuser;
 // This section will help you get a list of all the records.
 const Flashcarddata = new  FlascardDBService();
 
@@ -49,14 +51,11 @@ recordRoutes.route("/signin").post(async function (req, res) {
   const ip = req.body.logginfo.ip;
   const result = await userdata.GetAsync(client, username);
   if (result) {
-    
     if (result.password == password) {
-      currentuser = result;
       console.log("account login sucessful");
-      console.log("current useris :",currentuser);
       const newuserlog = new userlog(result._id, username,ip);
       await userdata.AddLogAsync(client, newuserlog);
-      res.json(true);
+      res.json(result._id);
       return;
     }
     else{
@@ -90,7 +89,8 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
 
 recordRoutes.route("/createfolder").post(async function (req, res) {
   const foldername = req.body.folderName;
-  const uid = currentuser._id;
+  const uid = req.body.uid;
+  console.log(uid);
   const newfolder = new Folder(foldername,uid);
   const object = await Flashcarddata.Createfolder(client,newfolder);
   const folder = await Flashcarddata.GetFolderasync(client,object.insertedId);
@@ -121,6 +121,8 @@ async function createFlashcard(front,back,belongsetid){
 }
 recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
   const list = req.body.inputList;
+  const currentuser = req.body.uid;
+  currentuser = await userdata.GetAsyncbyid(client,ObjectId(currentuser));
   const setname = req.body.name;
   const newset = new Flashcardset(setname);
   newset.belongfolder = currentuser.defaultfolder;
@@ -224,7 +226,6 @@ recordRoutes.route("/search").post(async function (req, res) {
   res.json(result);
 });
 recordRoutes.route("/logout").post(async function (req, res) {
-  currentuser = null;
   res.json(false);
 });
 recordRoutes.route("/edit").post(async function (req, res) {
