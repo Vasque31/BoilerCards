@@ -5,22 +5,26 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import CloseButton from 'react-bootstrap/CloseButton';
 import axios from "axios";
-
+import { useCookies } from 'react-cookie';
+import { getCookie } from 'react-use-cookie';
 function CreateFolder() {
     const [folderName, setFoldername] = useState();
+    const [cookie, setCookie, removeCookie] = useCookies(['userid']);
     const navigate = useNavigate();
     const handleSave = async (event) => {
         event.preventDefault();
-        
+        const currentuser = getCookie('userid');
+        console.log(getCookie('userid'));
         let res = await axios.post("http://localhost:3001/createfolder", {
-            folderName:folderName,        
+            folderName:folderName, 
+            uid:currentuser,      
         });
 
         if(res){
             alert("success");
-            const currentuser = await axios.get("http://localhost:3001/getcuurrentuser");
+            
             let res = await axios.post("http://localhost:3001/loadspace", {
-                uid:currentuser.data._id,
+                uid:currentuser,
             });
 
         }

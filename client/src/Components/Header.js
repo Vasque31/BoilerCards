@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
-
+import { getCookie } from 'react-use-cookie';
 function Header() {
     const [show, setShow] = useState(false);
     const [showFolder, setShowFolder] = useState(false);
@@ -53,11 +53,14 @@ function Header() {
     const handleShowFolder = () => setShowFolder(true);
     const handleCloseFolder = () => {
         setShowFolder(false);
-
+ 
     }
     const handleSaveFolder = async(event) => {
-        event.preventDefault();
-    }
+        await axios.post("http://localhost:3001/createfolder",{
+            folderName:folderName,
+            uid:getCookie('userid'),    
+        });
+    } 
     return (
         <div>
             <Navbar bg="warning" variant="dark" expand="lg">

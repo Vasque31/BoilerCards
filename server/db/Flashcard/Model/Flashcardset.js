@@ -4,6 +4,7 @@ class Flashcardset{
         this.setname = setname;
         this.flashcard = new Map();
         this.belongfolder = null;
+        this.private = true;
     }
 
 }

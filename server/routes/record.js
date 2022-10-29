@@ -6,17 +6,19 @@ const {Flashcardset} = require ("../db/Flashcard/Model/Flashcardset.js")
 const {Folder} = require("../db/Flashcard/Model/Folder.js");
 const {Flashcard} = require("../db/Flashcard/Model/Flashcard.js");
 const {FlascardDBService} = require("../db/Flashcard/Service/ilfashcard.js");
+const cookieParser = require('cookie-parser');
 const uri =
   "mongodb+srv://wang4633:Wwq010817@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 const userdata = new userDBService();
 const express = require("express");
+const app = express();
+app.use(cookieParser());
 // recordRoutes is an instance of the express router.
 const recordRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require("../db/conn");
 client.connect();
-var currentuser;
 // This section will help you get a list of all the records.
 const Flashcarddata = new  FlascardDBService();
 
@@ -49,14 +51,11 @@ recordRoutes.route("/signin").post(async function (req, res) {
   const ip = req.body.logginfo.ip;
   const result = await userdata.GetAsync(client, username);
   if (result) {
-    
     if (result.password == password) {
-      currentuser = result;
       console.log("account login sucessful");
-      console.log(currentuser);
       const newuserlog = new userlog(result._id, username,ip);
       await userdata.AddLogAsync(client, newuserlog);
-      res.json(true);
+      res.json(result._id);
       return;
     }
     else{
@@ -90,7 +89,8 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
 
 recordRoutes.route("/createfolder").post(async function (req, res) {
   const foldername = req.body.folderName;
-  const uid = currentuser._id;
+  const uid = req.body.uid;
+  console.log(uid);
   const newfolder = new Folder(foldername,uid);
   const object = await Flashcarddata.Createfolder(client,newfolder);
   const folder = await Flashcarddata.GetFolderasync(client,object.insertedId);
@@ -113,13 +113,16 @@ async function createFlashcard(front,back,belongsetid){
   const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(belongsetid));
   const json = JSON.stringify(belongset);
   const obj = JSON.parse(json);
-  const array = obj.flashcard;
-  array.push(card);
-  belongset.flashcard = array;
+  const map = new  Map(Object.entries(obj.flashcard));
+  map.set(object.insertedId,card);
+  const mapobj = Object.fromEntries(map);
+  belongset.flashcard = mapobj;
   await Flashcarddata.UpdateSet(client,ObjectId(belongsetid),belongset);
 }
 recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
   const list = req.body.inputList;
+  const currentuser = req.body.uid;
+  currentuser = await userdata.GetAsyncbyid(client,ObjectId(currentuser));
   const setname = req.body.name;
   const newset = new Flashcardset(setname);
   newset.belongfolder = currentuser.defaultfolder;
@@ -128,9 +131,10 @@ recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
   const myObjectId = set.insertedId;
   const json = JSON.stringify(belongfolder);
   const obj = JSON.parse(json);
-  const array = obj.flashcardset;
-  array.push(await Flashcarddata.GetFlashcardsetasync(client,set.insertedId));
-  belongfolder.flashcardset = array;
+  const map = new Map(Object.entries(obj.flashcardset));
+  map.set(set.insertedId,await Flashcarddata.GetFlashcardsetasync(client,set.insertedId));
+  const mapobj = Object.fromEntries(map);
+  belongfolder.flashcardset = mapobj;
   await Flashcarddata.UpdateFolder(client,ObjectId(currentuser.defaultfolder.toString()),belongfolder);
   for(var i=0;i<list.length;i++){
     await createFlashcard(list[i].front,list[i].back,myObjectId.toString())
@@ -140,7 +144,7 @@ recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
 recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
   res.json(currentuser);
 });
-recordRoutes.route("/createFlashcard").post(async function (req, res) {
+/*recordRoutes.route("/createFlashcard").post(async function (req, res) {
   const front = req.body.flashcardinfo.front;
   const back = req.body.flashcardinfo.back;
   const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(req.body.flashcardinfo.belongset.toString()));
@@ -155,7 +159,7 @@ recordRoutes.route("/createFlashcard").post(async function (req, res) {
   belongset.flashcard = array;
   await Flashcarddata.UpdateSet(client,ObjectId(req.body.flashcardinfo.belongset.toString()),belongset);
   res.json(true);
-});
+});*/
 recordRoutes.route("/deletFlashcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
   console.log(flashcardid);
@@ -164,14 +168,10 @@ recordRoutes.route("/deletFlashcard").post(async function (req, res) {
     const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(card.belongset));
     const json = JSON.stringify(belongset);
     const obj1 = JSON.parse(json);
-    const obj = obj1.flashcard;
-    for( var i = 0; i < obj.length; i++){                                 
-        if ( obj[i] === flashcardid.toString()) { 
-            obj.splice(i, 1); 
-            break;
-        }
-    }
-    belongset.flashcard = obj;
+    const map = new Map(Object.entries(obj1.flashcard));
+    map.delete(flashcardid);
+    const mapobj = Object.fromEntries(map);
+    belongset.flashcard = mapobj;
     await Flashcarddata.UpdateSet(client,ObjectId(card.belongset),belongset);
   }
 console.log(flashcardid);
@@ -186,18 +186,14 @@ recordRoutes.route("/deletFlashcardset").delete(async function (req, res) {
     const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(set.belongfolder));
     const json = JSON.stringify(belongfolder);
     const obj1 = JSON.parse(json);
-    const obj = obj1.flashcardset;
-    for( var i = 0; i < obj.length; i++){                                 
-        if ( obj[i] === set.belongfolder) { 
-            obj.splice(i, 1); 
-            break;
-        }
-    }
-    belongfolder.flashcardset = obj;
+    const map = new Map(Object.entries(obj1.flashcard));
+    map.delete(setid);
+    const mapobj = Object.fromEntries(map);
+    belongfolder.flashcardset = mapobj;
     await Flashcarddata.UpdateFolder(client,belongfolder._id,belongfolder);
-}
-await Flashcarddata.deleteSet(client,ObjectId(setid.toString()));
-res.json(true);
+  }
+  await Flashcarddata.deleteSet(client,ObjectId(setid.toString()));
+  res.json(true);
 });
 recordRoutes.route("/flsahcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
@@ -207,11 +203,7 @@ recordRoutes.route("/flsahcard").post(async function (req, res) {
 recordRoutes.route("/flsahcardset").post(async function (req, res) {
   const setid = req.body.setid;
   const flashcardset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
-  const flashcardarray = new Array();
-  for(var i=0;i<flashcardset.flashcard.length;i++){
-    const flashcard = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardset.flashcard[i].toString()));
-    flashcardarray.push(flashcard);
-  }
+  const flashcardarray = flashcardset.flashcard;
   const folderinfo = {
     flashcardset: flashcardset,
     flashcardarray: flashcardarray,
@@ -221,16 +213,7 @@ recordRoutes.route("/flsahcardset").post(async function (req, res) {
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(folderid.toString()));
-  const setarray = new Array();
-  for(var i=0;i<folder.flashcardset.length;i++){
-    const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(folder.flashcardset[i].toString()));
-    setarray.push(set);
-  }
-  const folderinfo = {
-    folder: folder,
-    setarray: setarray,
-  }; 
-  res.json(folderinfo);
+  res.json(folder);
 });
 recordRoutes.route("/loadspace").post(async function (req, res) {
   const userid = req.body.uid;
@@ -243,7 +226,6 @@ recordRoutes.route("/search").post(async function (req, res) {
   res.json(result);
 });
 recordRoutes.route("/logout").post(async function (req, res) {
-  currentuser = null;
   res.json(false);
 });
 recordRoutes.route("/edit").post(async function (req, res) {
@@ -251,7 +233,27 @@ recordRoutes.route("/edit").post(async function (req, res) {
   const newfront = req.body.newfront;
   const newback = req.body.newback;
   const newflashcard = new Flashcard(newfront,newback);
+  newflashcard.belongset = await Flashcarddata.GetFlashcardasync(client,flashcardid).belongset
   result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),newflashcard);
+  res.json(true);
+});
+recordRoutes.route("/setpublic").post(async function (req, res) {
+  const setid = req.body.flashcardid;
+  const bool = req.body.public;
+  const set = await Flashcarddata.GetFlashcardsetasync(client,setid);
+  if(bool==0){
+    set.private = false;
+  }else{
+    set.public = true;
+  }
+  await Flashcarddata.UpdateSet(client,setid,set);
+  res.json(true);
+});
+recordRoutes.route("/editfolder").post(async function (req, res) {
+  const folder = req.body.folder;
+  const newfolder = await Flashcarddata.GetFolderasync(client,ObjectId(folder._id));
+  newfolder.name = folder.name;
+  result = await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),newfolder);
   res.json(true);
 });
 module.exports = recordRoutes;

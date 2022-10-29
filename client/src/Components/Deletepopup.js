@@ -11,6 +11,33 @@ var dummy = {
 var [deleteObject, setDeleteObject] = [dummy, (e)=>{deleteObject = e;}]; //my usestate for object
 var [show, setShow] = [false, (e)=>{show = e;}]; // Modal not shown by default
 
+var dummyObjects = new Array();
+var dummyCard = {
+    _id : 0,
+    front: "card",
+    back: "back",
+
+};
+
+var dummySet = {
+    _id: 1,
+    setname: "set",
+};
+
+var dummyFolder = {
+    _id: 2,
+    foldername: "folder",
+};
+dummyObjects[dummyCard._id] = dummyCard;
+dummyObjects[dummySet._id] = dummySet;
+dummyFolder[dummyFolder._id] = dummyFolder;
+
+
+function substituteDatabaseExampleLookup(id, type) {
+    var obj = dummyObjects[id];
+    obj.type = type;
+    return obj;
+}
 
 //from tutorial on Modal
 function Deletepopup() {
@@ -44,7 +71,8 @@ return(
 //invoked on button to show Modal
 export const handleShowDelete = async (toDeleteID, type) => {
     //get object
-    var object
+    var object = substituteDatabaseExampleLookup(toDeleteID, type);
+    /* Database operation
     if (type == "flashcard") {
         let res =await axios.post("http://localhost:3001/flsahcard",{
             flashcardid:toDeleteID,
@@ -65,6 +93,7 @@ export const handleShowDelete = async (toDeleteID, type) => {
         });
         object = res.data;
     }
+    */
  
 
     //update popup

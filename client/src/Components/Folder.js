@@ -15,7 +15,7 @@ import Deletepopup from './Deletepopup';
 import { handleShowDelete } from "./Deletepopup";
 
 export var flashcards = null;
-
+ 
 function Folder() {
     const navigate = useNavigate();
     const handleFlashcardClick = async (id) => {
@@ -29,6 +29,9 @@ function Folder() {
         navigate('/flashcard');
     };
     const [show, setShow] = useState(false);
+    const [info, setInfo] = useState(folder);
+    const [statePrivate, setPrivate] = useState(false);
+    const [TMPName, setTMPName] = useState("");
     const [showSetting, setShowSetting] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     
@@ -42,7 +45,11 @@ function Folder() {
         list[index][name]=value;
         setinputList(list);
     } 
-    const handleSave = async(event) => {
+    const handleFolderNameChange = (e) => {
+        setTMPName(e.target.value);
+        console.log(TMPName);
+    }
+    const handleCreateFlashCardSet = async(event) => {
         event.preventDefault();
 
         const flashcardInfo = {
@@ -59,6 +66,19 @@ function Folder() {
         handleClose();
         console.log(flashcardInfo);
     }
+    const handleSave = async(event) => {
+        event.preventDefault();
+        console.log(info);
+        info.foldername = TMPName;
+    
+        let res = await axios.post("http://localhost:3001/editfolder", {
+            folder: info
+        });
+        if(res.data===true){
+            alert("success");
+        }
+        handleClose();
+    }
 
     const handleClose = () => {
         setShow(false);
@@ -67,6 +87,8 @@ function Folder() {
     const handleShow = () => setShow(true);
     const handleCloseSetting = () => {
         setShowSetting(false);
+        setTMPName("");
+        setPrivate(false);
     }
     const handleShowSetting = () => setShowSetting(true);
     return (
@@ -79,7 +101,7 @@ function Folder() {
             
             <div className="box">
 
-                <heading className="section-title">{folder.folder.foldername}</heading>
+                <heading className="section-title">{info.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
@@ -90,14 +112,14 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
-                    {folder.setarray.map(item => {
+                    {Object.values(info.flashcardset).map(item => {
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
                                 </button>
-                                <button className="library-buttons" value={item} onClick={(e)=>handleShowDelete(e.target.value)}>
+                                <button className="library-buttons" value={item} onClick={(e)=>handleShowDelete(e.target.value, "flashcardset")}>
                                     Delete
                                 </button>
                             </div>
@@ -141,7 +163,7 @@ function Folder() {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    <Button variant="primary" onClick={handleCreateFlashCardSet}>
                         Create FlashCard Set
                     </Button>
                 </Modal.Footer>
@@ -156,23 +178,12 @@ function Folder() {
                 <Modal.Body>
                     <Form>
                         <Form.Group style={{color: "gold"}}>
-                            <Form.Label>Folder Name</Form.Label>
-                            <Form.Control type="text" name= "front" placeholder="Front of FlashCard"/>
-                        </Form.Group>
-                        <Form.Group style={{color: "gold"}}>
-                        <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                            <ToggleButton id="private-button" value={1}>
-                                Private
-                            </ToggleButton>
-                            <ToggleButton id="public-button" value={2}>
-                                Public
-                            </ToggleButton>
-                        </ToggleButtonGroup>
+                            <input onChange={e => handleFolderNameChange(e)}></input>
                         </Form.Group>
                     </Form>                    
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={handleCloseSetting}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSave}>

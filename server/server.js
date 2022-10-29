@@ -1,6 +1,6 @@
 // Loads the configuration from config.env to process.env
 require("dotenv").config({ path: "./config.env" });
-
+const cookieParser = require('cookie-parser');
 const express = require("express");
 const cors = require("cors");
 // get MongoDB driver connection
@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(require("./routes/record"));
-
+app.use(cookieParser());
 // Global error handling
 
 // perform a database connection when the server starts
@@ -25,5 +25,6 @@ dbo.connectToServer(function (err) {
   // start the Express server
   app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
+    
   });
 });

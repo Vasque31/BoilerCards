@@ -8,7 +8,7 @@ function getFolders(uid) {
 	  return folderarray;
 }
 
-function getFolder(folderid) {
+function v getFolder(folderid) {
 	 let res = await axios.post("http://localhost:5000/signin", {
           folderid,
         });
@@ -16,7 +16,7 @@ function getFolder(folderid) {
 	  return folderObject;
 }
 
-function getFlashcardSet(flashcardsetid) {
+function async getFlashcardSet(flashcardsetid) {
 	 let res = await axios.post("http://localhost:5000/signin", {
           flashcardsetid,
         });
@@ -24,7 +24,7 @@ function getFlashcardSet(flashcardsetid) {
 	  return flashcardsetObject;
 }
 
-function getFlashcard(flashcardid) {
+function async getFlashcard(flashcardid) {
 	 let res = await axios.post("http://localhost:5000/signin", {
           flashcardid,
         });

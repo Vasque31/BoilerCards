@@ -5,9 +5,13 @@ import mylogo from "../images/PurdueTrain.png";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import axios from "axios";
-
+import { useCookies } from 'react-cookie';
+import { getCookie } from 'react-use-cookie';
+import cookie from 'react-cookies'
+import Deletepopup from "./Deletepopup";
+import { handleShowDelete } from "./Deletepopup";
+import { Button } from "bootstrap";
 //Use states for Sign In
-
 const errors = {
     uname: "Invalid Username",
     pass: "Invalid Password"
@@ -17,6 +21,7 @@ const errors = {
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [cookie, setCookie] = useCookies(['userid']);
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
@@ -43,16 +48,15 @@ function SignInPage() {
         //if good link to homepage with the persons info
        let res = await axios.post("http://localhost:3001/signin", {
           logginfo: logginInfo,
-        });
-       
+        }); 
         console.log(res.data);
         let data = res.data;
-        if(data===true){
+        if(data!==0){
             // eslint-disable-next-line react-hooks/rules-of-hooks
-            const currentuser = await axios.get("http://localhost:3001/getcuurrentuser");
-            console.log(currentuser);
+            setCookie('userid', data, { path: '/' });
+            console.log(getCookie('userid'));
             let res = await axios.post("http://localhost:3001/loadspace", {
-                uid:currentuser.data._id,
+                uid:data,
             });
             
             console.log(res.data);
@@ -85,7 +89,9 @@ function SignInPage() {
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
                 </div>
+             
             </form>
+            
         </div>
     );
 }

@@ -7,6 +7,7 @@ import axios from "axios";
 
 import { useNavigate } from "react-router";
 import CloseButton from "react-bootstrap/esm/CloseButton";
+import { getCookie } from 'react-use-cookie';
 
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
@@ -32,6 +33,7 @@ function CreateFlashCard() {
         let res = await axios.post("http://localhost:3001/createflashcardsethome", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
+            uid:getCookie("userid"),
         });
         if(res.data===true){
             alert("success");
