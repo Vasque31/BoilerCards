@@ -8,6 +8,9 @@ import axios from "axios";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
+import Deletepopup from "./Deletepopup";
+import { handleShowDelete } from "./Deletepopup";
+import { Button } from "bootstrap";
 //Use states for Sign In
 const errors = {
     uname: "Invalid Username",
@@ -86,7 +89,9 @@ function SignInPage() {
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
                 </div>
+             
             </form>
+            
         </div>
     );
 }

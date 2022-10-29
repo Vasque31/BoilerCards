@@ -119,7 +119,7 @@ function Folder() {
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
                                 </button>
-                                <button className="library-buttons" value={item} onClick={(e)=>handleShowDelete(e.target.value)}>
+                                <button className="library-buttons" value={item} onClick={(e)=>handleShowDelete(e.target.value, "flashcardset")}>
                                     Delete
                                 </button>
                             </div>
