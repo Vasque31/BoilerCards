@@ -26,6 +26,5 @@
     font-size: 2rem;
 }
 .library-buttons {
-    background-color: rgb(72, 72, 68);
-    size: fluid;
+    color: rgb(0, 0, 0);
 }

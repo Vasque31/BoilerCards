@@ -47,16 +47,20 @@ function HomeLibrary() {
             <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
         </div>
         <div className= "library-box">
-            {Object.values(library).map(item => {
+            <table>
+            {Object.values(library).slice(0,8).map(item => {
                 return (
-                    <div>
+                    <row>
+                        &nbsp; &nbsp;
                         {/*<h1>{item._id}</h1>*/}
-                        <button className= "library-buttons" value={item._id} onClick={(e) => handleFolderClick(e.target.value)}>
+                        <Button variant="warning" className= "library-buttons" value={item._id} onClick={(e) => handleFolderClick(e.target.value)}>
                             {item.foldername}
-                        </button>
-                    </div>
+                        </Button>
+                        &nbsp; &nbsp;
+                    </row>
                 );
             })}
+            </table>
         </div>
     </div>
     );

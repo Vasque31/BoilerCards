@@ -14,7 +14,6 @@ import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
-import Deletepopup, { handleShowDelete } from "./Deletepopup";
 export var flashcards = null;
 
 var selectedFlashcardsetToDelete = {
@@ -78,15 +77,6 @@ function Folder() {
         navigate('/flashcard');
     };
 
-/*
-    const [show, setShow] = useState(false);
-    const [info, setInfo] = useState(folder);
-    const [statePrivate, setPrivate] = useState(false);
-    const [TMPName, setTMPName] = useState("");
-    const [showSetting, setShowSetting] = useState(false);
-    const [inputList, setinputList] = useState([{front:'', back:''}]);
-    
-    const [name, setName] = useState();*/
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -164,9 +154,10 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
+                <table>
                     {Object.values(library.flashcardset).map(item => {
                         return (
-                            <div>
+                            <row>
                                 {/*<h1>{item._id}</h1>*/}
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
@@ -174,9 +165,11 @@ function Folder() {
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleShowFlashcardsetDeleteConfirm(e.target.value)}>
                                     Delete {item.setname}
                                 </button>
-                            </div>
+                            
+                            </row>
                         );
                     })}
+                </table>
                 </div>
             </div>
             <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">

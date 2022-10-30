@@ -13,8 +13,8 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
-import Deletepopup from './Deletepopup';
-import {handleShowDelete, handleClose} from './Deletepopup';
+import { FlashcardArray } from "react-quizlet-flashcard";
+//export var flashcardid = null;
 
 
 export var flashcardid = null;
@@ -71,7 +71,7 @@ function ViewFlashcard() {
 
     
     const handledeleteClick = async (flashcardid, type) => {
-        handleShowDelete(flashcardid, type); //show delete passing flashcard object
+        handleShowFlashcardDeleteConfirm(flashcardid, type); //show delete passing flashcard object
     }
 
 
@@ -81,6 +81,13 @@ function ViewFlashcard() {
         });
         setUpdate(res.data);
     }
+    const handleChangePrivate = () => {
+        {/*statePrivate*/}
+        /*let res = await axios.post("http://localhost:3001/edit", {
+            flashcardid:id
+       
+        });*/
+    }
 
     const handleselectClick = (item) => {
         setFront(item.front);
@@ -88,6 +95,7 @@ function ViewFlashcard() {
         console.log(item);
         console.log(front);
         console.log(back);
+        console.log(update.flashcardarray);
     }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
@@ -105,6 +113,13 @@ function ViewFlashcard() {
         }
 
     }
+    const cards = [];
+    for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+        let idnum = i;
+        let front = Object.values(update.flashcardarray)[i].front;
+        let back = Object.values(update.flashcardarray)[i].back;
+        cards.push({id: idnum, front: front, back: back});
+    }
     return (
         
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
@@ -112,37 +127,23 @@ function ViewFlashcard() {
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
             
-            <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
-                
-                <Carousel.Item>
-                    <img
-                        className="background-1"
-                        src={background}
-                        alt="Sides"
-                        width="100%"
-                        height="500px"/>
-                    <Carousel.Caption>
-                        <h3>{front}</h3>
-                    </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="background-2"
-                        src={background}
-                        alt="Sides"
-                        width="100%"
-                        height="500px"/>
-                    <Carousel.Caption>
-                        <h3>{back}</h3>
-                    </Carousel.Caption>
-                </Carousel.Item>
             
+            
+            <FlashcardArray cards={cards} />
 
-            </Carousel>
-            
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
+                <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Private
+                            </ToggleButton>
+                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Public
+                            </ToggleButton>
+                </ToggleButtonGroup>
+                <Button onClick={(handleChangePrivate)}>Confirm</Button>
+                
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -193,15 +194,7 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
-                        <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                Private
-                            </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                Public
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                        {update.flashcardarray.map((item, index) => {
+                        {Object.values(update.flashcardarray).map((item, index) => {
                             return (
                                 <tr>
                                     
@@ -213,7 +206,7 @@ function ViewFlashcard() {
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
+                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>
