@@ -14,26 +14,37 @@ var [show, setShow] = [false, (e)=>{show = e;}]; // Modal not shown by default
 
 //from tutorial on Modal
 function Deletepopup() {
+const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
+const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
+const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
 
-const handleClose = () => setShow(false); //remove Modal 
+const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
+const handleCloseFolDelCon = () => {setShowFolderDeleteConfirm(false);}
+const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
+const handleShowFlashcardsetDeleteConfirm = () => {setShowFlashcardsetDeleteConfirm(true);}
+const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
+const handleShowFlashcardDeleteConfirm = () => {setShowFlashcardDeleteConfirm(true);}
 
-const handleDelete = async () => {
+
+function handleClose() { setShow(false);} //remove Modal 
+
+async function handleDelete()  {
     console.log();
     deleteByType(deleteObject); //may have problems due to global var
     setShow(false); //close popup upon deletion
-};
+}
 
 return(
 <div>
 
-<Modal show={show} onHide={handleClose}>
-<Modal.Header closeButton>
+<Modal show={show} onHide={() => handleClose()}>
+<Modal.Header closeButton={() => handleClose()}>
     <Modal.Title>Delete Confirmation</Modal.Title>
 </Modal.Header>
 <Modal.Body> Are you sure you want to delete {getObjectName(deleteObject)}?</Modal.Body>
 <Modal.Footer>
-    <Button onClick={handleDelete}> Delete </Button>
-    <Button onClick={handleClose}> Cancel </Button>
+    <Button onClick={() => handleDelete()}> Delete </Button>
+    <Button onClick={() => handleClose()}> Cancel </Button>
     </Modal.Footer>
 </Modal>
 
@@ -105,7 +116,7 @@ async function deleteByType(object) {
     }
 
     //delete flashcardset
-    if (object.type = "flashcardset") {
+    if (object.type == "flashcardset") {
         const id = object._id;
         await axios.post("http://localhost:3001/deletFlashcardset",{
             flashcardid:id,

@@ -16,7 +16,9 @@ import {handleShowDelete, handleClose} from './Deletepopup';
 
 
 export var flashcardid = null;
-
+var toDeleteFlashcard = {
+    front: "defaultname flashcard"
+};
 
 function ViewFlashcard() {
     const [index, setIndex] = useState(0);
@@ -24,6 +26,24 @@ function ViewFlashcard() {
     const [back, setBack] = useState();
     const [update, setUpdate] = useState(flashcards);
     const [show, setShow] = useState(false);
+    const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
+    const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
+    const handleShowFlashcardDeleteConfirm = async (id) => {
+        let res =await axios.post("http://localhost:3001/flsahcard",{
+            flashcardid:id,
+        });
+        toDeleteFlashcard = res.data;
+        setShowFlashcardDeleteConfirm(true);
+    }
+    const handleDeleteFlashcard = async (flashcard) => {
+        const id = flashcard._id;
+        await axios.post("http://localhost:3001/deletFlashcard",{
+            flashcardid:id,
+        });
+        return;
+    }
+
+
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const navigate = useNavigate();
     const handleClose = () => setShow(false);
@@ -164,7 +184,7 @@ function ViewFlashcard() {
                         {update.flashcardarray.map((item, index) => {
                             return (
                                 <tr>
-                                    <Deletepopup/>
+                                    
                                     <th>
                                         <Button variant="light" value={item} onClick={(e) => handleselectClick(item)}> #{index+1} </Button>
                                     </th>
@@ -183,7 +203,16 @@ function ViewFlashcard() {
 
                 </Table>
             </div>
-            
+            <Modal show={showFlashcardDeleteConfirm} onHide={() => handleCloseFlashDelCon()}>
+                <Modal.Header closeButton={() => handleCloseFlashDelCon()}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> Are you sure you want to delete {toDeleteFlashcard.front}?</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleDeleteFlashcard(toDeleteFlashcard)}> Delete </Button>
+                    <Button onClick={() => handleCloseFlashDelCon()}> Cancel </Button>
+                    </Modal.Footer>
+                </Modal>
         </div>
 
     );
