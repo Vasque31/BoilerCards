@@ -18,7 +18,7 @@ const errors = {
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [cookie, setCookie] = useCookies(['userid']);
+    const [cookie, setCookie] = useCookies([]);
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
@@ -59,7 +59,7 @@ function SignInPage() {
             console.log(res.data);
             libstorage = res.data;
          
-           
+
             navigate("/HomePage");
         }      
         else{

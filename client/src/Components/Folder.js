@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./HomeLibrary.css";
 import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
@@ -11,10 +11,34 @@ import Form from 'react-bootstrap/Form';
 import ButtonGroup from "react-bootstrap/esm/ButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import { useCookies } from 'react-cookie';
+import { getCookie } from 'react-use-cookie';
+import cookie from 'react-cookies'
 export var flashcards = null;
  
 function Folder() {
     const navigate = useNavigate();
+    const [show, setShow] = useState(false);
+    const [statePrivate, setPrivate] = useState(false);
+    const [TMPName, setTMPName] = useState("");
+    const [showSetting, setShowSetting] = useState(false);
+    const [cookie, setCookie] = useCookies([]);
+    const [inputList, setinputList] = useState([{front:'', back:''}]);
+    const [name, setName] = useState();
+    const [library, setLibrary] = useState(folder);
+    
+    useEffect(()=> {
+        setTimeout(() => {
+            const getLibrary = async () => {
+                let res = await axios.post("http://localhost:3001/folder", {
+                    folderid:getCookie('folderid'),
+                });
+                setLibrary(res.data);
+            }
+            getLibrary();
+        }, 3000);
+    },[]);
+
     const handleFlashcardClick = async (id) => {
         //prevents page reload
         console.log(id);
@@ -25,14 +49,8 @@ function Folder() {
         console.log(flashcards);
         navigate('/flashcard');
     };
-    const [show, setShow] = useState(false);
-    const [info, setInfo] = useState(folder);
-    const [statePrivate, setPrivate] = useState(false);
-    const [TMPName, setTMPName] = useState("");
-    const [showSetting, setShowSetting] = useState(false);
-    const [inputList, setinputList] = useState([{front:'', back:''}]);
-    
-    const [name, setName] = useState();
+
+
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -65,11 +83,11 @@ function Folder() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
-        console.log(info);
-        info.foldername = TMPName;
+        console.log(library);
+        library.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
-            folder: info
+            folder:library
         });
         if(res.data===true){
             alert("success");
@@ -89,7 +107,7 @@ function Folder() {
     }
     const handleShowSetting = () => setShowSetting(true);
     return (
-        <>
+        <div>
             <Header/>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
@@ -97,7 +115,7 @@ function Folder() {
             
             <div className="box">
 
-                <heading className="section-title">{info.foldername}</heading>
+                <heading className="section-title">{library.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
@@ -108,7 +126,7 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
-                    {Object.values(info.flashcardset).map(item => {
+                    {Object.values(library.flashcardset).map(item => {
                         return (
                             <div>
                                 {/*<h1>{item._id}</h1>*/}
@@ -130,7 +148,7 @@ function Folder() {
                 <Modal.Body>
                     <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
                     <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
-                    { inputList.map((x,i) => { 
+                    {inputList.map((x,i) => { 
                         return(
                             <Form>
                                 <Form.Group style={{color: "gold"}}>
@@ -184,7 +202,7 @@ function Folder() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     );
 }
 
