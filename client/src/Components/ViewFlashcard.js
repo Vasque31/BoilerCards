@@ -176,7 +176,7 @@ function ViewFlashcard() {
                                 Public
                             </ToggleButton>
                         </ToggleButtonGroup>
-                        {update.flashcardarray.map((item, index) => {
+                        {Object.values(update.flashcardarray).map((item, index) => {
                             return (
                                 <tr>
                                     <th>
