@@ -86,7 +86,9 @@ function SignInPage() {
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
                 </div>
+             
             </form>
+            
         </div>
     );
 }

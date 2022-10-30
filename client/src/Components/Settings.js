@@ -5,11 +5,16 @@ import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import CloseButton from 'react-bootstrap/CloseButton';
 import { Link } from 'react-router-dom';
-
+import { useCookies } from 'react-cookie';
 import { useNavigate } from "react-router-dom";
 
 function Settings() {
     const navigate = useNavigate();
+    const [cookies, setCookie, removeCookie] = useCookies(['userid']);
+    const handleClick = () => {
+        removeCookie('userid');
+        navigate("/");
+    };
     return (
         <div>
             <div className="settings">
@@ -26,11 +31,9 @@ function Settings() {
                         </Link>
                     </ListGroup.Item>
                     <ListGroup.Item action>
-                    <Link to="/">
-                            <Button variant="Light">
+                        <Button variant="Light" onClick={handleClick}>
                                     Logout
-                                </Button>
-                        </Link>
+                            </Button>
                     </ListGroup.Item>
                 </ListGroup>
             </div>

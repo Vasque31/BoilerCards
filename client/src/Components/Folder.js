@@ -78,7 +78,15 @@ function Folder() {
         navigate('/flashcard');
     };
 
-
+/*
+    const [show, setShow] = useState(false);
+    const [info, setInfo] = useState(folder);
+    const [statePrivate, setPrivate] = useState(false);
+    const [TMPName, setTMPName] = useState("");
+    const [showSetting, setShowSetting] = useState(false);
+    const [inputList, setinputList] = useState([{front:'', back:''}]);
+    
+    const [name, setName] = useState();*/
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -115,8 +123,9 @@ function Folder() {
         library.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
-            folder:library
+            folder:library,
         });
+        
         if(res.data===true){
             alert("success");
         }
