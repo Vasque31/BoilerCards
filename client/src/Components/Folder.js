@@ -15,6 +15,10 @@ import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 export var flashcards = null;
+
+var selectedFlashcardsetToDelete = {
+    setname: "defaultname set",
+};
  
 function Folder() {
     const navigate = useNavigate();
@@ -26,6 +30,29 @@ function Folder() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [name, setName] = useState();
     const [library, setLibrary] = useState(folder);
+  
+    const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
+    const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
+
+    const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
+    const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
+    const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
+    const handleShowFlashcardsetDeleteConfirm = async (id) => {
+        let res = await axios.post("http://localhost:3001/flsahcardset",{
+            flashcardsetid:id,
+        });
+        selectedFlashcardsetToDelete = res.data;
+        setShowFlashcardsetDeleteConfirm(true);
+    }
+    const handleDeleteFolder = (folder) => {
+        console.log("nothing yet")
+    }
+    const handleDeleteFlashcardset = async (object) => {
+        const id = object._id;
+        await axios.post("http://localhost:3001/deletFlashcardset",{
+            flashcardid:id,
+        });
+    }
     
     useEffect(()=> {
         setTimeout(() => {
@@ -49,7 +76,6 @@ function Folder() {
         console.log(flashcards);
         navigate('/flashcard');
     };
-
 
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
@@ -87,8 +113,9 @@ function Folder() {
         library.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
-            folder:library
+            folder:library,
         });
+        
         if(res.data===true){
             alert("success");
         }
@@ -109,6 +136,7 @@ function Folder() {
     return (
         <div>
             <Header/>
+            <Button value={library._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
@@ -134,6 +162,10 @@ function Folder() {
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
                                 </button>
+                                <button className= "library-buttons" value={item._id} onClick={(e) => handleShowFlashcardsetDeleteConfirm(e.target.value)}>
+                                    Delete {item.setname}
+                                </button>
+                            
                             </row>
                         );
                     })}
@@ -204,6 +236,28 @@ function Folder() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <Modal show={showFolderDeleteConfirm} onHide={() => handleCloseFolderDeleteConfirm()}>
+                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> Are you sure you want to delete {library.foldername}?</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleDeleteFolder(library)}> Delete </Button>
+                    <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showFlashcardsetDeleteConfirm} onHide={() => handleCloseFlashsetDelCon()}>
+                <Modal.Header closeButton={() => handleCloseFlashsetDelCon()}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> Are you sure you want to delete {selectedFlashcardsetToDelete.setName}?</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleDeleteFlashcardset(selectedFlashcardsetToDelete)}> Delete </Button>
+                    <Button onClick={() => handleCloseFlashsetDelCon()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     );
 }

@@ -37,7 +37,6 @@ function HomeLibrary() {
         console.log(res.data);
         navigate('/folder');
     };
-
     {/*const listOfItems = {libstorage.map((item, index) =>
     <button className= "library-buttons" key={index} onClick={handleFolderClick(item._id)}><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
     )};*/}

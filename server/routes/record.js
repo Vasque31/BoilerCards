@@ -121,13 +121,16 @@ async function createFlashcard(front,back,belongsetid){
 }
 recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
   const list = req.body.inputList;
-  const currentuser = req.body.uid;
-  currentuser = await userdata.GetAsyncbyid(client,ObjectId(currentuser));
+  const currentuser_id = req.body.uid;
+  currentuser = await userdata.GetAsyncbyid(client,ObjectId(currentuser_id));
   const setname = req.body.name;
   const newset = new Flashcardset(setname);
   newset.belongfolder = currentuser.defaultfolder;
   const set = await Flashcarddata.CreateSet(client,newset);
-  const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(currentuser.defaultfolder.toString()));
+    console.log("Default folder: " + currentuser.defaultfolder);
+  if (currentuser.defaultfolder == null) console.log("bug"); 
+  const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(currentuser.defaultfolder));
+  
   const myObjectId = set.insertedId;
   const json = JSON.stringify(belongfolder);
   const obj = JSON.parse(json);
