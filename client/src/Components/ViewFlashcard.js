@@ -13,6 +13,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import { FlashcardArray } from "react-quizlet-flashcard";
 export var flashcardid = null;
 
 
@@ -63,6 +64,7 @@ function ViewFlashcard() {
         console.log(item);
         console.log(front);
         console.log(back);
+        console.log(update.flashcardarray);
     }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
@@ -80,6 +82,13 @@ function ViewFlashcard() {
         }
 
     }
+    const cards = [];
+    for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+        let idnum = i;
+        let front = Object.values(update.flashcardarray)[i].front;
+        let back = Object.values(update.flashcardarray)[i].back;
+        cards.push({id: idnum, front: front, back: back});
+    }
     return (
         
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
@@ -87,34 +96,10 @@ function ViewFlashcard() {
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
             
-            <Carousel activeIndex={index} onSelect={handleSelect} interval={null}>
-                
-                <Carousel.Item>
-                    <img
-                        className="background-1"
-                        src={background}
-                        alt="Sides"
-                        width="100%"
-                        height="500px"/>
-                    <Carousel.Caption>
-                        <h3>{front}</h3>
-                    </Carousel.Caption>
-                </Carousel.Item>
-                <Carousel.Item>
-                    <img
-                        className="background-2"
-                        src={background}
-                        alt="Sides"
-                        width="100%"
-                        height="500px"/>
-                    <Carousel.Caption>
-                        <h3>{back}</h3>
-                    </Carousel.Caption>
-                </Carousel.Item>
             
+            
+            <FlashcardArray cards={cards} />
 
-            </Carousel>
-            
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
