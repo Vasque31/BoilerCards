@@ -126,16 +126,18 @@ function Folder() {
                     </Button>
                 </div>
                 <div className= "library-box">
+                <table>
                     {Object.values(library.flashcardset).map(item => {
                         return (
-                            <div>
+                            <row>
                                 {/*<h1>{item._id}</h1>*/}
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
                                 </button>
-                            </div>
+                            </row>
                         );
                     })}
+                </table>
                 </div>
             </div>
             <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
