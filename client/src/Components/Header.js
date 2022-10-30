@@ -11,8 +11,12 @@ import Modal from 'react-bootstrap/Modal';
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
 import { getCookie } from 'react-use-cookie';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
 function Header() {
     const [show, setShow] = useState(false);
+    const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [folderName, setFoldername] = useState();
@@ -128,6 +132,10 @@ function Header() {
                                             </Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
+                                            <DropdownButton id="dropdown-basic-button" title="Destination Folder">
+                                                
+                                            </DropdownButton>
+                                            <h1></h1>
                                             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
                                             <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
                                             {

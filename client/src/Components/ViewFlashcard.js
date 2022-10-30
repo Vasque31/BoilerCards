@@ -53,6 +53,13 @@ function ViewFlashcard() {
         });
         setUpdate(res.data);
     }
+    const handleChangePrivate = () => {
+        {/*statePrivate*/}
+        /*let res = await axios.post("http://localhost:3001/edit", {
+            flashcardid:id
+       
+        });*/
+    }
     const handledeleteClick = (id) => {
         console.log(id);
     }
@@ -118,6 +125,16 @@ function ViewFlashcard() {
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
+                <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Private
+                            </ToggleButton>
+                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Public
+                            </ToggleButton>
+                </ToggleButtonGroup>
+                <Button onClick={(handleChangePrivate)}>Confirm</Button>
+                
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -168,15 +185,7 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
-                        <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                Private
-                            </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                Public
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                        {update.flashcardarray.map((item, index) => {
+                        {Object.values(update.flashcardarray).map((item, index) => {
                             return (
                                 <tr>
                                     <th>

@@ -7,6 +7,9 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { getCookie } from 'react-use-cookie';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+
 function CreateFlashCard() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     
@@ -51,6 +54,13 @@ function CreateFlashCard() {
             <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
             <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
+            <DropdownButton id="dropdown-basic-button" title="Destination Folder">
+                
+                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+            </DropdownButton>
+
             {
             inputList.map((x,i) => { 
                 return(
