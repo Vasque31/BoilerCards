@@ -64,9 +64,10 @@ function Header() {
             folderName:folderName,
             uid:getCookie('userid'),    
         });
+        window.location.reload();
     } 
     return (
-        <div>
+        <div className="app">
             <Navbar bg="warning" variant="dark" expand="lg">
                 <Container>
                     <Navbar.Brand>BoilerCards</Navbar.Brand>
@@ -97,6 +98,7 @@ function Header() {
                                 <Button variant="Light" onClick={handleShowFolder}>
                                     Folder
                                 </Button>
+                                <div>
                                 <Modal show={showFolder} onHide={handleCloseFolder} backdrop="static" dialogClassName="general-box-createfolder">
                                     <Modal.Header closeButton>
                                         <Modal.Title>
@@ -118,6 +120,7 @@ function Header() {
                                             </Button>
                                     </Modal.Footer>
                                 </Modal>
+                                </div>
                             </NavDropdown.Item>
                             
                             <NavDropdown.Item>
