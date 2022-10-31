@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -13,6 +13,9 @@ import axios from 'axios';
 import { getCookie } from 'react-use-cookie';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import ToggleButton from "react-bootstrap/ToggleButton";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup"; 
+import {folder} from "./HomeLibrary";
 
 function Header() {
     const [show, setShow] = useState(false);
@@ -20,8 +23,11 @@ function Header() {
     const [showFolder, setShowFolder] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [folderName, setFoldername] = useState();
+    const [statePrivate, setPrivate] = useState(1);
     const [name, setName] = useState();
     const navigate = useNavigate();
+    const [library, setLibrary] = useState(folder);
+    
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -41,6 +47,7 @@ function Header() {
         let res = await axios.post("http://localhost:3001/createflashcardsethome", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
+            public:statePrivate,
         });
         if(res.data===true){
             alert("success");
@@ -53,7 +60,13 @@ function Header() {
         setShow(false);
         setinputList([{front:'', back:''}]);
     }
-    const handleShow = () => setShow(true);
+    const handleShow = async() => {
+        let res = await axios.post("http://localhost:3001/loadspace", {
+            uid:getCookie('userid'),
+        });
+        setLibrary(res.data);
+        setShow(true);
+    }
     const handleShowFolder = () => setShowFolder(true);
     const handleCloseFolder = () => {
         setShowFolder(false);
@@ -68,7 +81,7 @@ function Header() {
     } 
     return (
         <div className="app">
-            <Navbar bg="warning" variant="dark" expand="lg">
+            <Navbar variant="dark" expand="lg">
                 <Container>
                     <Navbar.Brand>BoilerCards</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -135,12 +148,25 @@ function Header() {
                                             </Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            <DropdownButton id="dropdown-basic-button" title="Destination Folder">
-                                                
-                                            </DropdownButton>
+                                            <label>Destination Folder</label>&nbsp; &nbsp;
+                                                &nbsp; &nbsp;
+                                                <select name="selectList" id="selectList">
+                                                    <option value="option 1">Option 1</option>
+                                                    <option value="option 2">Option 2</option>
+                                                </select>
+                                                &nbsp; &nbsp;
                                             <h1></h1>
                                             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
                                             <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
+                                            <h1></h1>
+                                            <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
+                                                <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                                    Private
+                                                </ToggleButton>
+                                                <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                                    Public
+                                                </ToggleButton>
+                                            </ToggleButtonGroup>
                                             {
                                             inputList.map((x,i) => { 
                                                 return(

@@ -18,6 +18,7 @@ function HomeLibrary() {
                 uid:getCookie('userid'),
             });
             setLibrary(res.data);
+            folder = library;
         }
         getLibrary();
     },[]);
