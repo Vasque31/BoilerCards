@@ -44,8 +44,10 @@ function Folder() {
         selectedFlashcardsetToDelete = res.data;
         setShowFlashcardsetDeleteConfirm(true);
     }
-    const handleDeleteFolder = (folder) => {
-        console.log("nothing yet")
+    const handleDeleteFolder = async(object) => {
+        await axios.post("http://localhost:3001/deletefolder",{
+            folder:library,
+        });
     }
     const handleDeleteFlashcardset = async (object) => {
         const id = object._id;
