@@ -102,7 +102,7 @@ function Folder() {
             folderid:folder._id,
         }
         console.log(flashcardInfo);
-        let res = await axios.post("http://localhost:3001/createflashcardsethome", {
+        let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
             public:flashcardInfo.statePrivate,
