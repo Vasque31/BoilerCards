@@ -110,7 +110,11 @@ function ViewFlashcard() {
         setinputList(list);
     }
     const handleSave = async(event) => {
-        console.log("something");
+        event.preventDefault();
+        let res = await axios.post("http:localhost:3001/addmoreFlashcards", {
+            inputList:inputList,
+            id:update._id
+        })
     }
     const handleSaveFlashcardStatus = (e) => {
         const updatedflashcardstatus = {
@@ -136,6 +140,20 @@ function ViewFlashcard() {
         let back = Object.values(update.flashcardarray)[i].back;
         cards.push({id: idnum, front: front, back: back});
     }
+    const handleDownload = (event) => {
+        event.preventDefault();
+        let output = '';
+        for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+            output += Object.values(update.flashcardarray)[i].front;
+            output += "\t";
+            output += Object.values(update.flashcardarray)[i].back;
+            output += "\n";
+        }
+        const blob = new Blob([output]);
+        const fileDownloadUrl = URL.createObjectURL(blob);
+        this.setState ({})
+
+    }
     return (
         
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
@@ -150,6 +168,7 @@ function ViewFlashcard() {
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
+                <Button varient="primary">Download</Button>
                 <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
                             <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
