@@ -13,6 +13,8 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
+import saveicon from "../images/saveicon.png";
+
 import { FlashcardArray } from "react-quizlet-flashcard";
 //export var flashcardid = null;
 
@@ -29,6 +31,10 @@ function ViewFlashcard() {
     const [update, setUpdate] = useState(flashcards);
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
+    const [showSaved, setShowSaved] = useState(false);
+
+    const handleShowSaved = () => {	setShowSaved(true);	}
+    const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
     const handleShowFlashcardDeleteConfirm = async (id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
@@ -39,9 +45,13 @@ function ViewFlashcard() {
     }
     const handleDeleteFlashcard = async (flashcard) => {
         const id = flashcard._id;
-        await axios.post("http://localhost:3001/deletFlashcard",{
+        let res = await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,
         });
+        if (res.data == true) {
+            handleCloseFlashDelCon();
+            handleShowSaved();
+        }
         return;
     }
 
@@ -231,7 +241,18 @@ function ViewFlashcard() {
                     <Button onClick={() => handleDeleteFlashcard(toDeleteFlashcard)}> Delete </Button>
                     <Button onClick={() => handleCloseFlashDelCon()}> Cancel </Button>
                     </Modal.Footer>
-                </Modal>
+            </Modal>
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
 
     );

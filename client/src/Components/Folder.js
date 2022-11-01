@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./HomeLibrary.css";
 import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
-import { useNavigate } from 'react-router-dom';
+import { UNSAFE_enhanceManualRouteObjects, useNavigate } from 'react-router-dom';
 import Header from "./Header";
 import {folder} from './HomeLibrary';
 import axios from 'axios';
@@ -13,13 +13,22 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
+import saveicon from "../images/saveicon.png";
+
 import cookie from 'react-cookies'
 export var flashcards = null;
 
+//var to update modal display, initialized with dummy values to prevent null crash
 var selectedFlashcardsetToDelete = {
     setname: "defaultname set",
 };
- 
+var selectedFlashcardsetToCopy = {
+    setname: "defaultname set",
+}; 
+var currentUser = {
+    folder: new Map(), 
+};
+
 function Folder() {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
@@ -33,27 +42,63 @@ function Folder() {
     const [destFolder, setDestFolder] = useState("");
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
+    const [showFlashcardsetCopy, setShowFlashcardsetCopy] = useState(false);
+    const [showSaved, setShowSaved] = useState(false);
 
+    const handleShowSaved = () => { setShowSaved(true);}
+    const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
     const handleShowFlashcardsetDeleteConfirm = async (id) => {
         let res = await axios.post("http://localhost:3001/flsahcardset",{
-            flashcardsetid:id,
+            setid:id,
         });
         selectedFlashcardsetToDelete = res.data;
+        selectedFlashcardsetToDelete.setname = selectedFlashcardsetToDelete.flashcardset.setname;
         setShowFlashcardsetDeleteConfirm(true);
     }
+    const handleShowFlashcardsetCopy = async (id) =>{
+        /*let res = await axios.post("http://localhost:3001/currentuser",{
+        });
+        currentUser = res.data;*/
+        let res = await axios.post("http://localhost:3001/flsahcardset",{
+            setid:id,
+        });
+        selectedFlashcardsetToCopy = res.data; //not flashcardset object, but folderinfo object
+        selectedFlashcardsetToCopy.setname = selectedFlashcardsetToCopy.flashcardset.setname;
+        setShowFlashcardsetCopy(true);
+    }
+
+    const handleCloseFlashsetCopy = () => {
+        setShowFlashcardsetCopy(false);
+    }
+    const handleCopyFlashcardset = async (folderid) => {
+
+
+    }
+
     const handleDeleteFolder = async(object) => {
-        await axios.post("http://localhost:3001/deletefolder",{
+        let res = await axios.post("http://localhost:3001/deletefolder",{
             folder:library,
         });
+        if (res.data == true) {
+            handleShowSaved();
+            navigate("/HomePage"); //folder deleted, leave it
+        }
     }
     const handleDeleteFlashcardset = async (object) => {
-        const id = object._id;
-        await axios.post("http://localhost:3001/deletFlashcardset",{
-            flashcardid:id,
+        const setinfo = object;
+        setinfo.setid = object._id;
+        let res = await axios.post("http://localhost:3001/deletFlashcardset",{
+            setinfo: {
+                setid: object._id,
+            },
         });
+        if (res.data == true) {
+            handleCloseFlashsetDelCon(); //remove confirmation upon success
+            handleShowSaved();
+        }
     }
     
     useEffect(()=> {
@@ -110,7 +155,7 @@ function Folder() {
         });
 
         if(res.data===true){
-            alert("success");
+            handleShowSaved();
         }
         handleClose();
         console.log(flashcardInfo);
@@ -125,7 +170,7 @@ function Folder() {
         });
         
         if(res.data===true){
-            alert("success");
+            handleShowSaved();
         }
         handleCloseSetting();
     }
@@ -172,8 +217,12 @@ function Folder() {
                                 <button className= "library-buttons" value={item._id} onClick={(e) => handleShowFlashcardsetDeleteConfirm(e.target.value)}>
                                     Delete {item.setname}
                                 </button>
-                            
+                                <button className= "library-buttons" value={item._id} onClick={(e) => handleShowFlashcardsetCopy(e.target.value)}>
+                                    Copy {item.setname}
+                                </button>
+                                <br></br>
                             </row>
+                            
                         );
                     })}
                 </table>
@@ -270,10 +319,42 @@ function Folder() {
                 <Modal.Header closeButton={() => handleCloseFlashsetDelCon()}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Are you sure you want to delete {selectedFlashcardsetToDelete.setName}?</Modal.Body>
+                <Modal.Body> Are you sure you want to delete {selectedFlashcardsetToDelete.setname}?</Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleDeleteFlashcardset(selectedFlashcardsetToDelete)}> Delete </Button>
+                    <Button onClick={() => handleDeleteFlashcardset(selectedFlashcardsetToDelete.flashcardset)}> Delete </Button>
                     <Button onClick={() => handleCloseFlashsetDelCon()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>    
+            <Modal show={showFlashcardsetCopy} onHide={() => handleCloseFlashsetCopy()}>
+                <Modal.Header closeButton={() => handleCloseFlashsetCopy()}>
+                    <Modal.Title>Copy {selectedFlashcardsetToCopy.setname}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> Select where to copy {selectedFlashcardsetToCopy.setname}:
+                        {Object.values(currentUser.folder).map(item => {
+                            return (
+                                <div>
+                                    <row>
+                                        <label> {item.foldername} </label>
+                                        <Button value={item._id} onClick={(e) => handleCopyFlashcardset(e.target.value)}> Copyto </Button>
+                                    </row>
+                                </div>
+                            );
+                        })}
+                
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseFlashsetCopy()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
                 </Modal.Footer>
             </Modal>
 
