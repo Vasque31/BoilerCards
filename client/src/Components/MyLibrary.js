@@ -13,6 +13,7 @@ import axios from "axios";
 function MyLibrary() {
     const navigate = useNavigate();
     const [library, setLibrary] = useState([]);
+    const [cookie, setCookie, removeCookie] = useCookies([]);
     
     useEffect(()=> {
         const getLibrary = async () => {
@@ -28,6 +29,15 @@ function MyLibrary() {
         event.preventDefault();
         navigate("/mylibrary");
         
+    };
+    const handleFolderClick = async (id) => {
+        //prevents page reload
+        setCookie('folderid', id, { path: '/' });
+        let res = await axios.post("http://localhost:3001/folder", {
+            folderid:getCookie('folderid')
+        });
+        console.log(res.data);
+        navigate('/folder');
     };
 
     return (
