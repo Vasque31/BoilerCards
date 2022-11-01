@@ -168,8 +168,8 @@ res.json(true);
 });
 
 recordRoutes.route("/deletFlashcardset").delete(async function (req, res) {
-  const setid = req.body.setinfo.setid;
-  console.log("Delete set:" + setid + '\n');
+  const setid = req.body.setid;
+  console.log("Delete set w/ id:" + req.body.setid);
   const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
   if (set){
     const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(set.belongfolder));
