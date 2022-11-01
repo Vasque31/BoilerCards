@@ -16,6 +16,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup"; 
 import {folder} from "./HomeLibrary";
+import {libstorage} from "./signInPage.js";
 
 function Header() {
     const [show, setShow] = useState(false);
@@ -26,7 +27,7 @@ function Header() {
     const [statePrivate, setPrivate] = useState(1);
     const [name, setName] = useState();
     const navigate = useNavigate();
-    const [library, setLibrary] = useState(folder);
+    const [library, setLibrary] = useState(libstorage);
     
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
@@ -42,13 +43,18 @@ function Header() {
 
         const flashcardInfo = {
             inputList:inputList,
-            name:name
+            name:name,
+            statePrivate:statePrivate,
+            folderid:destFolder,
         }
-        let res = await axios.post("http://localhost:3001/createflashcardsethome", {
+        console.log(flashcardInfo);
+        let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
-            public:statePrivate,
+            public:flashcardInfo.statePrivate,
+            folderid:flashcardInfo.folderid,
         });
+
         if(res.data===true){
             alert("success");
         }
@@ -149,24 +155,27 @@ function Header() {
                                         </Modal.Header>
                                         <Modal.Body>
                                             <label>Destination Folder</label>&nbsp; &nbsp;
-                                                &nbsp; &nbsp;
-                                                <select name="selectList" id="selectList">
-                                                    <option value="option 1">Option 1</option>
-                                                    <option value="option 2">Option 2</option>
-                                                </select>
-                                                &nbsp; &nbsp;
+                                            <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
+                                                <option value="">---Choose---</option>
+                                                {Object.values(library).map(item => {
+                                                    return (
+                                                        <option value={item._id}>{item.foldername}</option>    
+                                                    );
+                                                })}
+                                            </select>
                                             <h1></h1>
                                             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
                                             <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
                                             <h1></h1>
-                                            <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                                                <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                                    Private
-                                                </ToggleButton>
-                                                <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
-                                                    Public
-                                                </ToggleButton>
-                                            </ToggleButtonGroup>
+                                                <label>Private/Public</label>
+                                                <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
+                                                    <option value={1}>
+                                                        Private
+                                                    </option>
+                                                    <option value={0}>
+                                                        Public
+                                                    </option>
+                                                </select>
                                             {
                                             inputList.map((x,i) => { 
                                                 return(

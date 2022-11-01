@@ -8,4 +8,4 @@ class Flashcard{
     }
    
 }
-exports.Flashcard = Flashcard;
+exports.Flashcard = Flashcard; 
