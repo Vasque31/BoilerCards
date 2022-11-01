@@ -64,6 +64,7 @@ function Folder() {
             setid:id,
         });
         selectedFlashcardsetToDelete = res.data;
+        console.log();
         selectedFlashcardsetToDelete.setname = selectedFlashcardsetToDelete.flashcardset.setname;
         setShowFlashcardsetDeleteConfirm(true);
     }
@@ -100,9 +101,8 @@ function Folder() {
         const setinfo = object;
         setinfo.setid = object._id;
         let res = await axios.post("http://localhost:3001/deletFlashcardset",{
-            setinfo: {
-                setid: object._id,
-            },
+            setid: object._id,
+            
         });
         if (res.data == true) {
             handleCloseFlashsetDelCon(); //remove confirmation upon success
