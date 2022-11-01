@@ -13,6 +13,10 @@ const client = new MongoClient(uri, { useUnifiedTopology: true });
 const userdata = new userDBService();
 const express = require("express");
 const app = express();
+const PizZip = require('pizzip');
+const Docxtemplater = require('docxtemplater');
+const fs = require('fs');
+const path = require('path');
 app.use(cookieParser());
 // recordRoutes is an instance of the express router.
 const recordRoutes = express.Router();
@@ -119,15 +123,15 @@ async function createFlashcard(front,back,belongsetid){
   belongset.flashcard = mapobj;
   await Flashcarddata.UpdateSet(client,ObjectId(belongsetid),belongset);
 }
-recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
+recordRoutes.route("/createflashcardset").post(async function (req, res) {
   const list = req.body.inputList;
-  const currentuser = req.body.uid;
-  currentuser = await userdata.GetAsyncbyid(client,ObjectId(currentuser));
   const setname = req.body.name;
   const newset = new Flashcardset(setname);
-  newset.belongfolder = currentuser.defaultfolder;
+  newset.private = req.body.statePrivate;
+  const belongfolderid = req.body.folderid;
+  newset.belongfolder = belongfolderid;
   const set = await Flashcarddata.CreateSet(client,newset);
-  const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(currentuser.defaultfolder.toString()));
+  const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(belongfolderid));
   const myObjectId = set.insertedId;
   const json = JSON.stringify(belongfolder);
   const obj = JSON.parse(json);
@@ -135,7 +139,7 @@ recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
   map.set(set.insertedId,await Flashcarddata.GetFlashcardsetasync(client,set.insertedId));
   const mapobj = Object.fromEntries(map);
   belongfolder.flashcardset = mapobj;
-  await Flashcarddata.UpdateFolder(client,ObjectId(currentuser.defaultfolder.toString()),belongfolder);
+  await Flashcarddata.UpdateFolder(client,ObjectId(belongfolderid),belongfolder);
   for(var i=0;i<list.length;i++){
     await createFlashcard(list[i].front,list[i].back,myObjectId.toString())
   }
@@ -144,22 +148,6 @@ recordRoutes.route("/createflashcardsethome").post(async function (req, res) {
 recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
   res.json(currentuser);
 });
-/*recordRoutes.route("/createFlashcard").post(async function (req, res) {
-  const front = req.body.flashcardinfo.front;
-  const back = req.body.flashcardinfo.back;
-  const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(req.body.flashcardinfo.belongset.toString()));
-  const newflashcard = new Flashcard(front,back);
-  newflashcard.belongset = belongset;
-  const card = await Flashcarddata.CreateFlashcard(client,newflashcard);
-  const json = JSON.stringify(belongset);
-  const obj = JSON.parse(json);
-  const array = obj.flashcard;
-  const myObjectId = ObjectId(card.insertedId);
-  array.push(myObjectId.toString());
-  belongset.flashcard = array;
-  await Flashcarddata.UpdateSet(client,ObjectId(req.body.flashcardinfo.belongset.toString()),belongset);
-  res.json(true);
-});*/
 recordRoutes.route("/deletFlashcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
   console.log(flashcardid);
@@ -181,6 +169,7 @@ res.json(true);
 
 recordRoutes.route("/deletFlashcardset").delete(async function (req, res) {
   const setid = req.body.setinfo.setid;
+  console.log("Delete set:" + setid + '\n');
   const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
   if (set){
     const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(set.belongfolder));
@@ -268,7 +257,6 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
   const user = await userdata.GetAsyncbyid(client,ObjectId(folder.owner));
   const map = new Map(Object.entries(user.folder));
   map.delete(folder._id);
-  console.log(map.get(folder._id));
   const mapobj = Object.fromEntries(map);
   console.log(mapobj);
   user.folder = mapobj;

@@ -23,4 +23,26 @@ function SavedIcon() {
 	navigate("/HomePage");
 }*/
 
+
+/* Modal mockup
+import saveicon from "../images/saveicon.png";
+
+			const [showSaved, setShowSaved] = useState(false);
+
+			const handleShowSaved = () => {	setShowSaved(true);	}
+			const handleCloseSaved = () => { setShowSaved(false);}
+			
+			<Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
+            </Modal>
+
+*/
 export default SavedIcon;
