@@ -17,7 +17,9 @@ function HomeLibrary() {
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:getCookie('userid'),
             });
+            console.log(res.data);
             setLibrary(res.data);
+            folder = library;
         }
         getLibrary();
     },[]);

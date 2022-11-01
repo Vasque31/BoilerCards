@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -13,6 +13,10 @@ import axios from 'axios';
 import { getCookie } from 'react-use-cookie';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import ToggleButton from "react-bootstrap/ToggleButton";
+import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup"; 
+import {folder} from "./HomeLibrary";
+import {libstorage} from "./signInPage.js";
 
 function Header() {
     const [show, setShow] = useState(false);
@@ -20,8 +24,11 @@ function Header() {
     const [showFolder, setShowFolder] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [folderName, setFoldername] = useState();
+    const [statePrivate, setPrivate] = useState(1);
     const [name, setName] = useState();
     const navigate = useNavigate();
+    const [library, setLibrary] = useState(libstorage);
+    
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -36,12 +43,18 @@ function Header() {
 
         const flashcardInfo = {
             inputList:inputList,
-            name:name
+            name:name,
+            statePrivate:statePrivate,
+            folderid:destFolder,
         }
-        let res = await axios.post("http://localhost:3001/createflashcardsethome", {
+        console.log(flashcardInfo);
+        let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
+            public:flashcardInfo.statePrivate,
+            folderid:flashcardInfo.folderid,
         });
+
         if(res.data===true){
             alert("success");
         }
@@ -53,7 +66,13 @@ function Header() {
         setShow(false);
         setinputList([{front:'', back:''}]);
     }
-    const handleShow = () => setShow(true);
+    const handleShow = async() => {
+        let res = await axios.post("http://localhost:3001/loadspace", {
+            uid:getCookie('userid'),
+        });
+        setLibrary(res.data);
+        setShow(true);
+    }
     const handleShowFolder = () => setShowFolder(true);
     const handleCloseFolder = () => {
         setShowFolder(false);
@@ -68,7 +87,7 @@ function Header() {
     } 
     return (
         <div className="app">
-            <Navbar bg="warning" variant="dark" expand="lg">
+            <Navbar variant="dark" expand="lg">
                 <Container>
                     <Navbar.Brand>BoilerCards</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -135,12 +154,28 @@ function Header() {
                                             </Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            <DropdownButton id="dropdown-basic-button" title="Destination Folder">
-                                                
-                                            </DropdownButton>
+                                            <label>Destination Folder</label>&nbsp; &nbsp;
+                                            <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
+                                                <option value="">---Choose---</option>
+                                                {Object.values(library).map(item => {
+                                                    return (
+                                                        <option value={item._id}>{item.foldername}</option>    
+                                                    );
+                                                })}
+                                            </select>
                                             <h1></h1>
                                             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
                                             <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
+                                            <h1></h1>
+                                                <label>Private/Public</label>
+                                                <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
+                                                    <option value={1}>
+                                                        Private
+                                                    </option>
+                                                    <option value={0}>
+                                                        Public
+                                                    </option>
+                                                </select>
                                             {
                                             inputList.map((x,i) => { 
                                                 return(

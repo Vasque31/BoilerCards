@@ -92,10 +92,6 @@ function ViewFlashcard() {
     const handleselectClick = (item) => {
         setFront(item.front);
         setBack(item.back);
-        console.log(item);
-        console.log(front);
-        console.log(back);
-        console.log(update.flashcardarray);
     }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
@@ -114,6 +110,16 @@ function ViewFlashcard() {
 
     }
     const cards = [];
+    //call updateCards function whenever we add cards to existing flashcard set
+    const updateCards = () => {
+        cards = [];
+        for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+            let idnum = i;
+            let front = Object.values(update.flashcardarray)[i].front;
+            let back = Object.values(update.flashcardarray)[i].back;
+            cards.push({id: idnum, front: front, back: back});
+        }
+    }
     for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
         let idnum = i;
         let front = Object.values(update.flashcardarray)[i].front;
@@ -129,7 +135,7 @@ function ViewFlashcard() {
             
             
             
-            <FlashcardArray cards={cards} />
+            <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>

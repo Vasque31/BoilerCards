@@ -30,7 +30,7 @@ function Folder() {
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [name, setName] = useState();
     const [library, setLibrary] = useState(folder);
-  
+    const [destFolder, setDestFolder] = useState("");
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
 
@@ -44,8 +44,10 @@ function Folder() {
         selectedFlashcardsetToDelete = res.data;
         setShowFlashcardsetDeleteConfirm(true);
     }
-    const handleDeleteFolder = (folder) => {
-        console.log("nothing yet")
+    const handleDeleteFolder = async(object) => {
+        await axios.post("http://localhost:3001/deletefolder",{
+            folder:library,
+        });
     }
     const handleDeleteFlashcardset = async (object) => {
         const id = object._id;
@@ -95,12 +97,18 @@ function Folder() {
 
         const flashcardInfo = {
             inputList:inputList,
-            name:name
+            name:name,
+            statePrivate:statePrivate,
+            folderid:folder._id,
         }
+        console.log(flashcardInfo);
         let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
+            public:flashcardInfo.statePrivate,
+            folderid:flashcardInfo.folderid,
         });
+
         if(res.data===true){
             alert("success");
         }
@@ -119,7 +127,7 @@ function Folder() {
         if(res.data===true){
             alert("success");
         }
-        handleClose();
+        handleCloseSetting();
     }
 
     const handleClose = () => {
@@ -130,7 +138,6 @@ function Folder() {
     const handleCloseSetting = () => {
         setShowSetting(false);
         setTMPName("");
-        setPrivate(false);
     }
     const handleShowSetting = () => setShowSetting(true);
     return (
@@ -173,46 +180,58 @@ function Folder() {
                 </div>
             </div>
             <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
-                <Modal.Header>
-                    <Modal.Title>
-                        <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
-                        <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
-                    <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
-                    {inputList.map((x,i) => { 
-                        return(
-                            <Form>
-                                <Form.Group style={{color: "gold"}}>
-                                    <h1>#{i+1}</h1>
-                                    <Form.Label>Front of Card</Form.Label>
-                                    <Form.Control type="text" name= "front" placeholder="Front of FlashCard" onChange={e => handleinputchange(e,i)}/>
-                                </Form.Group>
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>
+                                            <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
+                                            <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
+                                            </Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <h1></h1>
+                                            <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
+                                            <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
+                                            <h1></h1>
+                                                <label>Private/Public</label>
+                                                <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
+                                                    <option value={1}>
+                                                        Private
+                                                    </option>
+                                                    <option value={0}>
+                                                        Public
+                                                    </option>
+                                                </select>
+                                            {
+                                            inputList.map((x,i) => { 
+                                                return(
+                                                <Form>
+                                                    <Form.Group style={{color: "gold"}}>
+                                                        <h1>#{i+1}</h1>
+                                                        <Form.Label>Front of Card</Form.Label>
+                                                        <Form.Control type="text" name= "front" placeholder="Front of FlashCard" onChange={e => handleinputchange(e,i)}/>
+                                                    </Form.Group>
 
-                                <Form.Group style={{color: "gold"}}>
-                                    <Form.Label>Back of Card</Form.Label>
-                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
-                                </Form.Group>
-                            </Form>
-                        );
-                        })}
-                   <div style={{paddingTop: "1rem"}}>
-                            <Button varient= "primary" type="button" onClick={handleaddmore}>
-                                Add FlashCard
-                            </Button>
-                        </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleCreateFlashCardSet}>
-                        Create FlashCard Set
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                                                    <Form.Group style={{color: "gold"}}>
+                                                        <Form.Label>Back of Card</Form.Label>
+                                                        <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                    </Form.Group>
+                                                </Form>
+                                                );
+                                            })}
+                                            <div style={{paddingTop: "1rem"}}>
+                                                <Button varient= "primary" type="button" onClick={handleaddmore}>
+                                                    Add FlashCard
+                                                </Button>
+                                            </div>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="secondary" onClick={handleClose}>
+                                                Close
+                                            </Button>
+                                            <Button variant="primary" onClick={handleCreateFlashCardSet}>
+                                                Save Changes
+                                            </Button>
+                                        </Modal.Footer>
+                                    </Modal>
             <Modal show={showSetting} onHide={handleCloseSetting} dialogClassName="general-box-createflash">
                 <Modal.Header>
                     <Modal.Title>
