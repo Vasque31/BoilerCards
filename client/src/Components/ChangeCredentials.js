@@ -29,8 +29,12 @@ function ChangeCredentials() {
     const [newusername, setNewUsername] = useState();
     const [oldpassword, setOldPassword] = useState();
     const [newpassword, setNewPassword] = useState();
+    const [showSaved, setShowSaved] = useState(false);
+
     const navigate = useNavigate();
-    
+
+    const handleShowSaved = () => {	setShowSaved(true);	}
+    const handleCloseSaved = () => { setShowSaved(false);}    
     const handleSave = async (event) => {
         event.preventDefault();
         const newAccountInfo = {
@@ -49,7 +53,7 @@ function ChangeCredentials() {
             
         });
         if(res.data ===true){
-            alert("success");
+            handleShowSaved();
             window.location.reload();
         }else{
             alert("password does not match")
@@ -92,6 +96,17 @@ function ChangeCredentials() {
                     Update Credentials
                 </Button>
             </div>
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }
