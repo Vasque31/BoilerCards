@@ -83,7 +83,6 @@ function Header() {
             folderName:folderName,
             uid:getCookie('userid'),    
         });
-        window.location.reload();
     } 
     return (
         <div className="app">
