@@ -51,6 +51,7 @@ function SignInPage() {
         if(data!==0){
             // eslint-disable-next-line react-hooks/rules-of-hooks
             setCookie('userid', data, { path: '/' });
+            setCookie('folderid', "", { path: '/' });
             console.log(getCookie('userid'));
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:data,

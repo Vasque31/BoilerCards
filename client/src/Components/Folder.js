@@ -50,6 +50,15 @@ function Folder() {
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
+    useEffect(()=> {
+        const getLibrary = async () => {
+            let res = await axios.post("http://localhost:3001/folder", {
+                folderid:getCookie('folderid'),
+            });
+            setLibrary(res.data);
+        }
+        getLibrary();
+    },[]);
     const handleShowFlashcardsetDeleteConfirm = async (id) => {
         let res = await axios.post("http://localhost:3001/flsahcardset",{
             setid:id,
@@ -100,18 +109,6 @@ function Folder() {
             handleShowSaved();
         }
     }
-    
-    useEffect(()=> {
-        setTimeout(() => {
-            const getLibrary = async () => {
-                let res = await axios.post("http://localhost:3001/folder", {
-                    folderid:getCookie('folderid'),
-                });
-                setLibrary(res.data);
-            }
-            getLibrary();
-        }, 3000);
-    },[]);
 
     const handleFlashcardClick = async (id) => {
         //prevents page reload
