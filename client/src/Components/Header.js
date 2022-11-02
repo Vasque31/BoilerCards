@@ -89,12 +89,16 @@ function Header() {
  
     }
     const handleSaveFolder = async(event) => {
-        await axios.post("http://localhost:3001/createfolder",{
+        let res = await axios.post("http://localhost:3001/createfolder",{
             folderName:folderName,
             uid:getCookie('userid'),    
         });
-        
-        
+
+        if(res.data===true){
+            alert("success");
+        }
+        handleCloseFolder();
+        window.location.reload(false);
     } 
     return (
         <div className="app">
