@@ -28,7 +28,7 @@ var selectedFlashcardsetToCopy = {
 var currentUser = {
     folder: new Map(), 
 };
-
+var index = 0;
 function Folder() {
     const navigate = useNavigate();
     
@@ -46,6 +46,7 @@ function Folder() {
     const [showFlashcardsetCopy, setShowFlashcardsetCopy] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [selectall, setSelectAll] = useState(false);
+    const [selected, setSelected] = useState([]);
 
     const [copyDestFolderList, setCopyDestFolderList] = useState(new Map()); //map
     const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
@@ -56,9 +57,30 @@ function Folder() {
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
     const [checkedState, setCheckedState] = useState([])
-    const handleGroup = (id) => {
 
+    const handleAddGroup = (e, i) => {
+        console.log(e.currentTarget.value)
+        if (e.target.checked) {
+            console.log('✅ Checkbox is checked');
+
+            setSelected([...selected, {
+                setid: e.currentTarget.value,
+                id: i,
+            }]);
+        
+        } else {
+            console.log('⛔️ Checkbox is NOT checked');
+            console.log(e.currentTarget.value)
+            setSelected((current) =>
+            current.filter((set) => !(set.id === i))
+            )
+        }
+        console.log(selected);
     };
+    const handleselectall = () => {
+        setSelectAll(!selectall)
+        setSelected([]);
+    }
 
     const handleShowFlashcardsetDeleteConfirm = async (id) => {
         let res = await axios.post("http://localhost:3001/flsahcardset",{
@@ -163,10 +185,7 @@ function Folder() {
         setinputList([...inputList, {front:'', back:''}]);
     }
     const handleinputchange = (e, index) => {
-        const {name, value} = e.target;
-        const list = [...inputList];
-        list[index][name]=value;
-        setinputList(list);
+        
     } 
 
     //Not on backend yet
@@ -252,7 +271,7 @@ function Folder() {
                 <heading className="section-title">{library.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                 &nbsp;&nbsp;
-                    <Button variant="warning" onClick={() => setSelectAll(!selectall)}>
+                    <Button variant="warning" onClick={handleselectall}>
                         Select All
                     </Button>
                     <Button variant="warning" onClick={handleShow}>
@@ -267,12 +286,13 @@ function Folder() {
                 </div>
                 <div className= "library-box">
                 <table>
-                    {Object.values(library.flashcardset).map(item => {
+                    {Object.values(library.flashcardset).map((item, i) => {
+                        
                         return (
                             <row>
                                 {/*<h1>{item._id}</h1>*/}
                                 &nbsp; &nbsp;
-                                {selectall && <input type="checkbox" />}
+                                {selectall && <input name="folderid" value={item._id} onClick={(e) => handleAddGroup(e, i)} type="checkbox" />}
                                 <Button variant='warning' className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
                                 </Button>
