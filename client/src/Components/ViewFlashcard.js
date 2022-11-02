@@ -48,6 +48,8 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,
         });
+        handlerefresh(update.flashcardset._id);
+
         if (res.data == true) {
             handleCloseFlashDelCon();
             handleShowSaved();
@@ -80,15 +82,6 @@ function ViewFlashcard() {
     }
 
     
-    const handledeleteClick = async (flashcardid, type) => {
-        //handleShowFlashcardDeleteConfirm(flashcardid, type); //show delete passing flashcard object
-        let res = await axios.post("http://localhost:3001/deletFlashcard", {
-            flashcardid:flashcardid
-        });
-        handlerefresh(update.flashcardset._id);
-        
-    }
-
 
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
@@ -248,7 +241,7 @@ function ViewFlashcard() {
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
+                                            <Button variant="primary" value={item._id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>
