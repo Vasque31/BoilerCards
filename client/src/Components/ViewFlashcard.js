@@ -80,9 +80,6 @@ function ViewFlashcard() {
     }
 
     
-    const handledeleteClick = async (flashcardid, type) => {
-        handleShowFlashcardDeleteConfirm(flashcardid, type); //show delete passing flashcard object
-    }
 
 
     const handlerefresh = async (id) => {      
@@ -241,7 +238,7 @@ function ViewFlashcard() {
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item._id} onClick={(e) => handledeleteClick(e.target.value, "flashcard")}> Delete </Button>
+                                            <Button variant="primary" value={item._id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>
