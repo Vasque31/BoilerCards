@@ -24,29 +24,42 @@ function Header() {
     const [show, setShow] = useState(false);
     const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
-    const [inputList, setinputList] = useState([{front:'', back:''}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate:''}]);
     const [folderName, setFoldername] = useState();
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
-    const [library, setLibrary] = useState(libstorage);
+
+    const [library, setLibrary] = useState([]);
+    useEffect(()=> {
+        const getLibrary = async () => {
+            let res = await axios.post("http://localhost:3001/loadspace", {
+                uid:getCookie('userid'),
+            });
+            console.log(res.data);
+            setLibrary(res.data);
+        }
+        getLibrary();
+    },[]);
+
+    
     const [showSaved, setShowSaved] = useState(false);
 
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
-    
+
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:''}]);
+        setinputList([...inputList, {front:'', back:'', drate:''}]);
     }
     const handleinputchange = (e, index) => {
-        const {name, value} = e.target;
+        const {name, value,rate} = e.target;
         const list = [...inputList];
         list[index][name]=value;
         setinputList(list);
+        console.log(inputList);
     } 
     const handleSave = async(event) => {
         event.preventDefault();
-
         const flashcardInfo = {
             inputList:inputList,
             name:name,
@@ -57,7 +70,7 @@ function Header() {
         let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
-            statePrivate:flashcardInfo.statePrivate,
+            public:flashcardInfo.statePrivate,
             folderid:flashcardInfo.folderid,
         });
 
@@ -72,8 +85,6 @@ function Header() {
     const handleClose = () => {
         setShow(false);
         setinputList([{front:'', back:''}]);
-        setPrivate(true);
-        setName("");
     }
     const handleShow = async() => {
         let res = await axios.post("http://localhost:3001/loadspace", {
@@ -92,10 +103,16 @@ function Header() {
             folderName:folderName,
             uid:getCookie('userid'),    
         });
+
+
+        handleCloseFolder();
+        window.location.reload(false);
+
         if (res.data == true) {
             handleShowSaved(); //save icon
-            handleCloseFolder(); //close create folder
+
         }
+
     } 
     return (
         <div className="app">
@@ -201,6 +218,16 @@ function Header() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                    </Form.Group>
+                                                    <Form.Group style={{color: "gold"}}>
+                                                        <Form.Label>Difficulty Rating</Form.Label>
+                                                        <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
+                                                            <option value={1}>1</option>
+                                                            <option value={2}>2</option>
+                                                            <option value={3}>3</option>
+                                                            <option value={4}>4</option>
+                                                            <option value={5}>5</option>
+                                                        </select>
                                                     </Form.Group>
                                                 </Form>
                                                 );

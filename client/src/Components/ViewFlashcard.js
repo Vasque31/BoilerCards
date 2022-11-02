@@ -48,11 +48,13 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,
         });
+        handlerefresh(update.flashcardset._id);
+
         if (res.data == true) {
             handleCloseFlashDelCon();
             handleShowSaved();
         }
-        return;
+        
     }
 
 
@@ -76,11 +78,10 @@ function ViewFlashcard() {
         
         flashcardid = id;
         navigate("/editflashcard");
-
+        handlerefresh(update.flashcardset._id);
     }
 
     
-
 
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
@@ -108,10 +109,12 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
-        let res = await axios.post("http:localhost:3001/addmoreFlashcards", {
+        console.log("no");
+        let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
-            id:update._id
+            setid:update.flashcardset._id
         })
+        await handlerefresh(update.flashcardset._id);
     }
     const handleSaveFlashcardStatus = (e) => {
         const updatedflashcardstatus = {
@@ -163,7 +166,7 @@ function ViewFlashcard() {
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-                <Button varient="primary" onClick={handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
                 <Button varient="primary">Download</Button>
                 <ToggleButtonGroup type="radio" name="options" defaultValue={1}>

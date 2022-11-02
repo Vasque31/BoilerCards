@@ -46,7 +46,6 @@ function SignInPage() {
        let res = await axios.post("http://localhost:3001/signin", {
           logginfo: logginInfo,
         }); 
-        console.log(res.data);
         let data = res.data;
         if(data!==false){
             // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -56,7 +55,6 @@ function SignInPage() {
                 uid:data,
             });
             
-            console.log(res.data);
             libstorage = res.data;
          
 
