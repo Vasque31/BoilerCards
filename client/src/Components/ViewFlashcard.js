@@ -149,18 +149,32 @@ function ViewFlashcard() {
     
     const setCards = (arr, ascending) => {
         let new_cards = [];
-        if (ascending) {
-            for (let i = 0; i < Object.values(arr).length; i++) {
+        if (arr === "creation" && ascending) {
+            for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
                 let idnum = i;
-                let front = Object.values(arr)[i].front;
-                let back = Object.values(arr)[i].back;
+                let front = Object.values(update.flashcardarray)[i].front;
+                let back = Object.values(update.flashcardarray)[i].back;
+                new_cards.push({id: idnum, front: front, back: back});
+            }
+        } else if (arr === "creation" && !ascending) {
+            for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+                let idnum = i;
+                let front = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].front;
+                let back = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].back;
+                new_cards.push({id: idnum, front: front, back: back});
+            }
+        } else if (arr === "diff" && ascending) {
+            for (let i = 0; i < Object.values(update.sortedarray).length; i++) {
+                let idnum = i;
+                let front = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].front;
+                let back = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].back;
                 new_cards.push({id: idnum, front: front, back: back});
             }
         } else {
-            for (let i = 0; i < Object.values(arr).length; i++) {
+            for (let i = 0; i < Object.values(update.sortedarray).length; i++) {
                 let idnum = i;
-                let front = Object.values(arr)[Object.values(arr).length - i - 1].front;
-                let back = Object.values(arr)[Object.values(arr).length - i - 1].back;
+                let front = Object.values(update.sortedarray)[i].front;
+                let back = Object.values(update.sortedarray)[i].back;
                 new_cards.push({id: idnum, front: front, back: back});
             }
         }
@@ -171,13 +185,14 @@ function ViewFlashcard() {
     const setSort = (e) => {
         console.log(e);
         if (e === "creation_date_ascend") {
-            setCards(update.flashcardarray, true);
+            setCards("creation", true);
         } else if (e === "creation_date_desc") {
-            setCards(update.flashcardarray, false);
+            setCards("creation", false);
         } else if (e === "diff_ascend") {
-            setCards(update.sortedarray, true);
+            setCards("diff", true);
+            console.log(update.sortedarray);
         } else if (e === "diff_desc") {
-            setCards(update.sortedarray, false);
+            setCards("diff", false);
         }
         
     }
