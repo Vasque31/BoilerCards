@@ -23,6 +23,7 @@ function HomeLibrary() {
         }
         getLibrary();
     },[]);
+
     const handleSeeMore = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -46,11 +47,11 @@ function HomeLibrary() {
         <div className="box">
         <h1 className="section-title">My Library</h1>
         <div style ={{paddingTop: "0.5rem"}}>
-            <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
+            <Button variant="link" size= "sm" className= "see-more" onClick={(e) => handleSeeMore}>See All</Button>
         </div>
         <div className= "library-box">
             <table>
-            {Object.values(library).slice(0,8).map(item => {
+            {Object.values(library).slice(0,20).map(item => {
                 return (
                     <row>
                         &nbsp; &nbsp;

@@ -27,8 +27,17 @@ function Header() {
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
-    const [library, setLibrary] = useState(libstorage);
-    
+    const [library, setLibrary] = useState([]);
+    useEffect(()=> {
+        const getLibrary = async () => {
+            let res = await axios.post("http://localhost:3001/loadspace", {
+                uid:getCookie('userid'),
+            });
+            console.log(res.data);
+            setLibrary(res.data);
+        }
+        getLibrary();
+    },[]);
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
@@ -82,10 +91,15 @@ function Header() {
  
     }
     const handleSaveFolder = async(event) => {
-        await axios.post("http://localhost:3001/createfolder",{
+        let res = await axios.post("http://localhost:3001/createfolder",{
             folderName:folderName,
             uid:getCookie('userid'),    
         });
+        if(res.data===true){
+            alert("success");
+        }
+        handleCloseFolder();
+        window.location.reload(false);
     } 
     return (
         <div className="app">
