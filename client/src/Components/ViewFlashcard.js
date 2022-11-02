@@ -116,6 +116,7 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
+        console.log("no");
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
@@ -172,9 +173,8 @@ function ViewFlashcard() {
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-
-                <Button varient="primary" onClick={(e) =>handlerefresh(update.flashcardset._id)}>Refresh</Button>
-                <Button varient="primary" onClick={(e) => handleShow}>+</Button>
+                <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={handleShow}>+</Button>
                 <Button varient="primary">Download</Button>
                 <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
                             <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
@@ -213,16 +213,16 @@ function ViewFlashcard() {
                         })
                     }
                         <div style={{paddingTop: "1rem"}}>
-                            <Button varient="primary" type = "button" onClick={(e) => handleaddmore}>
+                            <Button varient="primary" type = "button" onClick={handleaddmore}>
                                 Add Flashcard
                             </Button>
                         </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={(e) => handleClose}>
+                    <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={(e) => handleSave}>
+                    <Button variant="primary" onClick={handleSave}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
