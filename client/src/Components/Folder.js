@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { UNSAFE_enhanceManualRouteObjects, useNavigate } from 'react-router-dom';
 import Header from "./Header";
-import {folder} from './HomeLibrary';
+import {folder, lib} from './HomeLibrary';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -28,7 +28,7 @@ var selectedFlashcardsetToCopy = {
 var currentUser = {
     folder: new Map(), 
 };
-
+var index = 0;
 function Folder() {
     const navigate = useNavigate();
     
@@ -46,6 +46,7 @@ function Folder() {
     const [showFlashcardsetCopy, setShowFlashcardsetCopy] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [selectall, setSelectAll] = useState(false);
+    const [selected, setSelected] = useState([]);
 
     const [copyDestFolderList, setCopyDestFolderList] = useState(new Map()); //map
     const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
@@ -56,9 +57,30 @@ function Folder() {
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
     const [checkedState, setCheckedState] = useState([])
-    const handleGroup = (id) => {
 
+    const handleAddGroup = (e, i) => {
+        console.log(e.currentTarget.value)
+        if (e.target.checked) {
+            console.log('✅ Checkbox is checked');
+
+            setSelected([...selected, {
+                setid: e.currentTarget.value,
+                id: i,
+            }]);
+        
+        } else {
+            console.log('⛔️ Checkbox is NOT checked');
+            console.log(e.currentTarget.value)
+            setSelected((current) =>
+            current.filter((set) => !(set.id === i))
+            )
+        }
+        console.log(selected);
     };
+    const handleselectall = () => {
+        setSelectAll(!selectall)
+        setSelected([]);
+    }
 
     const handleShowFlashcardsetDeleteConfirm = async (id) => {
         let res = await axios.post("http://localhost:3001/flsahcardset",{
@@ -160,13 +182,10 @@ function Folder() {
     {/* Create Flashcard Modal Handlers */}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:''}]);
+        setinputList([...inputList, {front:'', back:'',drate:''}]);
     }
     const handleinputchange = (e, index) => {
-        const {name, value} = e.target;
-        const list = [...inputList];
-        list[index][name]=value;
-        setinputList(list);
+        
     } 
 
     //Not on backend yet
@@ -240,6 +259,36 @@ function Folder() {
         setTMPName("");
     }
     const handleShowSetting = () => setShowSetting(true);
+
+    {/* Group Handlers */}
+
+    const handleGroupCopy = async() => {
+        let res = await axios.post("http://localhost:3001/groupcopy", {
+            groups:selected,
+            dest:destFolder,
+        });
+        handlerefresh();
+        handleselectall();
+    }
+
+    const handleGroupDelete = async() => {
+        let res = await axios.post("http://localhost:3001/groupdelete", {
+            groups:selected,
+            folder:library,
+        });
+        handlerefresh();
+        handleselectall();
+    }
+
+    const handleGroupMove = async() => {
+        let res = await axios.post("http://localhost:3001/groupmove", {
+            groups:selected,
+            dest: destFolder,
+            folder:library,
+        });
+        handlerefresh();
+        handleselectall();
+    }
     return (
         <div>
             <Header/>
@@ -251,10 +300,12 @@ function Folder() {
 
                 <heading className="section-title">{library.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
-                &nbsp;&nbsp;
-                    <Button variant="warning" onClick={() => setSelectAll(!selectall)}>
+                <Button variant="warning" onClick={handleselectall}>
                         Select All
-                    </Button>
+                </Button>
+                {!selectall &&
+                <>
+                    &nbsp;&nbsp;
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
                     </Button>
@@ -264,15 +315,40 @@ function Folder() {
                     </Button>
                     &nbsp;&nbsp;
                     <Button variant='danger' value={library._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    </>
+                }
+                {selectall &&
+                <>
+                    &nbsp;&nbsp;
+                    <Button variant="warning" onClick={handleGroupMove}>
+                        Move
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant="warning" onClick={handleGroupCopy}>
+                        Copy
+                    </Button>
+                    &nbsp;&nbsp;
+                    <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
+                        <option value="">---Choose Destination---</option>
+                        {Object.values(lib).map(item => {
+                            return (
+                                <option value={item._id}>{item.foldername}</option>    
+                            );
+                        })}
+                    </select>
+                    <Button variant='danger' value={library._id} onClick={handleGroupDelete}>Delete</Button>
+                    </>
+                }
                 </div>
                 <div className= "library-box">
                 <table>
-                    {Object.values(library.flashcardset).map(item => {
+                    {Object.values(library.flashcardset).map((item, i) => {
+                        
                         return (
                             <row>
                                 {/*<h1>{item._id}</h1>*/}
                                 &nbsp; &nbsp;
-                                {selectall && <input type="checkbox" />}
+                                {selectall && <input name="folderid" value={item._id} onClick={(e) => handleAddGroup(e, i)} type="checkbox" />}
                                 <Button variant='warning' className= "library-buttons" value={item._id} onClick={(e) => handleFlashcardClick(e.target.value)}>
                                     {item.setname}
                                 </Button>
@@ -325,6 +401,16 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                    </Form.Group>
+                                                    <Form.Group style={{color: "gold"}}>
+                                                        <Form.Label>Difficulty Rating</Form.Label>
+                                                        <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
+                                                            <option value={1}>1</option>
+                                                            <option value={2}>2</option>
+                                                            <option value={3}>3</option>
+                                                            <option value={4}>4</option>
+                                                            <option value={5}>5</option>
+                                                        </select>
                                                     </Form.Group>
                                                 </Form>
                                                 );

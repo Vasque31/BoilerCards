@@ -14,7 +14,7 @@ import Form from 'react-bootstrap/Form';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import saveicon from "../images/saveicon.png";
-
+import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 //export var flashcardid = null;
 
@@ -35,13 +35,15 @@ function ViewFlashcard() {
     const [showSaved, setShowSaved] = useState(false);
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
+    const [currSort, setCurrSort] = useState("c_a");
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
 
-    const handleShowFlashcardDeleteConfirm = async (id) => {
+    const handleShowFlashcardDeleteConfirm = async (flashcard) => {
+        console.log(flashcard._id);
         let res =await axios.post("http://localhost:3001/flsahcard",{
-            flashcardid:id,
+            flashcardid:flashcard._id,
         });
         toDeleteFlashcard = res.data;
         setShowFlashcardDeleteConfirm(true);
@@ -74,11 +76,12 @@ function ViewFlashcard() {
     };
     const handleeditClick = async (id) => {
         console.log(id);
-        /*let res = await axios.post("http://localhost:3001/edit", {
+        let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:id
        
-        });*/
+        });
         setShowEdit(true);
+        console.log(id);
         flashcardid = id;
 
     }
@@ -101,6 +104,15 @@ function ViewFlashcard() {
             setid:id
         });
         setUpdate(res.data);
+        if (currSort === "c_a") {
+            setCards("creation", true);
+        } else if (currSort === "c_d") {
+            setCards("creation", false);
+        } else if (currSort === "d_a") {
+            setCards("diff", true);
+        } else if (currSort === "d_d") {
+            setCards("diff", false);
+        }
     }
     const handleChangePrivate = () => {
         {/*statePrivate*/}
@@ -137,22 +149,73 @@ function ViewFlashcard() {
         }
 
     }
-    const cards = [];
-    //call updateCards function whenever we add cards to existing flashcard set
-    const updateCards = () => {
-        cards = [];
-        for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
-            let idnum = i;
-            let front = Object.values(update.flashcardarray)[i].front;
-            let back = Object.values(update.flashcardarray)[i].back;
-            cards.push({id: idnum, front: front, back: back});
-        }
-    }
+    let temp = [];
     for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
         let idnum = i;
         let front = Object.values(update.flashcardarray)[i].front;
         let back = Object.values(update.flashcardarray)[i].back;
-        cards.push({id: idnum, front: front, back: back});
+        let flashcard_id = Object.values(update.flashcardarray)[i]._id;
+        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+    }
+    const [cards, setCard] = useState(temp);
+
+    
+    const setCards = (arr, ascending) => {
+        let new_cards = [];
+        if (arr === "creation" && ascending) {
+            for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+                let idnum = i;
+                let front = Object.values(update.flashcardarray)[i].front;
+                let back = Object.values(update.flashcardarray)[i].back;
+                let flashcard_id = Object.values(update.flashcardarray)[i]._id;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                setCurrSort("c_a");
+            }
+        } else if (arr === "creation" && !ascending) {
+            for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
+                let idnum = i;
+                let front = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].front;
+                let back = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].back;
+                let flashcard_id = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1]._id;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                setCurrSort("c_d");
+            }
+        } else if (arr === "diff" && ascending) {
+            for (let i = 0; i < Object.values(update.sortedarray).length; i++) {
+                let idnum = i;
+                let front = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].front;
+                let back = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].back;
+                let flashcard_id = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1]._id;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                setCurrSort("d_a");
+            }
+        } else {
+            for (let i = 0; i < Object.values(update.sortedarray).length; i++) {
+                let idnum = i;
+                let front = Object.values(update.sortedarray)[i].front;
+                let back = Object.values(update.sortedarray)[i].back;
+                let flashcard_id = Object.values(update.sortedarray)[i]._id;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                setCurrSort("d_d");
+            }
+        }
+        setCard(new_cards);
+        console.log(cards);
+    }
+    //setCards(update.flashcardarray, true);
+    const setSort = (e) => {
+        console.log(e);
+        if (e === "creation_date_ascend") {
+            setCards("creation", true);
+        } else if (e === "creation_date_desc") {
+            setCards("creation", false);
+        } else if (e === "diff_ascend") {
+            setCards("diff", true);
+            console.log(update.sortedarray);
+        } else if (e === "diff_desc") {
+            setCards("diff", false);
+        }
+        
     }
     const handleDownload = (event) => {
         event.preventDefault();
@@ -192,7 +255,25 @@ function ViewFlashcard() {
                             </ToggleButton>
                 </ToggleButtonGroup>
                 <Button onClick={(handleChangePrivate)}>Confirm</Button>
-                
+                <Dropdown as={ButtonGroup}>
+                    <Button variant="secondary">Sort By:</Button>
+                    <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={(e) => setSort("creation_date_ascend")}>
+                            Creation Date Ascending
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={(e) => setSort("creation_date_desc")}>
+                            Creation Date Descending
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={(e) => setSort("diff_ascend")}>
+                            Difficulty Ascending
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={(e) => setSort("diff_desc")}>
+                            Difficulty Descending
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -243,7 +324,7 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
-                        {Object.values(update.flashcardarray).map((item, index) => {
+                        {cards.map((item, index) => {
                             return (
                                 <tr>
                                     
@@ -254,8 +335,8 @@ function ViewFlashcard() {
                                     <th>{item.back}</th>
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
-                                            <Button variant="primary" value={item._id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item._id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
+                                            <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
+                                            <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
                                 </tr>
