@@ -135,6 +135,7 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   }
   console.log(newset.private);
   const belongfolderid = req.body.folderid;
+  console.log('Folder Id beloning flashcardset:'+req.body.folderid);
   newset.belongfolder = belongfolderid;
   const set = await Flashcarddata.CreateSet(client,newset);
   const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(belongfolderid));

@@ -47,9 +47,8 @@ function Folder() {
     const [showSaved, setShowSaved] = useState(false);
     const [selectall, setSelectAll] = useState(false);
 
-    const [showSaved, setShowSaved] = useState(false); 
     const [copyDestFolderList, setCopyDestFolderList] = useState(new Map()); //map
-    const [copyDestFolderselect, setCopyDestFolderSelect] = useState(""); //id 
+    const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
 
     const handleShowSaved = () => { setShowSaved(true);}
     const handleCloseSaved = () => { setShowSaved(false);}
@@ -89,12 +88,21 @@ function Folder() {
     }
     const handleCopyFlashcardset = async () => {
         //creates set in other folder
-        let res = await axios.post("http://localhost:3001/createflashcardset", {
-            inputList:Object.values(selectedFlashcardsetToCopy.flashcard),
-            name:selectedFlashcardsetToCopy.setname,
-            statePrivate:selectedFlashcardsetToCopy.private,
-            folderid:copyDestFolderselect._id,
+
+        //get flashcards
+        var inputList = [];
+        Object.values(selectedFlashcardsetToCopy.flashcardarray).map(item => { //pull each card from array create from set to copy
+            inputList.push({front: item.front, back: item.back, drate: item.drate,}); //add flashcard to list
         });
+        console.log(inputList);
+        //create in new folder
+        let res = await axios.post("http://localhost:3001/createflashcardset", {
+            inputList: inputList,
+            name: selectedFlashcardsetToCopy.setname,
+            public: false,
+            folderid: copyDestFolderSelect,
+        });
+
         if (res.data == true) {
             handleShowSaved();
             handleCloseFlashcardsetCopy(); //close modal display
@@ -122,6 +130,7 @@ function Folder() {
         console.log(res.data);
         setLibrary(res.data);
     }
+    //passes in the set to be deleted
     const handleDeleteFlashcardset = async (object) => {
         const setinfo = object;
         setinfo.setid = object._id;
@@ -225,11 +234,7 @@ function Folder() {
         handlerefresh();
         handleCloseSetting();
     }
-    const handleFolderNameChange = (e) => {
-        setTMPName(e.target.value);
-        handlerefresh();
-        console.log(TMPName);
-    }
+
     const handleCloseSetting = () => {
         setShowSetting(false);
         setTMPName("");
