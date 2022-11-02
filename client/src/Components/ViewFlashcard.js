@@ -14,7 +14,7 @@ import Form from 'react-bootstrap/Form';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import saveicon from "../images/saveicon.png";
-
+import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 //export var flashcardid = null;
 
@@ -137,22 +137,49 @@ function ViewFlashcard() {
         }
 
     }
-    const cards = [];
-    //call updateCards function whenever we add cards to existing flashcard set
-    const updateCards = () => {
-        cards = [];
-        for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
-            let idnum = i;
-            let front = Object.values(update.flashcardarray)[i].front;
-            let back = Object.values(update.flashcardarray)[i].back;
-            cards.push({id: idnum, front: front, back: back});
-        }
-    }
+    let temp = [];
     for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
         let idnum = i;
         let front = Object.values(update.flashcardarray)[i].front;
         let back = Object.values(update.flashcardarray)[i].back;
-        cards.push({id: idnum, front: front, back: back});
+        temp.push({id: idnum, front: front, back: back});
+    }
+    const [cards, setCard] = useState(temp);
+
+    
+    const setCards = (arr, ascending) => {
+        let new_cards = [];
+        if (ascending) {
+            for (let i = 0; i < Object.values(arr).length; i++) {
+                let idnum = i;
+                let front = Object.values(arr)[i].front;
+                let back = Object.values(arr)[i].back;
+                new_cards.push({id: idnum, front: front, back: back});
+            }
+        } else {
+            for (let i = 0; i < Object.values(arr).length; i++) {
+                let idnum = i;
+                let front = Object.values(arr)[Object.values(arr).length - i - 1].front;
+                let back = Object.values(arr)[Object.values(arr).length - i - 1].back;
+                new_cards.push({id: idnum, front: front, back: back});
+            }
+        }
+        setCard(new_cards);
+        console.log(cards);
+    }
+    //setCards(update.flashcardarray, true);
+    const setSort = (e) => {
+        console.log(e);
+        if (e === "creation_date_ascend") {
+            setCards(update.flashcardarray, true);
+        } else if (e === "creation_date_desc") {
+            setCards(update.flashcardarray, false);
+        } else if (e === "diff_ascend") {
+            setCards(update.sortedarray, true);
+        } else if (e === "diff_desc") {
+            setCards(update.sortedarray, false);
+        }
+        
     }
     const handleDownload = (event) => {
         event.preventDefault();
@@ -192,7 +219,25 @@ function ViewFlashcard() {
                             </ToggleButton>
                 </ToggleButtonGroup>
                 <Button onClick={(handleChangePrivate)}>Confirm</Button>
-                
+                <Dropdown as={ButtonGroup}>
+                    <Button variant="secondary">Sort By:</Button>
+                    <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={(e) => setSort("creation_date_ascend")}>
+                            Creation Date Ascending
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={(e) => setSort("creation_date_desc")}>
+                            Creation Date Descending
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={(e) => setSort("diff_ascend")}>
+                            Difficulty Ascending
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={(e) => setSort("diff_desc")}>
+                            Difficulty Descending
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -243,7 +288,7 @@ function ViewFlashcard() {
                             <th>Back</th>
                             <th>Edit or Delete</th>
                         </tr>
-                        {Object.values(update.flashcardarray).map((item, index) => {
+                        {cards.map((item, index) => {
                             return (
                                 <tr>
                                     
