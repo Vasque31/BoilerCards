@@ -178,10 +178,10 @@ function Header() {
                                             <h1></h1>
                                                 <label>Private/Public</label>
                                                 <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
-                                                    <option value={1}>
+                                                    <option value={true}>
                                                         Private
                                                     </option>
-                                                    <option value={0}>
+                                                    <option value={false}>
                                                         Public
                                                     </option>
                                                 </select>
