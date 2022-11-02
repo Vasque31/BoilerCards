@@ -157,6 +157,7 @@ recordRoutes.route("/addmoreFlashcards").post(async function (req, res) {
   for(var i=0;i<list.length;i++){
     await createFlashcard(list[i].front,list[i].back,setid.toString())
   }
+  res.json(true);
 });
 recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
   res.json(currentuser);

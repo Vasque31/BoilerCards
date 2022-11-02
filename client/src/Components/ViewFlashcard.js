@@ -120,8 +120,9 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
-        })
-        await handlerefresh(update.flashcardset._id);
+        });
+        handlerefresh(update.flashcardset._id);
+        handleClose();
     }
     const handleSaveFlashcardStatus = (e) => {
         const updatedflashcardstatus = {
