@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { UNSAFE_enhanceManualRouteObjects, useNavigate } from 'react-router-dom';
 import Header from "./Header";
-import {folder} from './HomeLibrary';
+import {folder, lib} from './HomeLibrary';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -182,7 +182,7 @@ function Folder() {
     {/* Create Flashcard Modal Handlers */}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:''}]);
+        setinputList([...inputList, {front:'', back:'',drate:''}]);
     }
     const handleinputchange = (e, index) => {
         
@@ -259,6 +259,34 @@ function Folder() {
         setTMPName("");
     }
     const handleShowSetting = () => setShowSetting(true);
+
+    {/* Group Handlers */}
+
+    const handleGroupCopy = async() => {
+        let res = await axios.post("http://localhost:3001/groupcopy", {
+            groups:selected,
+            dest:destFolder,
+        });
+        handlerefresh();
+        handleselectall();
+    }
+
+    const handleGroupDelete = async() => {
+        let res = await axios.post("http://localhost:3001/groupdelete", {
+            groups:selected,
+        });
+        handlerefresh();
+        handleselectall();
+    }
+
+    const handleGroupMove = async() => {
+        let res = await axios.post("http://localhost:3001/groupmove", {
+            groups:selected,
+            dest: destFolder,
+        });
+        handlerefresh();
+        handleselectall();
+    }
     return (
         <div>
             <Header/>
@@ -270,10 +298,12 @@ function Folder() {
 
                 <heading className="section-title">{library.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
-                &nbsp;&nbsp;
-                    <Button variant="warning" onClick={handleselectall}>
+                <Button variant="warning" onClick={handleselectall}>
                         Select All
-                    </Button>
+                </Button>
+                {!selectall &&
+                <>
+                    &nbsp;&nbsp;
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
                     </Button>
@@ -283,6 +313,30 @@ function Folder() {
                     </Button>
                     &nbsp;&nbsp;
                     <Button variant='danger' value={library._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    </>
+                }
+                {selectall &&
+                <>
+                    &nbsp;&nbsp;
+                    <Button variant="warning" onClick={handleGroupMove}>
+                        Move
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant="warning" onClick={handleGroupCopy}>
+                        Copy
+                    </Button>
+                    &nbsp;&nbsp;
+                    <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
+                        <option value="">---Choose Destination---</option>
+                        {Object.values(lib).map(item => {
+                            return (
+                                <option value={item._id}>{item.foldername}</option>    
+                            );
+                        })}
+                    </select>
+                    <Button variant='danger' value={library._id} onClick={handleGroupDelete}>Delete</Button>
+                    </>
+                }
                 </div>
                 <div className= "library-box">
                 <table>
@@ -345,6 +399,16 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                    </Form.Group>
+                                                    <Form.Group style={{color: "gold"}}>
+                                                        <Form.Label>Difficulty Rating</Form.Label>
+                                                        <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
+                                                            <option value={1}>1</option>
+                                                            <option value={2}>2</option>
+                                                            <option value={3}>3</option>
+                                                            <option value={4}>4</option>
+                                                            <option value={5}>5</option>
+                                                        </select>
                                                     </Form.Group>
                                                 </Form>
                                                 );
