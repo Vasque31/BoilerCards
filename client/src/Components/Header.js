@@ -16,6 +16,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup"; 
 import {folder} from "./HomeLibrary";
+import saveicon from "../images/saveicon.png";
+
 import {libstorage} from "./signInPage.js";
 
 function Header() {
@@ -27,6 +29,7 @@ function Header() {
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
+
     const [library, setLibrary] = useState([]);
     useEffect(()=> {
         const getLibrary = async () => {
@@ -38,6 +41,13 @@ function Header() {
         }
         getLibrary();
     },[]);
+
+    
+    const [showSaved, setShowSaved] = useState(false);
+
+    const handleShowSaved = () => {	setShowSaved(true);	}
+    const handleCloseSaved = () => { setShowSaved(false);}
+
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:'', drate:''}]);
     }
@@ -65,7 +75,7 @@ function Header() {
         });
 
         if(res.data===true){
-            alert("success");
+            handleShowSaved();
         }
         handleClose();
         
@@ -94,11 +104,15 @@ function Header() {
             uid:getCookie('userid'),    
         });
 
-        if(res.data===true){
-            alert("success");
-        }
+
         handleCloseFolder();
         window.location.reload(false);
+
+        if (res.data == true) {
+            handleShowSaved(); //save icon
+
+        }
+
     } 
     return (
         <div className="app">
@@ -146,7 +160,7 @@ function Header() {
                                             <input type="text" name = "folderName" onChange={(e) => setFoldername(e.target.value)} required />
                                     </Modal.Body>
                                     <Modal.Footer>
-                                            <Button variant="secondary" onClick={handleClose}>
+                                            <Button variant="secondary" onClick={handleCloseFolder}>
                                                 Close
                                             </Button>
                                             <Button variant="primary" onClick={handleSaveFolder}>
@@ -252,6 +266,17 @@ function Header() {
                     </Navbar.Collapse>  
                 </Container>
             </Navbar>
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }
