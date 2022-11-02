@@ -124,10 +124,16 @@ async function createFlashcard(front,back,belongsetid){
   await Flashcarddata.UpdateSet(client,ObjectId(belongsetid),belongset);
 }
 recordRoutes.route("/createflashcardset").post(async function (req, res) {
+  console.log(req.body)
   const list = req.body.inputList;
   const setname = req.body.name;
   const newset = new Flashcardset(setname);
-  newset.private = req.body.statePrivate;
+  if(req.body.statePrivate==true||req.body.statePrivate=="true"){
+    newset.private = true;
+  }else{
+    newset.private = false;
+  }
+  console.log(newset.private);
   const belongfolderid = req.body.folderid;
   newset.belongfolder = belongfolderid;
   const set = await Flashcarddata.CreateSet(client,newset);
@@ -167,15 +173,16 @@ await Flashcarddata.deleteFlashcard(client,ObjectId(flashcardid));
 res.json(true);
 });
 
-recordRoutes.route("/deletFlashcardset").delete(async function (req, res) {
+recordRoutes.route("/deleteset").post(async function (req, res) {
   const setid = req.body.setid;
-  console.log("Delete set w/ id:" + req.body.setid);
   const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
+  console.log(set);
   if (set){
     const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(set.belongfolder));
+    console.log(belongfolder);
     const json = JSON.stringify(belongfolder);
     const obj1 = JSON.parse(json);
-    const map = new Map(Object.entries(obj1.flashcard));
+    const map = new Map(Object.entries(obj1.flashcardset));
     map.delete(setid);
     const mapobj = Object.fromEntries(map);
     belongfolder.flashcardset = mapobj;

@@ -48,7 +48,7 @@ function SignInPage() {
         }); 
         console.log(res.data);
         let data = res.data;
-        if(data!==0){
+        if(data!==false){
             // eslint-disable-next-line react-hooks/rules-of-hooks
             setCookie('userid', data, { path: '/' });
             console.log(getCookie('userid'));
