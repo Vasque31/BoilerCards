@@ -5,6 +5,8 @@ import Button from "react-bootstrap/Button";
 import CloseButton from 'react-bootstrap/CloseButton';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Modal  from "react-bootstrap/Modal";
+import saveicon from "./SavedIcon"
 function checkvalidusername(str) {
     const usernameRegex = /^[a-zA-Z0-9]{4,15}$/;
     if (usernameRegex.test(str)) {
