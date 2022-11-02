@@ -24,7 +24,7 @@ function Header() {
     const [showFolder, setShowFolder] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:''}]);
     const [folderName, setFoldername] = useState();
-    const [statePrivate, setPrivate] = useState(1);
+    const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
     const [library, setLibrary] = useState(libstorage);
@@ -51,7 +51,7 @@ function Header() {
         let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
-            public:flashcardInfo.statePrivate,
+            statePrivate:flashcardInfo.statePrivate,
             folderid:flashcardInfo.folderid,
         });
 
@@ -59,12 +59,15 @@ function Header() {
             alert("success");
         }
         handleClose();
+        
         console.log(flashcardInfo);
     }
 
     const handleClose = () => {
         setShow(false);
         setinputList([{front:'', back:''}]);
+        setPrivate(true);
+        setName("");
     }
     const handleShow = async() => {
         let res = await axios.post("http://localhost:3001/loadspace", {
@@ -168,10 +171,10 @@ function Header() {
                                             <h1></h1>
                                                 <label>Private/Public</label>
                                                 <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
-                                                    <option value={1}>
+                                                    <option value={true}>
                                                         Private
                                                     </option>
-                                                    <option value={0}>
+                                                    <option value={false}>
                                                         Public
                                                     </option>
                                                 </select>

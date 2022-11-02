@@ -32,7 +32,7 @@ var currentUser = {
 function Folder() {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
-    const [statePrivate, setPrivate] = useState(false);
+    const [statePrivate, setPrivate] = useState(true);
     const [TMPName, setTMPName] = useState("");
     const [showSetting, setShowSetting] = useState(false);
     const [cookie, setCookie] = useCookies([]);
@@ -91,9 +91,9 @@ function Folder() {
     const handleDeleteFlashcardset = async (object) => {
         const setinfo = object;
         setinfo.setid = object._id;
-        let res = await axios.post("http://localhost:3001/deletFlashcardset",{
-            setid: object._id,
-            
+        console.log(object._id);
+        let res = await axios.post("http://localhost:3001/deleteset",{
+            setid:setinfo.setid,
         });
         if (res.data == true) {
             handleCloseFlashsetDelCon(); //remove confirmation upon success
@@ -150,7 +150,7 @@ function Folder() {
         let res = await axios.post("http://localhost:3001/createflashcardset", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
-            public:flashcardInfo.statePrivate,
+            statePrivate:flashcardInfo.statePrivate,
             folderid:flashcardInfo.folderid,
         });
 
@@ -158,7 +158,6 @@ function Folder() {
             handleShowSaved();
         }
         handleClose();
-        console.log(flashcardInfo);
     }
     const handleSave = async(event) => {
         event.preventDefault();
@@ -178,6 +177,8 @@ function Folder() {
     const handleClose = () => {
         setShow(false);
         setinputList([{front:'', back:''}]);
+        setPrivate(true);
+        setName("");
     }
     const handleShow = () => setShow(true);
     const handleCloseSetting = () => {
@@ -242,10 +243,10 @@ function Folder() {
                                             <h1></h1>
                                                 <label>Private/Public</label>
                                                 <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
-                                                    <option value={1}>
+                                                    <option value={true}>
                                                         Private
                                                     </option>
-                                                    <option value={0}>
+                                                    <option value={false}>
                                                         Public
                                                     </option>
                                                 </select>
