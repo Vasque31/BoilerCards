@@ -31,6 +31,7 @@ var currentUser = {
 
 function Folder() {
     const navigate = useNavigate();
+    
     const [show, setShow] = useState(false);
     const [statePrivate, setPrivate] = useState(true);
     const [TMPName, setTMPName] = useState("");
@@ -94,18 +95,27 @@ function Folder() {
             handleShowSaved();
             navigate("/HomePage"); //folder deleted, leave it
         }
+        
+    }
+    const handlerefresh = async () => {     
+        console.log(library._id);
+        let res = await axios.post("http://localhost:3001/folder", {
+            folderid:library._id
+        });
+        console.log(res.data);
+        setLibrary(res.data);
     }
     const handleDeleteFlashcardset = async (object) => {
         const setinfo = object;
         setinfo.setid = object._id;
-        let res = await axios.post("http://localhost:3001/deletFlashcardset",{
+        let res = await axios.post("http://localhost:3001/deleteset",{
             setid: object._id,
-            
         });
         if (res.data == true) {
             handleCloseFlashsetDelCon(); //remove confirmation upon success
             handleShowSaved();
         }
+        handlerefresh();
     }
 
     {/* Click Flashcard Handler */}
@@ -153,6 +163,7 @@ function Folder() {
             handleShowSaved();
         }
         handleClose();
+        handlerefresh();
         console.log(flashcardInfo);
     }
     const handleClose = () => {
@@ -175,10 +186,12 @@ function Folder() {
         if(res.data===true){
             handleShowSaved();
         }
+        handlerefresh();
         handleCloseSetting();
     }
     const handleFolderNameChange = (e) => {
         setTMPName(e.target.value);
+        handlerefresh();
         console.log(TMPName);
     }
     const handleCloseSetting = () => {

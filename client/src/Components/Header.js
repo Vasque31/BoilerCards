@@ -50,7 +50,6 @@ function Header() {
     } 
     const handleSave = async(event) => {
         event.preventDefault();
-
         const flashcardInfo = {
             inputList:inputList,
             name:name,
@@ -69,6 +68,7 @@ function Header() {
             alert("success");
         }
         handleClose();
+        
         console.log(flashcardInfo);
     }
 
@@ -93,6 +93,7 @@ function Header() {
             folderName:folderName,
             uid:getCookie('userid'),    
         });
+        
     } 
     return (
         <div className="app">
