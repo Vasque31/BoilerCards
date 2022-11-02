@@ -158,27 +158,23 @@ recordRoutes.route("/addmoreFlashcards").post(async function (req, res) {
   for(var i=0;i<list.length;i++){
     await createFlashcard(list[i].front,list[i].back,setid.toString())
   }
+  res.json(true);
 });
 recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
   res.json(currentuser);
 });
 recordRoutes.route("/deletFlashcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
-  console.log("1");
   const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
-  console.log("1");
   if (card){
     const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(card.belongset));
-    console.log("1");
     const map = new Map(Object.entries(belongset.flashcard));
     map.delete(flashcardid);
     const mapobj = Object.fromEntries(map);
     belongset.flashcard = mapobj;
     await Flashcarddata.UpdateSet(client,ObjectId(card.belongset),belongset);
-    console.log("1");
   }
 await Flashcarddata.deleteFlashcard(client,ObjectId(flashcardid));
-console.log("1");
 res.json(true);
 });
 
@@ -209,12 +205,33 @@ recordRoutes.route("/flsahcardset").post(async function (req, res) {
   const setid = req.body.setid;
   const flashcardset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid.toString()));
   const flashcardarray = flashcardset.flashcard;
+  const map = new Map(Object.entries(flashcardarray));
+  const array = Array.from(map.values());
+  const sortedarray = insertionSort(array,array.length);
   const folderinfo = {
     flashcardset: flashcardset,
     flashcardarray: flashcardarray,
+    sortedarray: sortedarray
   }; 
+  console.log(sortedarray);
   res.json(folderinfo);
 });
+function insertionSort(arr, n) 
+{ 
+    let i, key, j; 
+    for (i = 1; i < n; i++)
+    { 
+        key = arr[i]; 
+        j = i - 1; 
+        while (j >= 0 && arr[j].difficulty < key.difficulty)
+        { 
+            arr[j + 1] = arr[j]; 
+            j = j - 1; 
+        } 
+        arr[j + 1] = key; 
+    }
+  return arr;
+}
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
   

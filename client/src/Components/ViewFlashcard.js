@@ -25,6 +25,7 @@ var toDeleteFlashcard = {
 };
 
 function ViewFlashcard() {
+    const [showEdit, setShowEdit] = useState(false);
     const [index, setIndex] = useState(0);
     const [front, setFront] = useState();
     const [back, setBack] = useState();
@@ -32,10 +33,12 @@ function ViewFlashcard() {
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
-
+    const [newfront, setNewfront] = useState();
+    const [newback, setNewback] = useState();
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
+
     const handleShowFlashcardDeleteConfirm = async (id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
             flashcardid:id,
@@ -75,13 +78,23 @@ function ViewFlashcard() {
             flashcardid:id
        
         });*/
-        
+        setShowEdit(true);
         flashcardid = id;
-        navigate("/editflashcard");
+
+    }
+    const handleCloseEdit = () => {
+        setShowEdit(false);
+    }
+    const handleSaveEdit = async(event) => {
+        await axios.post("http://localhost:3001/edit", {
+            flashcardid:flashcardid,
+            newfront:newfront,
+            newback:newback,
+        });
         handlerefresh(update.flashcardset._id);
+        handleCloseEdit();
     }
 
-    
 
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
@@ -113,8 +126,9 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
-        })
-        await handlerefresh(update.flashcardset._id);
+        });
+        handlerefresh(update.flashcardset._id);
+        handleClose();
     }
     const handleSaveFlashcardStatus = (e) => {
         const updatedflashcardstatus = {
@@ -251,6 +265,35 @@ function ViewFlashcard() {
 
                 </Table>
             </div>
+            <Modal show={showEdit} onHide = {handleCloseEdit}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        <h1 style = {{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
+                        <h2 style = {{fontSize: "2rem", color:"gold", textAlign: "center"}}>Edit Flashcards</h2>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group style={{color: "gold"}}>
+                            <Form.Label>Front of Card</Form.Label>
+                            <Form.Control type="text" name= "front" placeholder="Front of FlashCard" onChange={e => setNewfront(e.target.value)}/>
+                        </Form.Group>
+
+                        <Form.Group style={{color: "gold"}}>
+                            <Form.Label>Back of Card</Form.Label>
+                            <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => setNewback(e.target.value)}/>
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseEdit}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSaveEdit}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Modal show={showFlashcardDeleteConfirm} onHide={() => handleCloseFlashDelCon()}>
                 <Modal.Header closeButton={() => handleCloseFlashDelCon()}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
