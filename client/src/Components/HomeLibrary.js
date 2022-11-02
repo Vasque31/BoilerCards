@@ -7,6 +7,7 @@ import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 export var folder;
+export var lib;
 function HomeLibrary() {
     const navigate = useNavigate();
     const [cookie, setCookie, removeCookie] = useCookies([]);
@@ -19,7 +20,6 @@ function HomeLibrary() {
             });
             console.log(res.data);
             setLibrary(res.data);
-            folder = library;
         }
         getLibrary();
     },[]);
@@ -37,7 +37,9 @@ function HomeLibrary() {
             folderid:getCookie('folderid')
         });
         folder = res.data;
+        lib = library;
         console.log(res.data);
+        console.log(lib)
         navigate('/folder');
     };
     {/*const listOfItems = {libstorage.map((item, index) =>
@@ -51,7 +53,7 @@ function HomeLibrary() {
         </div>
         <div className= "library-box">
             <table>
-            {Object.values(library).slice(0,20).map(item => {
+            {Object.values(library).slice(0,8).map(item => {
                 return (
                     <row>
                         &nbsp; &nbsp;
