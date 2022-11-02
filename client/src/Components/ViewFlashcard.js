@@ -52,7 +52,7 @@ function ViewFlashcard() {
             handleCloseFlashDelCon();
             handleShowSaved();
         }
-        return;
+        
     }
 
 
@@ -76,15 +76,17 @@ function ViewFlashcard() {
         
         flashcardid = id;
         navigate("/editflashcard");
-
+        handlerefresh(update.flashcardset._id);
     }
 
     
     const handledeleteClick = async (flashcardid, type) => {
+        console.log("yes");
         //handleShowFlashcardDeleteConfirm(flashcardid, type); //show delete passing flashcard object
         let res = await axios.post("http://localhost:3001/deletFlashcard", {
             flashcardid:flashcardid
         });
+        handlerefresh(update.flashcardset._id);
         
     }
 
@@ -119,6 +121,7 @@ function ViewFlashcard() {
             inputList:inputList,
             setid:update.flashcardset._id
         })
+        handlerefresh(update.flashcardset._id);
     }
     const handleSaveFlashcardStatus = (e) => {
         const updatedflashcardstatus = {
@@ -170,6 +173,7 @@ function ViewFlashcard() {
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
+
                 <Button varient="primary" onClick={(e) =>handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={(e) => handleShow}>+</Button>
                 <Button varient="primary">Download</Button>

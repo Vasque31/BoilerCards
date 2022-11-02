@@ -151,6 +151,13 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   }
   res.json(true);
 });
+recordRoutes.route("/addmoreFlashcards").post(async function (req, res) {
+  const setid = req.body.setid; 
+  const list = req.body.inputList;
+  for(var i=0;i<list.length;i++){
+    await createFlashcard(list[i].front,list[i].back,setid.toString())
+  }
+});
 recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
   res.json(currentuser);
 });
@@ -209,6 +216,7 @@ recordRoutes.route("/flsahcardset").post(async function (req, res) {
 });
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
+  
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(folderid.toString()));
   res.json(folder);
 });
@@ -278,4 +286,5 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
   await userdata.UpdateUser(client,ObjectId(user._id),user);
   res.json(true);
 });
+
 module.exports = recordRoutes;
