@@ -173,8 +173,9 @@ function ViewFlashcard() {
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-                <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
-                <Button varient="primary" onClick={handleShow}>+</Button>
+
+                <Button varient="primary" onClick={(e) =>handlerefresh(update.flashcardset._id)}>Refresh</Button>
+                <Button varient="primary" onClick={(e) => handleShow}>+</Button>
                 <Button varient="primary">Download</Button>
                 <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
                             <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
@@ -213,16 +214,16 @@ function ViewFlashcard() {
                         })
                     }
                         <div style={{paddingTop: "1rem"}}>
-                            <Button varient="primary" type = "button" onClick={handleaddmore}>
+                            <Button varient="primary" type = "button" onClick={(e) => handleaddmore}>
                                 Add Flashcard
                             </Button>
                         </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={(e) => handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleSave}>
+                    <Button variant="primary" onClick={(e) => handleSave}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
