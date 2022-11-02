@@ -156,20 +156,21 @@ recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
 });
 recordRoutes.route("/deletFlashcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
-  console.log(flashcardid);
+  console.log("1");
   const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
+  console.log("1");
   if (card){
     const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(card.belongset));
-    const json = JSON.stringify(belongset);
-    const obj1 = JSON.parse(json);
-    const map = new Map(Object.entries(obj1.flashcard));
+    console.log("1");
+    const map = new Map(Object.entries(belongset.flashcard));
     map.delete(flashcardid);
     const mapobj = Object.fromEntries(map);
     belongset.flashcard = mapobj;
     await Flashcarddata.UpdateSet(client,ObjectId(card.belongset),belongset);
+    console.log("1");
   }
-console.log(flashcardid);
 await Flashcarddata.deleteFlashcard(client,ObjectId(flashcardid));
+console.log("1");
 res.json(true);
 });
 
@@ -226,11 +227,16 @@ recordRoutes.route("/logout").post(async function (req, res) {
 });
 recordRoutes.route("/edit").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
-  const newfront = req.body.newfront;
-  const newback = req.body.newback;
-  const newflashcard = new Flashcard(newfront,newback);
-  newflashcard.belongset = await Flashcarddata.GetFlashcardasync(client,flashcardid).belongset
-  result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),newflashcard);
+  const oldflashcard = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
+  oldflashcard.front = req.body.newfront;
+  oldflashcard.back = req.body.newback;
+  result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),oldflashcard);
+  belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(oldflashcard.belongset));
+  const map = new Map(Object.entries(belongset.flashcard));
+  map.set(flashcardid,oldflashcard);
+  const mapobj = Object.fromEntries(map);
+  belongset.flashcard = mapobj;
+  result = await Flashcarddata.UpdateSet(client,ObjectId(belongset._id),belongset);
   res.json(true);
 });
 recordRoutes.route("/setpublic").post(async function (req, res) {

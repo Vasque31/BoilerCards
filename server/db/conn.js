@@ -18,6 +18,6 @@ module.exports = {
   },
 
   getDb: function () {
-    return dbConnection;
+    return dbConnection; 
   },
 };
