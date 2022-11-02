@@ -85,7 +85,7 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/deletFlashcard", {
             flashcardid:flashcardid
         });
-        console.log("yes");
+        
     }
 
 
@@ -115,9 +115,9 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
-        let res = await axios.post("http:localhost:3001/addmoreFlashcards", {
+        let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
-            id:update._id
+            setid:update.flashcardset._id
         })
     }
     const handleSaveFlashcardStatus = (e) => {
