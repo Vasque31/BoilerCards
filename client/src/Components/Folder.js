@@ -46,6 +46,10 @@ function Folder() {
     const [showFlashcardsetCopy, setShowFlashcardsetCopy] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [selectall, setSelectAll] = useState(false);
+
+    const [copyDestFolderList, setCopyDestFolderList] = useState(new Map()); //map
+    const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
+
     const handleShowSaved = () => { setShowSaved(true);}
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
@@ -66,22 +70,43 @@ function Folder() {
         setShowFlashcardsetDeleteConfirm(true);
     }
     const handleShowFlashcardsetCopy = async (id) =>{
-        /*let res = await axios.post("http://localhost:3001/currentuser",{
+        let res = await axios.post("http://localhost:3001/loadspace", {
+            uid:getCookie('userid'),
         });
-        currentUser = res.data;*/
-        let res = await axios.post("http://localhost:3001/flsahcardset",{
+        setCopyDestFolderList(res.data); //Map
+        let resSet = await axios.post("http://localhost:3001/flsahcardset",{
             setid:id,
         });
-        selectedFlashcardsetToCopy = res.data; //not flashcardset object, but folderinfo object
+        selectedFlashcardsetToCopy = resSet.data; //not flashcardset object, but folderinfo object
         selectedFlashcardsetToCopy.setname = selectedFlashcardsetToCopy.flashcardset.setname;
+        
         setShowFlashcardsetCopy(true);
     }
 
-    const handleCloseFlashsetCopy = () => {
+    const handleCloseFlashcardsetCopy = () => {
         setShowFlashcardsetCopy(false);
     }
-    const handleCopyFlashcardset = async (folderid) => {
+    const handleCopyFlashcardset = async () => {
+        //creates set in other folder
 
+        //get flashcards
+        var inputList = [];
+        Object.values(selectedFlashcardsetToCopy.flashcardarray).map(item => { //pull each card from array create from set to copy
+            inputList.push({front: item.front, back: item.back, drate: item.drate,}); //add flashcard to list
+        });
+        console.log(inputList);
+        //create in new folder
+        let res = await axios.post("http://localhost:3001/createflashcardset", {
+            inputList: inputList,
+            name: selectedFlashcardsetToCopy.setname,
+            public: false,
+            folderid: copyDestFolderSelect,
+        });
+
+        if (res.data == true) {
+            handleShowSaved();
+            handleCloseFlashcardsetCopy(); //close modal display
+        }
 
     }
 
@@ -105,6 +130,7 @@ function Folder() {
         console.log(res.data);
         setLibrary(res.data);
     }
+    //passes in the set to be deleted
     const handleDeleteFlashcardset = async (object) => {
         const setinfo = object;
         setinfo.setid = object._id;
@@ -142,6 +168,25 @@ function Folder() {
         list[index][name]=value;
         setinputList(list);
     } 
+
+    //Not on backend yet
+    const handleFolderNameChange = (e) => {
+        setTMPName(e.target.value); 
+        console.log(TMPName);
+        handlerefresh();
+        /*let res = await axios.post("http://localhost:3001/renamefolder", {
+            folderid: library._id,
+            newname: e.target.value,
+        }
+        );
+        if (res.data == true) {
+            handleShowSaved();
+        }
+        */
+
+
+    }
+
     const handleCreateFlashCardSet = async(event) => {
         event.preventDefault();
 
@@ -189,11 +234,7 @@ function Folder() {
         handlerefresh();
         handleCloseSetting();
     }
-    const handleFolderNameChange = (e) => {
-        setTMPName(e.target.value);
-        handlerefresh();
-        console.log(TMPName);
-    }
+
     const handleCloseSetting = () => {
         setShowSetting(false);
         setTMPName("");
@@ -347,25 +388,25 @@ function Folder() {
                     <Button onClick={() => handleCloseFlashsetDelCon()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>    
-            <Modal show={showFlashcardsetCopy} onHide={() => handleCloseFlashsetCopy()}>
-                <Modal.Header closeButton={() => handleCloseFlashsetCopy()}>
+            <Modal show={showFlashcardsetCopy} onHide={() => handleCloseFlashcardsetCopy()}>
+                <Modal.Header closeButton={() => handleCloseFlashcardsetCopy()}>
                     <Modal.Title>Copy {selectedFlashcardsetToCopy.setname}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body> Select where to copy {selectedFlashcardsetToCopy.setname}:
-                        {Object.values(currentUser.folder).map(item => {
-                            return (
                                 <div>
-                                    <row>
-                                        <label> {item.foldername} </label>
-                                        <Button value={item._id} onClick={(e) => handleCopyFlashcardset(e.target.value)}> Copyto </Button>
-                                    </row>
+                                    <select name="selectList" id="selectList" onChange={(e) => setCopyDestFolderSelect(e.currentTarget.value)}>
+                                                <option value="">---Choose---</option>
+                                                {Object.values(copyDestFolderList).map(item => {
+                                                    return (
+                                                        <option value={item._id}>{item.foldername}</option>    
+                                                    );
+                                                })}
+                                    </select>
                                 </div>
-                            );
-                        })}
-                
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleCloseFlashsetCopy()}> Cancel </Button>
+                    <Button onClick={() => handleCloseFlashcardsetCopy()}> Cancel </Button>
+                    <Button onClick={() => handleCopyFlashcardset()}> Copy </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showSaved} onHide={() => handleCloseSaved()}>
