@@ -128,12 +128,14 @@ function ViewFlashcard() {
             handlerefresh(update.flashcardset._id);
         }
     }
-    const handleSaveFlashcardStatus = (e) => {
+    const handleSaveFlashcardStatus = async (e) => {
         const updatedflashcardstatus = {
             shared:statePrivate,
-            id:update._id
+            id:update.flashcardset._id
         }
-
+        await axios.post("http://localhost:3001/setpublic", {
+            status:updatedflashcardstatus,
+        })
     }
     let temp = [];
     for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
