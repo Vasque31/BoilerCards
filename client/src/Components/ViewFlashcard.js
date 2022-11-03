@@ -33,7 +33,7 @@ function ViewFlashcard() {
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
     const [currSort, setCurrSort] = useState("c_a");
-    const handleShowSaved = () => {	setShowSaved(true);	}
+    const handleShowSaved = () => { setShowSaved(true); }
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
 
@@ -56,7 +56,7 @@ function ViewFlashcard() {
             handleCloseFlashDelCon();
             handleShowSaved();
         }
-        
+       
     }
 
 
@@ -70,7 +70,7 @@ function ViewFlashcard() {
     }
     const handleeditClick = async (id) => {
 
-        
+       
         /*let res = await axios.post("http://localhost:3001/edit", {
 
             flashcardid:id
@@ -79,8 +79,8 @@ function ViewFlashcard() {
         */
         setShowEdit(true);
         flashcardid = id;
-        
-        
+       
+       
     }
     const handleCloseEdit = () => {
         setShowEdit(false);
@@ -95,7 +95,7 @@ function ViewFlashcard() {
             newback:newback,
         });
         handleCloseEdit();
-        handlerefresh(update.flashcardset._id);   
+        handlerefresh(update.flashcardset._id);  
              
 
     }
@@ -160,7 +160,7 @@ function ViewFlashcard() {
     }
     const [cards, setCard] = useState(temp);
 
-    
+   
     const setCards = (arr, ascending) => {
         let new_cards = [];
         if (arr === "creation" && ascending) {
@@ -213,7 +213,7 @@ function ViewFlashcard() {
         } else if (e === "diff_desc") {
             setCards("diff", false);
         }
-        
+       
     }
     const handleDownload = (event) => {
         event.preventDefault();
@@ -230,14 +230,14 @@ function ViewFlashcard() {
 
     }
     return (
-        
+       
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
-            
-            
-            
+           
+           
+           
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
@@ -289,7 +289,7 @@ function ViewFlashcard() {
                                         <Form.Label>Front of Card</Form.Label>
                                         <Form.Control type="text" name = "front" placeholder="Front of FlashCard" onChange={e =>handleinputchange(e,i)}/>
                                     </Form.Group>
-                                    
+                                   
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Back of Card</Form.Label>
                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
@@ -325,7 +325,7 @@ function ViewFlashcard() {
                         {cards.map((item, index) => {
                             return (
                                 <tr>
-                                    
+                                   
                                     <th>
                                         <Button variant="light"> #{index+1} </Button>
                                     </th>
