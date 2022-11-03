@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -29,6 +29,7 @@ function Header() {
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
+    const fileRef = useRef();
 
     const [library, setLibrary] = useState([]);
     useEffect(()=> {
@@ -114,6 +115,9 @@ function Header() {
         }
 
     } 
+    const onFileChange = () => {
+        
+    }
     return (
         <div className="app">
             <Navbar variant="dark" expand="lg">
@@ -171,10 +175,15 @@ function Header() {
                                 </div>
                             </NavDropdown.Item>
                             
+                             {/* Create FlashcardSet DropDown Option */}
+
                             <NavDropdown.Item>
                                     <Button variant="Light" onClick={handleShow}>
                                         Flashcard Set
                                     </Button>
+
+                                     {/* Create FlashcardSet Modal */}
+
                                     <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                                         <Modal.Header closeButton>
                                             <Modal.Title>
@@ -249,6 +258,8 @@ function Header() {
                                     </Modal>
                             </NavDropdown.Item> 
                         </NavDropdown>
+
+                         {/* Profile DropDown */}
                         
                         <NavDropdown title="Profile" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">
@@ -266,6 +277,9 @@ function Header() {
                     </Navbar.Collapse>  
                 </Container>
             </Navbar>
+
+             {/* Save Modal */}
+            
             <Modal show={showSaved} onHide={() => handleCloseSaved()}>
                 <Modal.Header closeButton={() => handleCloseSaved()}>
                     <Modal.Title> Successful Operation</Modal.Title>
