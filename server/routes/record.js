@@ -213,7 +213,6 @@ recordRoutes.route("/flsahcardset").post(async function (req, res) {
     flashcardarray: flashcardarray,
     sortedarray: sortedarray
   }; 
-  console.log(sortedarray);
   res.json(folderinfo);
 });
 function insertionSort(arr, n) 
