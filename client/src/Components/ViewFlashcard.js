@@ -23,12 +23,9 @@ export var flashcardid = null;
 var toDeleteFlashcard = {
     front: "defaultname flashcard"
 };
-
 function ViewFlashcard() {
+
     const [showEdit, setShowEdit] = useState(false);
-    const [index, setIndex] = useState(0);
-    const [front, setFront] = useState();
-    const [back, setBack] = useState();
     const [update, setUpdate] = useState(flashcards);
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
@@ -36,12 +33,12 @@ function ViewFlashcard() {
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
     const [currSort, setCurrSort] = useState("c_a");
+
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
-    const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
 
+    const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
     const handleShowFlashcardDeleteConfirm = async (flashcard_id) => {
-        console.log(flashcardid);
         let res =await axios.post("http://localhost:3001/flsahcard",{
             flashcardid: flashcard_id
         });
@@ -60,46 +57,38 @@ function ViewFlashcard() {
             handleCloseFlashDelCon();
             handleShowSaved();
         }
-        
+       
     }
 
 
-    const [inputList, setinputList] = useState([{front:'', back:''}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
     const navigate = useNavigate();
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const [statePrivate, setPrivate] = useState(false);
+    const [statePrivate, setPrivate] = useState(update.flashcardset.private);
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:''}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
     }
-    const handleSelect = (selectedIndex, e) => {
-        setIndex(selectedIndex);
-    };
     const handleeditClick = async (id) => {
-        console.log(id);
-        let res = await axios.post("http://localhost:3001/edit", {
-            flashcardid:id
-       
-        });
         setShowEdit(true);
-        console.log(id);
         flashcardid = id;
-        
     }
     const handleCloseEdit = () => {
         setShowEdit(false);
     }
     const handleSaveEdit = async(event) => {
+
+        handlerefresh(update.flashcardset._id);
+
         let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:flashcardid,
             newfront:newfront,
             newback:newback,
         });
-        handlerefresh(update.flashcardset._id);
         handleCloseEdit();
-        if (res.data == true) {
-            handleShowSaved();
-        }
+        handlerefresh(update.flashcardset._id);  
+             
+
     }
 
 
@@ -107,7 +96,9 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
         });
-        setUpdate(res.data);
+        update.flashcardarray = res.data.flashcardarray;
+        update.sortedarray = res.data.sortedarray;
+        update.flashcard_id = res.data.flashcard_id;
         if (currSort === "c_a") {
             setCards("creation", true);
         } else if (currSort === "c_d") {
@@ -117,44 +108,35 @@ function ViewFlashcard() {
         } else if (currSort === "d_d") {
             setCards("diff", false);
         }
-    }
-    const handleChangePrivate = () => {
-        {/*statePrivate*/}
-        /*let res = await axios.post("http://localhost:3001/edit", {
-            flashcardid:id
-       
-        });*/
+        console.log(update)
     }
 
-    const handleselectClick = (item) => {
-        setFront(item.front);
-        setBack(item.back);
-    }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
         const list = [...inputList];
         list[index][name]=value;
         setinputList(list);
+        console.log(inputList)
     }
     const handleSave = async(event) => {
         event.preventDefault();
-        console.log("no");
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
         });
-        handlerefresh(update.flashcardset._id);
-        handleClose();
         if (res.data == true) {
-            handleShowSaved();
+            handleClose();
+            handlerefresh(update.flashcardset._id);
         }
     }
-    const handleSaveFlashcardStatus = (e) => {
+    const handleSaveFlashcardStatus = async (e) => {
         const updatedflashcardstatus = {
             shared:statePrivate,
-            id:update._id
+            id:update.flashcardset._id
         }
-
+        await axios.post("http://localhost:3001/setpublic", {
+            status:updatedflashcardstatus,
+        })
     }
     let temp = [];
     for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
@@ -166,7 +148,7 @@ function ViewFlashcard() {
     }
     const [cards, setCard] = useState(temp);
 
-    
+   
     const setCards = (arr, ascending) => {
         let new_cards = [];
         if (arr === "creation" && ascending) {
@@ -207,22 +189,18 @@ function ViewFlashcard() {
             }
         }
         setCard(new_cards);
-        console.log(cards);
     }
-    //setCards(update.flashcardarray, true);
     const setSort = (e) => {
-        console.log(e);
         if (e === "creation_date_ascend") {
             setCards("creation", true);
         } else if (e === "creation_date_desc") {
             setCards("creation", false);
         } else if (e === "diff_ascend") {
             setCards("diff", true);
-            console.log(update.sortedarray);
         } else if (e === "diff_desc") {
             setCards("diff", false);
         }
-        
+       
     }
     const handleDownload = (event) => {
         event.preventDefault();
@@ -239,29 +217,35 @@ function ViewFlashcard() {
 
     }
     return (
-        
+       
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
-            
-            
-            
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
-
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
                 <Button varient="primary">Download</Button>
-                <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={1} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                {statePrivate &&
+                <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true} onClick={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
                             </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={0} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="public-button" variant="outline-success" value={false} onClick={(e) => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
-                </ToggleButtonGroup>
-                <Button onClick={(handleChangePrivate)}>Confirm</Button>
+                </ToggleButtonGroup> }
+                {!statePrivate &&
+                <ToggleButtonGroup type="radio" name="options" defaultValue={false}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Private
+                            </ToggleButton>
+                            <ToggleButton id="public-button" variant="outline-success" value={false} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                                Public
+                            </ToggleButton>
+                </ToggleButtonGroup> }
+                <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>
                 <Dropdown as={ButtonGroup}>
                     <Button variant="secondary">Sort By:</Button>
                     <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
@@ -298,7 +282,7 @@ function ViewFlashcard() {
                                         <Form.Label>Front of Card</Form.Label>
                                         <Form.Control type="text" name = "front" placeholder="Front of FlashCard" onChange={e =>handleinputchange(e,i)}/>
                                     </Form.Group>
-                                    
+                                   
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Back of Card</Form.Label>
                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
@@ -334,9 +318,9 @@ function ViewFlashcard() {
                         {cards.map((item, index) => {
                             return (
                                 <tr>
-                                    
+                                   
                                     <th>
-                                        <Button variant="light" value={item} onClick={(e) => handleselectClick(item)}> #{index+1} </Button>
+                                        <Button variant="light"> #{index+1} </Button>
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>

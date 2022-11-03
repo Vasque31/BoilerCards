@@ -110,8 +110,9 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
       res.json(true);
   }
 });
-async function createFlashcard(front,back,belongsetid){
+async function createFlashcard(front,back,belongsetid,difficulty){
   const newflashcard = new Flashcard(front,back,belongsetid);
+  newflashcard.difficulty = difficulty;
   const object = await Flashcarddata.CreateFlashcard(client,newflashcard);
   const card   = await Flashcarddata.GetFlashcardasync(client,object.insertedId);
   const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(belongsetid));
@@ -147,7 +148,7 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   belongfolder.flashcardset = mapobj;
   await Flashcarddata.UpdateFolder(client,ObjectId(belongfolderid),belongfolder);
   for(var i=0;i<list.length;i++){
-    await createFlashcard(list[i].front,list[i].back,myObjectId.toString())
+    await createFlashcard(list[i].front,list[i].back,myObjectId.toString(),list[i].drate)
   }
   res.json(true);
 });
@@ -267,15 +268,19 @@ recordRoutes.route("/edit").post(async function (req, res) {
   res.json(true);
 });
 recordRoutes.route("/setpublic").post(async function (req, res) {
-  const setid = req.body.flashcardid;
-  const bool = req.body.public;
-  const set = await Flashcarddata.GetFlashcardsetasync(client,setid);
-  if(bool==0){
+  const setid = req.body.status.id;
+  console.log(setid);
+  const bool = req.body.status.shared;
+  
+  const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid));
+  if(bool==false){
     set.private = false;
+    console.log("false");
   }else{
-    set.public = true;
+    set.private = true;
+    console.log("true");
   }
-  await Flashcarddata.UpdateSet(client,setid,set);
+  await Flashcarddata.UpdateSet(client,set._id,set);
   res.json(true);
 });
 recordRoutes.route("/editfolder").post(async function (req, res) {

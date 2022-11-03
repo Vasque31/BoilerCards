@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
@@ -24,11 +24,12 @@ function Header() {
     const [show, setShow] = useState(false);
     const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
-    const [inputList, setinputList] = useState([{front:'', back:'', drate:''}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate:'3'}]);
     const [folderName, setFoldername] = useState();
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
+    const fileRef = useRef();
 
     const [library, setLibrary] = useState([]);
     useEffect(()=> {
@@ -49,7 +50,7 @@ function Header() {
     const handleCloseSaved = () => { setShowSaved(false);}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:''}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
     }
     const handleinputchange = (e, index) => {
         const {name, value,rate} = e.target;
@@ -84,7 +85,7 @@ function Header() {
 
     const handleClose = () => {
         setShow(false);
-        setinputList([{front:'', back:''}]);
+        setinputList([{front:'', back:'', drate:'3'}]);
     }
     const handleShow = async() => {
         let res = await axios.post("http://localhost:3001/loadspace", {
@@ -114,6 +115,9 @@ function Header() {
         }
 
     } 
+    const onFileChange = () => {
+        
+    }
     return (
         <div className="app">
             <Navbar variant="dark" expand="lg">
@@ -171,10 +175,15 @@ function Header() {
                                 </div>
                             </NavDropdown.Item>
                             
+                             {/* Create FlashcardSet DropDown Option */}
+
                             <NavDropdown.Item>
                                     <Button variant="Light" onClick={handleShow}>
                                         Flashcard Set
                                     </Button>
+
+                                     {/* Create FlashcardSet Modal */}
+
                                     <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                                         <Modal.Header closeButton>
                                             <Modal.Title>
@@ -224,7 +233,7 @@ function Header() {
                                                         <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
                                                             <option value={1}>1</option>
                                                             <option value={2}>2</option>
-                                                            <option value={3}>3</option>
+                                                            <option selected value={3}>3</option>
                                                             <option value={4}>4</option>
                                                             <option value={5}>5</option>
                                                         </select>
@@ -249,6 +258,8 @@ function Header() {
                                     </Modal>
                             </NavDropdown.Item> 
                         </NavDropdown>
+
+                         {/* Profile DropDown */}
                         
                         <NavDropdown title="Profile" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">
@@ -266,6 +277,9 @@ function Header() {
                     </Navbar.Collapse>  
                 </Container>
             </Navbar>
+
+             {/* Save Modal */}
+            
             <Modal show={showSaved} onHide={() => handleCloseSaved()}>
                 <Modal.Header closeButton={() => handleCloseSaved()}>
                     <Modal.Title> Successful Operation</Modal.Title>
