@@ -26,9 +26,6 @@ var toDeleteFlashcard = {
 
 function ViewFlashcard() {
     const [showEdit, setShowEdit] = useState(false);
-    const [index, setIndex] = useState(0);
-    const [front, setFront] = useState();
-    const [back, setBack] = useState();
     const [update, setUpdate] = useState(flashcards);
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
@@ -40,8 +37,7 @@ function ViewFlashcard() {
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
 
-    const handleShowFlashcardDeleteConfirm = async (flashcard_id) => {
-        console.log(flashcardid);
+    const handleShowFlashcardDeleteConfirm = async (id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
             flashcardid: flashcard_id
         });
@@ -72,17 +68,15 @@ function ViewFlashcard() {
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:''}]);
     }
-    const handleSelect = (selectedIndex, e) => {
-        setIndex(selectedIndex);
-    };
     const handleeditClick = async (id) => {
-        console.log(id);
-        let res = await axios.post("http://localhost:3001/edit", {
+
+        
+        /*let res = await axios.post("http://localhost:3001/edit", {
+
             flashcardid:id
        
         });
         setShowEdit(true);
-        console.log(id);
         flashcardid = id;
         
     }
@@ -90,16 +84,18 @@ function ViewFlashcard() {
         setShowEdit(false);
     }
     const handleSaveEdit = async(event) => {
+
+        handlerefresh(update.flashcardset._id);
+
         let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:flashcardid,
             newfront:newfront,
             newback:newback,
         });
-        handlerefresh(update.flashcardset._id);
         handleCloseEdit();
-        if (res.data == true) {
-            handleShowSaved();
-        }
+        handlerefresh(update.flashcardset._id);   
+             
+
     }
 
 
@@ -107,7 +103,9 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
         });
-        setUpdate(res.data);
+        update.flashcardarray = res.data.flashcardarray;
+        update.sortedarray = res.data.sortedarray;
+        update.flashcard_id = res.data.flashcard_id;
         if (currSort === "c_a") {
             setCards("creation", true);
         } else if (currSort === "c_d") {
@@ -126,10 +124,6 @@ function ViewFlashcard() {
         });*/
     }
 
-    const handleselectClick = (item) => {
-        setFront(item.front);
-        setBack(item.back);
-    }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
         const list = [...inputList];
@@ -138,15 +132,13 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
-        console.log("no");
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
         });
-        handlerefresh(update.flashcardset._id);
-        handleClose();
         if (res.data == true) {
-            handleShowSaved();
+            handleClose();
+            handlerefresh(update.flashcardset._id);
         }
     }
     const handleSaveFlashcardStatus = (e) => {
@@ -207,18 +199,15 @@ function ViewFlashcard() {
             }
         }
         setCard(new_cards);
-        console.log(cards);
     }
     //setCards(update.flashcardarray, true);
     const setSort = (e) => {
-        console.log(e);
         if (e === "creation_date_ascend") {
             setCards("creation", true);
         } else if (e === "creation_date_desc") {
             setCards("creation", false);
         } else if (e === "diff_ascend") {
             setCards("diff", true);
-            console.log(update.sortedarray);
         } else if (e === "diff_desc") {
             setCards("diff", false);
         }
@@ -336,7 +325,7 @@ function ViewFlashcard() {
                                 <tr>
                                     
                                     <th>
-                                        <Button variant="light" value={item} onClick={(e) => handleselectClick(item)}> #{index+1} </Button>
+                                        <Button variant="light"> #{index+1} </Button>
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
