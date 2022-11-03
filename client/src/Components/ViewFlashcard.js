@@ -134,6 +134,7 @@ function ViewFlashcard() {
             shared:statePrivate,
             id:update.flashcardset._id
         }
+        console.log(statePrivate);
         await axios.post("http://localhost:3001/setpublic", {
             status:updatedflashcardstatus,
         })
@@ -214,7 +215,6 @@ function ViewFlashcard() {
         const blob = new Blob([output]);
         const fileDownloadUrl = URL.createObjectURL(blob);
         this.setState ({})
-
     }
     return (
        
