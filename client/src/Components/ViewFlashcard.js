@@ -53,7 +53,7 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,
         });
-        
+
         handlerefresh(update.flashcardset._id);
 
         if (res.data == true) {
@@ -84,19 +84,22 @@ function ViewFlashcard() {
         setShowEdit(true);
         console.log(id);
         flashcardid = id;
-
+        
     }
     const handleCloseEdit = () => {
         setShowEdit(false);
     }
     const handleSaveEdit = async(event) => {
-        await axios.post("http://localhost:3001/edit", {
+        let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:flashcardid,
             newfront:newfront,
             newback:newback,
         });
         handlerefresh(update.flashcardset._id);
         handleCloseEdit();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
 
@@ -142,6 +145,9 @@ function ViewFlashcard() {
         });
         handlerefresh(update.flashcardset._id);
         handleClose();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
     const handleSaveFlashcardStatus = (e) => {
         const updatedflashcardstatus = {
