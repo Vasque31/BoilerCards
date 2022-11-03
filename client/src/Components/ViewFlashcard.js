@@ -23,8 +23,8 @@ export var flashcardid = null;
 var toDeleteFlashcard = {
     front: "defaultname flashcard"
 };
-
 function ViewFlashcard() {
+
     const [showEdit, setShowEdit] = useState(false);
     const [update, setUpdate] = useState(flashcards);
     const [show, setShow] = useState(false);
@@ -33,10 +33,11 @@ function ViewFlashcard() {
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
     const [currSort, setCurrSort] = useState("c_a");
+
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
-    const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
 
+    const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
     const handleShowFlashcardDeleteConfirm = async (flashcard_id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
             flashcardid: flashcard_id
@@ -60,27 +61,17 @@ function ViewFlashcard() {
     }
 
 
-    const [inputList, setinputList] = useState([{front:'', back:''}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
     const navigate = useNavigate();
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [statePrivate, setPrivate] = useState(false);
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:''}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
     }
     const handleeditClick = async (id) => {
-
-        
-        /*let res = await axios.post("http://localhost:3001/edit", {
-
-            flashcardid:id
-       
-        });
-        */
         setShowEdit(true);
         flashcardid = id;
-        
-        
     }
     const handleCloseEdit = () => {
         setShowEdit(false);
@@ -118,19 +109,13 @@ function ViewFlashcard() {
             setCards("diff", false);
         }
     }
-    const handleChangePrivate = () => {
-        {/*statePrivate*/}
-        /*let res = await axios.post("http://localhost:3001/edit", {
-            flashcardid:id
-       
-        });*/
-    }
 
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
         const list = [...inputList];
         list[index][name]=value;
         setinputList(list);
+        console.log(inputList)
     }
     const handleSave = async(event) => {
         event.preventDefault();
@@ -202,7 +187,6 @@ function ViewFlashcard() {
         }
         setCard(new_cards);
     }
-    //setCards(update.flashcardarray, true);
     const setSort = (e) => {
         if (e === "creation_date_ascend") {
             setCards("creation", true);
@@ -237,8 +221,9 @@ function ViewFlashcard() {
             </div>
             
             
-            
-            <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
+            <div className="test">
+                <FlashcardArray cards={cards}/>
+            </div>
 
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
@@ -252,7 +237,7 @@ function ViewFlashcard() {
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup>
-                <Button onClick={(handleChangePrivate)}>Confirm</Button>
+                <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>
                 <Dropdown as={ButtonGroup}>
                     <Button variant="secondary">Sort By:</Button>
                     <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />

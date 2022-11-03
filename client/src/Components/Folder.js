@@ -37,7 +37,7 @@ function Folder() {
     const [TMPName, setTMPName] = useState("");
     const [showSetting, setShowSetting] = useState(false);
     const [cookie, setCookie] = useCookies([]);
-    const [inputList, setinputList] = useState([{front:'', back:''}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
     const [name, setName] = useState();
     const [library, setLibrary] = useState(folder);
     const [destFolder, setDestFolder] = useState("");
@@ -182,10 +182,14 @@ function Folder() {
     {/* Create Flashcard Modal Handlers */}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'',drate:''}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
     }
     const handleinputchange = (e, index) => {
-        
+        const {name, value} = e.target;
+        const list = [...inputList];
+        list[index][name]=value;
+        setinputList(list);
+        console.log(inputList)
     } 
 
     //Not on backend yet
@@ -232,7 +236,7 @@ function Folder() {
     }
     const handleClose = () => {
         setShow(false);
-        setinputList([{front:'', back:''}]);
+        setinputList([{front:'', back:'', drate:'3'}]);
     }
     const handleShow = () => setShow(true);
 
@@ -407,7 +411,7 @@ function Folder() {
                                                         <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
                                                             <option value={1}>1</option>
                                                             <option value={2}>2</option>
-                                                            <option value={3}>3</option>
+                                                            <option selected value={3}>3</option>
                                                             <option value={4}>4</option>
                                                             <option value={5}>5</option>
                                                         </select>
