@@ -37,7 +37,7 @@ function ViewFlashcard() {
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
 
-    const handleShowFlashcardDeleteConfirm = async (id) => {
+    const handleShowFlashcardDeleteConfirm = async (flashcard_id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
             flashcardid: flashcard_id
         });
@@ -76,8 +76,10 @@ function ViewFlashcard() {
             flashcardid:id
        
         });
+        */
         setShowEdit(true);
         flashcardid = id;
+        
         
     }
     const handleCloseEdit = () => {
