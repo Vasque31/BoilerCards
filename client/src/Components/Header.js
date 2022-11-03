@@ -24,7 +24,7 @@ function Header() {
     const [show, setShow] = useState(false);
     const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
-    const [inputList, setinputList] = useState([{front:'', back:'', drate:''}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate:'3'}]);
     const [folderName, setFoldername] = useState();
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
@@ -49,7 +49,7 @@ function Header() {
     const handleCloseSaved = () => { setShowSaved(false);}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:''}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
     }
     const handleinputchange = (e, index) => {
         const {name, value,rate} = e.target;
@@ -84,7 +84,7 @@ function Header() {
 
     const handleClose = () => {
         setShow(false);
-        setinputList([{front:'', back:''}]);
+        setinputList([{front:'', back:'', drate:'3'}]);
     }
     const handleShow = async() => {
         let res = await axios.post("http://localhost:3001/loadspace", {
@@ -224,7 +224,7 @@ function Header() {
                                                         <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
                                                             <option value={1}>1</option>
                                                             <option value={2}>2</option>
-                                                            <option value={3}>3</option>
+                                                            <option selected value={3}>3</option>
                                                             <option value={4}>4</option>
                                                             <option value={5}>5</option>
                                                         </select>
