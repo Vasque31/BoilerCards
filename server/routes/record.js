@@ -124,7 +124,7 @@ async function createFlashcard(front,back,belongsetid){
   await Flashcarddata.UpdateSet(client,ObjectId(belongsetid),belongset);
 }
 recordRoutes.route("/createflashcardset").post(async function (req, res) {
-  console.log(req.body)
+  //console.log(req.body)
   const list = req.body.inputList;
   const setname = req.body.name;
   const newset = new Flashcardset(setname);
@@ -133,9 +133,8 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   }else{
     newset.private = false;
   }
-  console.log(newset.private);
+  //console.log(newset.private);
   const belongfolderid = req.body.folderid;
-  console.log('Folder Id beloning flashcardset:'+req.body.folderid);
   newset.belongfolder = belongfolderid;
   const set = await Flashcarddata.CreateSet(client,newset);
   const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(belongfolderid));
@@ -165,6 +164,7 @@ recordRoutes.route("/getcuurrentuser").get(async function (req, res) {
 });
 recordRoutes.route("/deletFlashcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
+  //console.log(flashcardid);
   const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
   if (card){
     const belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(card.belongset));
@@ -184,7 +184,7 @@ recordRoutes.route("/deleteset").post(async function (req, res) {
   console.log(set);
   if (set){
     const belongfolder = await Flashcarddata.GetFolderasync(client,ObjectId(set.belongfolder));
-    console.log(belongfolder);
+    //console.log(belongfolder);
     const json = JSON.stringify(belongfolder);
     const obj1 = JSON.parse(json);
     const map = new Map(Object.entries(obj1.flashcardset));
@@ -198,6 +198,7 @@ recordRoutes.route("/deleteset").post(async function (req, res) {
 });
 recordRoutes.route("/flsahcard").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
+  //console.log(flashcardid);
   const card = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid.toString()));
   res.json(card);
 });
@@ -281,9 +282,9 @@ recordRoutes.route("/editfolder").post(async function (req, res) {
   const user = await userdata.GetAsyncbyid(client,ObjectId(folder.owner));
   const map = new Map(Object.entries(user.folder));
   map.set(folder._id,folder);
-  console.log(map.get(folder._id));
+  //console.log(map.get(folder._id));
   const mapobj = Object.fromEntries(map);
-  console.log(mapobj);
+ // console.log(mapobj);
   user.folder = mapobj;
   folder._id = ObjectId(folder._id);
   result = await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
@@ -296,12 +297,79 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
   const map = new Map(Object.entries(user.folder));
   map.delete(folder._id);
   const mapobj = Object.fromEntries(map);
-  console.log(mapobj);
+  //console.log(mapobj);
   user.folder = mapobj;
   folder._id = ObjectId(folder._id);
   result = await Flashcarddata.deleteFlashcardFolder(client,ObjectId(folder._id));
   await userdata.UpdateUser(client,ObjectId(user._id),user);
   res.json(true);
 });
-
+recordRoutes.route("/groupcopy").post(async function (req, res) {
+  const groups = req.body.groups;
+  const dest = req.body.dest;
+  //console.log(groups[0].setid);
+  const folder = await Flashcarddata.GetFolderasync(client,ObjectId(dest));
+  for(i=0;i<groups.length;i++){
+    const oldset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(groups[i].setid));
+    var flashcardarray = new Map(Object.entries(oldset.flashcard));
+    flashcardarray = Array.from(flashcardarray.values());
+    const newflashcardmap = new Map();
+    const newset = oldset;
+    delete newset._id;
+    newset.belongfolder = dest;
+    const result = await Flashcarddata.CreateSet(client,newset);
+    const map = new Map(Object.entries(folder.flashcardset));
+    map.set(result.insertedId,await Flashcarddata.GetFlashcardsetasync(client,result.insertedId));
+    const mapobj = Object.fromEntries(map);
+    folder.flashcardset = mapobj;
+    await Flashcarddata.UpdateFolder(client,ObjectId(dest),folder);
+    const finalset = await Flashcarddata.GetFlashcardsetasync(client,result.insertedId);
+    for(j=0;j<flashcardarray.length;j++){
+      const newflashcard = flashcardarray[j];
+      delete newflashcard._id;
+      const result = await Flashcarddata.CreateFlashcard(client,newflashcard);
+      newflashcardmap.set(result.insertedId,await Flashcarddata.GetFlashcardasync(client,result.insertedId));
+      const mapobj = Object.fromEntries(newflashcardmap);
+      finalset.flashcard = mapobj;
+      await Flashcarddata.UpdateSet(client,ObjectId(finalset._id),finalset);
+    }
+  }
+  res.json(true);
+});
+recordRoutes.route("/groupdelete").post(async function (req, res) {
+  const groups = req.body.groups;
+  var folder = req.body.folder;
+  folder = await Flashcarddata.GetFolderasync(client,ObjectId(folder._id));
+  for(i=0;i<groups.length;i++){
+    await Flashcarddata.deleteSet(client,ObjectId(groups[i].setid));
+    var map = new Map(Object.entries(folder.flashcardset));
+    map.delete(groups[i].setid);
+    console.log(map);
+    folder.flashcardset = Object.fromEntries(map);
+    await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
+  }
+  res.json(true);
+});
+recordRoutes.route("/groupmove").post(async function (req, res) {
+  const groups = req.body.groups;
+  var folder = req.body.folder;
+  const dest = req.body.dest;
+  const destfolder = await Flashcarddata.GetFolderasync(client,ObjectId(dest));
+  folder = await Flashcarddata.GetFolderasync(client,ObjectId(folder._id));
+  for(i=0;i<groups.length;i++){
+    var set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(groups[i].setid));
+    set.belongfolder = dest;
+    await Flashcarddata.UpdateSet(client,ObjectId(set._id),set);
+    var destmap = new Map(Object.entries(destfolder.flashcardset));
+    destmap.set(set._id,set);
+    destfolder.flashcardset = Object.fromEntries(destmap);
+    await Flashcarddata.UpdateFolder(client,ObjectId(dest),destfolder);
+    var map = new Map(Object.entries(folder.flashcardset));
+    map.delete(groups[i].setid);
+    console.log(map);
+    folder.flashcardset = Object.fromEntries(map);
+    await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
+  }
+  res.json(true);
+});
 module.exports = recordRoutes;

@@ -274,6 +274,7 @@ function Folder() {
     const handleGroupDelete = async() => {
         let res = await axios.post("http://localhost:3001/groupdelete", {
             groups:selected,
+            folder:library,
         });
         handlerefresh();
         handleselectall();
@@ -283,6 +284,7 @@ function Folder() {
         let res = await axios.post("http://localhost:3001/groupmove", {
             groups:selected,
             dest: destFolder,
+            folder:library,
         });
         handlerefresh();
         handleselectall();

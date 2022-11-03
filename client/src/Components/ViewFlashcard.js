@@ -36,9 +36,10 @@ function ViewFlashcard() {
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
+
     const handleShowFlashcardDeleteConfirm = async (id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
-            flashcardid:id,
+            flashcardid: flashcard_id
         });
         toDeleteFlashcard = res.data;
         setShowFlashcardDeleteConfirm(true);
@@ -48,6 +49,7 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
             flashcardid:id,
         });
+
         handlerefresh(update.flashcardset._id);
 
         if (res.data == true) {
@@ -67,20 +69,24 @@ function ViewFlashcard() {
         setinputList([...inputList, {front:'', back:''}]);
     }
     const handleeditClick = async (id) => {
+
         
         /*let res = await axios.post("http://localhost:3001/edit", {
+
             flashcardid:id
        
-        });*/
+        });
         setShowEdit(true);
         flashcardid = id;
-
+        
     }
     const handleCloseEdit = () => {
         setShowEdit(false);
     }
     const handleSaveEdit = async(event) => {
+
         handlerefresh(update.flashcardset._id);
+
         let res = await axios.post("http://localhost:3001/edit", {
             flashcardid:flashcardid,
             newfront:newfront,
@@ -89,6 +95,7 @@ function ViewFlashcard() {
         handleCloseEdit();
         handlerefresh(update.flashcardset._id);   
              
+
     }
 
 

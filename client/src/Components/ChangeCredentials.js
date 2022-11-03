@@ -53,13 +53,13 @@ function ChangeCredentials() {
             oldpassword:oldpassword,
             newpassword:newpassword
             
-        });
-        if(res.data ===true){
-            handleShowSaved();
-            window.location.reload();
-        }else{
-            alert("password does not match")
-        }
+            });
+            if(res.data ===true){
+                window.location.reload();
+                handleShowSaved();
+            }else{
+                alert("password does not match")
+            }
         console.log(newAccountInfo);
         }else{
             alert("wrong format");
