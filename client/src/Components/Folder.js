@@ -315,7 +315,7 @@ function Folder() {
                     </Button>
                     &nbsp;&nbsp;
                     <Button variant="warning" onClick={handleShowSetting}>
-                        Folder Settings
+                        Rename Folder
                     </Button>
                     &nbsp;&nbsp;
                     <Button variant='danger' value={library._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
