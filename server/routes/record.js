@@ -269,18 +269,16 @@ recordRoutes.route("/edit").post(async function (req, res) {
 });
 recordRoutes.route("/setpublic").post(async function (req, res) {
   const setid = req.body.status.id;
-  console.log(setid);
   const bool = req.body.status.shared;
-  
   const set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(setid));
-  if(bool==false){
+  if(bool=="false"){
     set.private = false;
     console.log("false");
-  }else{
+  }if(bool=="true"){
     set.private = true;
     console.log("true");
   }
-  await Flashcarddata.UpdateSet(client,set._id,set);
+  await Flashcarddata.UpdateSet(client,ObjectId(setid),set);
   res.json(true);
 });
 recordRoutes.route("/editfolder").post(async function (req, res) {
@@ -363,6 +361,11 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
   const destfolder = await Flashcarddata.GetFolderasync(client,ObjectId(dest));
   folder = await Flashcarddata.GetFolderasync(client,ObjectId(folder._id));
   for(i=0;i<groups.length;i++){
+    var map = new Map(Object.entries(folder.flashcardset));
+    map.delete(groups[i].setid);
+    console.log(map);
+    folder.flashcardset = Object.fromEntries(map);
+    await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
     var set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(groups[i].setid));
     set.belongfolder = dest;
     await Flashcarddata.UpdateSet(client,ObjectId(set._id),set);
@@ -370,11 +373,7 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
     destmap.set(set._id,set);
     destfolder.flashcardset = Object.fromEntries(destmap);
     await Flashcarddata.UpdateFolder(client,ObjectId(dest),destfolder);
-    var map = new Map(Object.entries(folder.flashcardset));
-    map.delete(groups[i].setid);
-    console.log(map);
-    folder.flashcardset = Object.fromEntries(map);
-    await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
+
   }
   res.json(true);
 });
