@@ -91,7 +91,6 @@ function ViewFlashcard() {
 
     }
 
-
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
@@ -134,6 +133,7 @@ function ViewFlashcard() {
             shared:statePrivate,
             id:update.flashcardset._id
         }
+        console.log(updatedflashcardstatus.shared)
         await axios.post("http://localhost:3001/setpublic", {
             status:updatedflashcardstatus,
         })
@@ -229,19 +229,19 @@ function ViewFlashcard() {
                 <Button varient="primary">Download</Button>
                 {statePrivate &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={true} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={e => setPrivate(e.currentTarget.value)}>
                                 Private
                             </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={false} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="public-button" variant="outline-success" value={false} onChange={e => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
                 {!statePrivate &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={false}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={true} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
                             </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={false} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="public-button" variant="outline-success" value={false} onChange={(e) => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
