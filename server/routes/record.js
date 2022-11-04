@@ -168,6 +168,12 @@ recordRoutes.route("/addmoreFlashcards").post(async function (req, res) {
   const setid = req.body.setid; 
   const list = req.body.inputList;
   for(var i=0;i<list.length;i++){
+    if(list[i].img!=''){
+      var base64Data = list[i].img.replace(/^data:image\/png;base64,/, "");
+    require("fs").writeFile("./image/out1.png", base64Data, 'base64', function(err) {
+      console.log('Results Received');
+    });
+    }
     await createFlashcard(list[i].front,list[i].back,setid.toString(),list[i].drate,list[i].img)
   }
   res.json(true);
