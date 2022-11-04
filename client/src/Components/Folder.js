@@ -136,7 +136,7 @@ function Folder() {
 
     const handleDeleteFolder = async(object) => {
         let res = await axios.post("http://localhost:3001/deletefolder",{
-            folder:library,
+            folder:folder,
         });
         if (res.data == true) {
             handleShowSaved();
@@ -150,7 +150,7 @@ function Folder() {
             folderid:folder._id
         });
         console.log(res.data);
-        setLibrary(res.data);
+        setFolder(res.data);
         localStorage.setItem('folder', JSON.stringify(res.data));
     }
     //passes in the set to be deleted
@@ -219,7 +219,7 @@ function Folder() {
             inputList:inputList,
             name:name,
             statePrivate:statePrivate,
-            folderid:library._id
+            folderid:folder._id
         }
         console.log(flashcardInfo);
         let res = await axios.post("http://localhost:3001/createflashcardset", {
@@ -246,11 +246,11 @@ function Folder() {
 
     const handleSave = async(event) => {
         event.preventDefault();
-        console.log(library);
-        library.foldername = TMPName;
+        console.log(folder);
+        folder.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
-            folder:library,
+            folder:folder,
         });
         
         if(res.data===true){
@@ -280,7 +280,7 @@ function Folder() {
     const handleGroupDelete = async() => {
         let res = await axios.post("http://localhost:3001/groupdelete", {
             groups:selected,
-            folder:library,
+            folder:folder,
         });
         handlerefresh();
         handleselectall();
@@ -303,8 +303,8 @@ function Folder() {
         fileReader.onload = r => {
             list[index][name]=r.target.result;
         };
+        fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
-        console.log(inputList)
     }
     return (
         <div>
