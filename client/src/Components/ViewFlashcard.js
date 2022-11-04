@@ -207,7 +207,6 @@ function ViewFlashcard() {
                 let drate = Object.values(update.flashcardarray)[i].difficulty;
                 new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image, drate: drate});
                 setCurrSort("c_a");
-                console.log(Object.values(update.flashcardarray)[i].drate)
             }
         } else if (arr === "creation" && !ascending) {
             for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
@@ -219,7 +218,6 @@ function ViewFlashcard() {
                 let drate = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].difficulty;
                 new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
                 setCurrSort("c_d");
-                console.log(Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].drate)
             }
         } else if (arr === "diff" && ascending) {
             for (let i = 0; i < Object.values(update.sortedarray).length; i++) {
@@ -231,7 +229,6 @@ function ViewFlashcard() {
                 let drate = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].difficulty;
                 new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
                 setCurrSort("d_a");
-                console.log(Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].drate)
             }
         } else {
             for (let i = 0; i < Object.values(update.sortedarray).length; i++) {
@@ -242,13 +239,10 @@ function ViewFlashcard() {
                 let image = Object.values(update.sortedarray)[i].image;
                 let drate = Object.values(update.sortedarray)[i].difficulty;
                 new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
-                console.log(Object.values(update.sortedarray)[i].drate);
                 setCurrSort("d_d");
             }
         }
         setCard(new_cards);
-        console.log("CARDS UNDERNEATH");
-        console.log(cards);
     }
     const setSort = (e) => {
         if (e === "creation_date_ascend") {
