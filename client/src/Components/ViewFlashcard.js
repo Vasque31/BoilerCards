@@ -390,8 +390,8 @@ function ViewFlashcard() {
                                             </Button>
                                         </Link>}
                                         {item.image!==null &&
-                                        <Button variant='light' value={item.flashcard_id} onClick={(e) => handleRemoveNote(e)}>
-                                                Remove image
+                                        <Button variant='danger' size='sm' value={item.flashcard_id} onClick={(e) => handleRemoveNote(e)}>
+                                                X
                                         </Button>}
                                     </th>
                                     <th>{item.front}</th>
