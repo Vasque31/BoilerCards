@@ -247,10 +247,10 @@ function Folder() {
     const handleSave = async(event) => {
         event.preventDefault();
         console.log(library);
-        library.foldername = TMPName;
+        folder.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
-            folder:library,
+            folder:folder,
         });
         
         if(res.data===true){
