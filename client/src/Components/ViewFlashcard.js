@@ -77,6 +77,12 @@ function ViewFlashcard() {
         fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
     }
+    const handleRemoveNote = async (e) => {
+        let res = await axios.post("http://localhost:3001/removeNote", {
+            flashcardid: e,
+        });
+        handlerefresh(update.flashcardset._id);
+    }
     const handleDeleteFlashcard = async (flashcard) => {
         const id = flashcard._id;
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
@@ -380,9 +386,13 @@ function ViewFlashcard() {
                                         {item.image!==null &&
                                         <Link to="/note" target="_blank">
                                             <Button variant='link' value={item.image} onClick={(e) => handleNote(e)}>
-                                                Note
+                                                Image
                                             </Button>
                                         </Link>}
+                                        {item.image!==null &&
+                                        <Button variant='danger' size='sm' value={item.flashcard_id} onClick={(e) => handleRemoveNote(e)}>
+                                                X
+                                        </Button>}
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
