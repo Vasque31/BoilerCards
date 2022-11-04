@@ -7,7 +7,6 @@ import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 export var folder;
-export var lib;
 function HomeLibrary() {
     const navigate = useNavigate();
     const [cookie, setCookie, removeCookie] = useCookies([]);
@@ -20,13 +19,14 @@ function HomeLibrary() {
             });
             console.log(res.data);
             setLibrary(res.data);
+            localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
     },[]);
 
     const handleSeeMore = (event) => {
         //prevents page reload
-        event.preventDefault();
+        console.log("It reaches")
         navigate('/mylibrary');
     };
      
@@ -37,9 +37,8 @@ function HomeLibrary() {
             folderid:getCookie('folderid')
         });
         folder = res.data;
-        lib = library;
         console.log(res.data);
-        console.log(lib)
+        localStorage.setItem('folder', JSON.stringify(res.data));
         navigate('/folder');
     };
     {/*const listOfItems = {libstorage.map((item, index) =>
@@ -49,7 +48,7 @@ function HomeLibrary() {
         <div className="box">
         <h1 className="section-title">My Library</h1>
         <div style ={{paddingTop: "0.5rem"}}>
-            <Button variant="link" size= "sm" className= "see-more" onClick={(e) => handleSeeMore}>See All</Button>
+            <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
         </div>
         <div className= "library-box">
             <table>

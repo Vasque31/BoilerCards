@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { UNSAFE_enhanceManualRouteObjects, useNavigate } from 'react-router-dom';
 import Header from "./Header";
-import {folder, lib} from './HomeLibrary';
+import {folder} from './HomeLibrary';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -39,7 +39,7 @@ function Folder() {
     const [cookie, setCookie] = useCookies([]);
     const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
     const [name, setName] = useState();
-    const [library, setLibrary] = useState(folder);
+    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('folder')));
     const [destFolder, setDestFolder] = useState("");
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
@@ -56,7 +56,8 @@ function Folder() {
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
-    const [checkedState, setCheckedState] = useState([])
+    const [checkedState, setCheckedState] = useState([]);
+
 
     const handleAddGroup = (e, i) => {
         console.log(e.currentTarget.value)
@@ -151,6 +152,7 @@ function Folder() {
         });
         console.log(res.data);
         setLibrary(res.data);
+        localStorage.setItem('folder', JSON.stringify(res.data));
     }
     //passes in the set to be deleted
     const handleDeleteFlashcardset = async (object) => {
@@ -175,6 +177,7 @@ function Folder() {
             setid:id
         });
         flashcards = res.data;
+        localStorage.setItem('flashcards', JSON.stringify(res.data));
         console.log(flashcards);
         navigate('/flashcard');
     };
@@ -334,7 +337,7 @@ function Folder() {
                     &nbsp;&nbsp;
                     <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                         <option value="">---Choose Destination---</option>
-                        {Object.values(lib).map(item => {
+                        {Object.values(library).map(item => {
                             return (
                                 <option value={item._id}>{item.foldername}</option>    
                             );
