@@ -274,15 +274,18 @@ function Folder() {
     {/* Group Handlers */}
 
     const handleGroupCopy = async() => {
-        let res = await axios.post("http://localhost:3001/groupcopy", {
-            groups:selected,
-            dest:destFolder,
-        });
-        handlerefresh();
-        handleselectall();
-        if (res.data == true) {
-            handleShowSaved();
-        }
+        if (destFolder !== '') {
+            let res = await axios.post("http://localhost:3001/groupcopy", {
+                groups:selected,
+                dest:destFolder,
+            });
+            handlerefresh();
+            handleselectall();
+            if (res.data == true) {
+                handleShowSaved();
+            }
+            }
+    
     }
 
     const handleGroupDelete = async() => {
@@ -299,6 +302,7 @@ function Folder() {
     }
 
     const handleGroupMove = async() => {
+        if (destFolder !== '') {
         let res = await axios.post("http://localhost:3001/groupmove", {
             groups:selected,
             dest: destFolder,
@@ -309,6 +313,7 @@ function Folder() {
         if (res.data == true) {
             handleShowSaved();
         }
+    }
     }
 
     {/* Image Handlers */}

@@ -115,6 +115,7 @@ async function createFlashcard(front,back,belongsetid,difficulty,img){
   const newflashcard = new Flashcard(front,back,belongsetid);
   newflashcard.difficulty = difficulty;
   if (img!=''){
+    console.log(img);
     var base64Data = img.replace(/^data:image\/png;base64,/, "");
     require("fs").writeFile("./image/out1.png", base64Data, 'base64', function(err) {
       console.log('Results Received');
@@ -139,10 +140,12 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   //null statement check
   const setname = req.body.name;  
   const newset = new Flashcardset(setname);
-  if(req.body.statePrivate==true||req.body.statePrivate=="true"){
+  if(req.body.public==true||req.body.public=="true"){
     newset.private = true;
+    console.log(req.body.public);
   }else{
     newset.private = false;
+    console.log(req.body.public);
   }
   //console.log(newset.private);
   const belongfolderid = req.body.folderid;

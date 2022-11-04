@@ -77,7 +77,8 @@ function Header() {
         console.log(inputList);
     } 
     const handleSave = async(event) => {
-        event.preventDefault();
+        if(destFolder!==''){
+            event.preventDefault();
         const flashcardInfo = {
             inputList:inputList,
             name:name,
@@ -98,6 +99,7 @@ function Header() {
         handleClose();
         
         console.log(flashcardInfo);
+        }   
     }
 
     const handleClose = () => {
@@ -128,7 +130,13 @@ function Header() {
         if (res.data == true) {
             handleShowSaved(); //save icon
         }
-
+        res = await axios.post("http://localhost:3001/loadspace", {
+                uid:getCookie('userid'),
+            });
+            console.log(res.data);
+            setLibrary(res.data);
+            localStorage.setItem('libdata', JSON.stringify(res.data));
+        
     } 
     const onFileChange = () => {
         

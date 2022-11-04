@@ -101,7 +101,10 @@ function ViewFlashcard() {
 
     const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img: ''}]);
     const navigate = useNavigate();
-    const handleClose = () => setShow(false);
+    const handleClose = () => {     
+        setinputList([{front:'', back:'', drate: '3', img: ''}])
+        setShow(false)
+    };
     const handleShow = () => setShow(true);
     const [statePrivate, setPrivate] = useState(update.flashcardset.private);
     const handleaddmore = () => {
@@ -162,6 +165,7 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
+        console.log(inputList);
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
@@ -171,6 +175,7 @@ function ViewFlashcard() {
             handleClose();
             handlerefresh(update.flashcardset._id);
         }
+        setinputList([{front:'', back:'', drate:'3', img: ''}]);
     }
     const handleSaveFlashcardStatus = async (e) => {
         const updatedflashcardstatus = {
