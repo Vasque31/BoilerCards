@@ -18,6 +18,7 @@ import EditFlashcard from './Components/EditFlashcard';
 import DownloadFlashcard from "./Components/DownloadFlashcard";
 import { useCookies } from 'react-cookie';
 import QuizGame from './Components/QuizGame.js';
+import ImageNote from './Components/ImageNote.js';
 function App() {
 
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/editflashcard" element={<EditFlashcard/>} />
         <Route path="/saveicon" element={<SavedIcon/>} />
         <Route path="/downloadset" element={<DownloadFlashcard/>} />
+        <Route path="/note" element={<ImageNote/>} />
         <Route path="/quizgame" element={<QuizGame/>} />
 
       </Routes>
