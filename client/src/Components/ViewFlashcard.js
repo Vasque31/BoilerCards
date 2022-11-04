@@ -223,7 +223,9 @@ function ViewFlashcard() {
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
+            <div className="test">
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
+            </div>
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
