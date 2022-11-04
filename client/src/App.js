@@ -15,6 +15,7 @@ import ChangeCredentials from './Components/ChangeCredentials';
 import Folder from './Components/Folder';
 import ViewFlashCard from './Components/ViewFlashcard.js'
 import EditFlashcard from './Components/EditFlashcard';
+import DownloadFlashcard from "./Components/DownloadFlashcard";
 import { useCookies } from 'react-cookie';
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/flashcard" element={<ViewFlashCard/>} />
         <Route path="/editflashcard" element={<EditFlashcard/>} />
         <Route path="/saveicon" element={<SavedIcon/>} />
+        <Route path="/downloadset" element={<DownloadFlashcard/>} />
       </Routes>
     </div>
   );
