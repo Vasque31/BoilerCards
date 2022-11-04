@@ -85,6 +85,7 @@ function ViewFlashcard() {
             newfront:newfront,
             newback:newback,
         });
+        console.log(flashcardid);
         handleCloseEdit();
         handlerefresh(update.flashcardset._id);  
              
@@ -107,7 +108,6 @@ function ViewFlashcard() {
         } else if (currSort === "d_d") {
             setCards("diff", false);
         }
-        console.log(update)
     }
 
     const handleinputchange = (e, index) => {
@@ -133,6 +133,7 @@ function ViewFlashcard() {
             shared:statePrivate,
             id:update.flashcardset._id
         }
+        console.log(updatedflashcardstatus.shared)
         await axios.post("http://localhost:3001/setpublic", {
             status:updatedflashcardstatus,
         })
