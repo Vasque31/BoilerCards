@@ -79,7 +79,7 @@ function ViewFlashcard() {
     }
     const handleRemoveNote = async (e) => {
         let res = await axios.post("http://localhost:3001/removeNote", {
-            flashcardid: e,
+            flashcardid: e.currentTarget.value,
         });
         handlerefresh(update.flashcardset._id);
     }
@@ -383,13 +383,13 @@ function ViewFlashcard() {
                                    
                                     <th>
                                         <Button variant="light"> #{index+1} </Button>
-                                        {item.image!==null &&
+                                        {item.image!=="" &&
                                         <Link to="/note" target="_blank">
                                             <Button variant='link' value={item.image} onClick={(e) => handleNote(e)}>
                                                 Image
                                             </Button>
                                         </Link>}
-                                        {item.image!==null &&
+                                        {item.image!=="" &&
                                         <Button variant='danger' size='sm' value={item.flashcard_id} onClick={(e) => handleRemoveNote(e)}>
                                                 X
                                         </Button>}
