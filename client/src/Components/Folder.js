@@ -180,6 +180,7 @@ function Folder() {
         });
         flashcards = res.data;
         localStorage.setItem('flashcards', JSON.stringify(res.data));
+        console.log(res.data);
         console.log(flashcards);
         navigate('/flashcard');
     };

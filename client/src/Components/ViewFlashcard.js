@@ -16,6 +16,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 import { Link } from "react-router-dom";
 //export var flashcardid = null;
+export var image = "";
 
 export var cardsQuiz = [{front: "a", back: "b",}];
 
@@ -46,6 +47,10 @@ function ViewFlashcard() {
         });
         toDeleteFlashcard = res.data;
         setShowFlashcardDeleteConfirm(true);
+    }
+    const handleNote = (e) => {
+        localStorage.setItem('img', JSON.stringify(e.currentTarget.value));
+        console.log(JSON.parse(localStorage.getItem('img')));
     }
 
     const handleStartQuiz = () => {
@@ -169,7 +174,8 @@ function ViewFlashcard() {
         let front = Object.values(update.flashcardarray)[i].front;
         let back = Object.values(update.flashcardarray)[i].back;
         let flashcard_id = Object.values(update.flashcardarray)[i]._id;
-        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+        let image = Object.values(update.flashcardarray)[i].image;
+        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image});
     }
     const [cards, setCard] = useState(temp);
 
@@ -182,7 +188,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.flashcardarray)[i].front;
                 let back = Object.values(update.flashcardarray)[i].back;
                 let flashcard_id = Object.values(update.flashcardarray)[i]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.flashcardarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image});
                 setCurrSort("c_a");
             }
         } else if (arr === "creation" && !ascending) {
@@ -191,7 +198,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].front;
                 let back = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].back;
                 let flashcard_id = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.flashcardarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
                 setCurrSort("c_d");
             }
         } else if (arr === "diff" && ascending) {
@@ -200,7 +208,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].front;
                 let back = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].back;
                 let flashcard_id = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.sortedarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
                 setCurrSort("d_a");
             }
         } else {
@@ -209,7 +218,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.sortedarray)[i].front;
                 let back = Object.values(update.sortedarray)[i].back;
                 let flashcard_id = Object.values(update.sortedarray)[i]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.sortedarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
                 setCurrSort("d_d");
             }
         }
@@ -358,6 +368,12 @@ function ViewFlashcard() {
                                    
                                     <th>
                                         <Button variant="light"> #{index+1} </Button>
+                                        {item.image!==null &&
+                                        <Link to="/note" target="_blank">
+                                            <Button variant='link' value={item.image} onClick={(e) => handleNote(e)}>
+                                                Note
+                                            </Button>
+                                        </Link>}
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
