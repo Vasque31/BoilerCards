@@ -51,7 +51,10 @@ function Folder() {
     const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
 
     const handleShowSaved = () => { setShowSaved(true);}
-    const handleCloseSaved = () => { setShowSaved(false);}
+    const handleCloseSaved = () => { 
+        setShowSaved(false);
+        handlerefresh();
+    }
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}

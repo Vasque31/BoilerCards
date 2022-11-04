@@ -8,6 +8,8 @@ import "./QuizGame.css";
 
 var flashcardarray;
 var score = 0;
+var previousPrompt = [];
+
 
 //Assume new round onHide for now
 
@@ -20,7 +22,7 @@ function QuizGame() {
     const [correctness, setCorrectness] = useState("Correct");
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
-    var selectedPromptIndex = randomCard();
+    var selectedPromptIndex = randomCard(previousPrompt);
     var selectedCorrectPosition = randomButtonPlace();
     console.log("position: " + selectedCorrectPosition);
     console.log("correct answer index:" + selectedPromptIndex);
@@ -42,6 +44,7 @@ function QuizGame() {
     const handleSelectCorrectAnswer = () => {
         score++;
         setCorrectness("Correct");
+        previousPrompt = [selectedPromptIndex];
         setShowContinueorExit(true);
     }
     const handleSelectIncorrectAnswer = () => {
@@ -50,7 +53,6 @@ function QuizGame() {
     }
     
     const handleNewRound = () => {
-
 
         setShowContinueorExit(false);
     }
