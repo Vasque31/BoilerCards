@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import "./ViewFlashcard.css";
-import Carousel from 'react-bootstrap/Carousel';
-import background from '../images/bk.png';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -16,6 +14,7 @@ import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import saveicon from "../images/saveicon.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
+import { Link } from "react-router-dom";
 //export var flashcardid = null;
 
 export var cardsQuiz = [{front: "a", back: "b",}];
@@ -27,17 +26,19 @@ var toDeleteFlashcard = {
 function ViewFlashcard() {
 
     const [showEdit, setShowEdit] = useState(false);
-    const [update, setUpdate] = useState(flashcards);
+    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
     const [currSort, setCurrSort] = useState("c_a");
-
+    const [newDiff, setNewDiff] = useState();
+    const [showDownload, setShowDownload] = useState(false);
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
-
+    const handleCloseDownload = () => setShowDownload(false);
+    const handleShowDownload = () => setShowDownload(true);
     const handleCloseFlashDelCon = () => {setShowFlashcardDeleteConfirm(false);}
     const handleShowFlashcardDeleteConfirm = async (flashcard_id) => {
         let res =await axios.post("http://localhost:3001/flsahcard",{
@@ -102,7 +103,9 @@ function ViewFlashcard() {
             flashcardid:flashcardid,
             newfront:newfront,
             newback:newback,
+            newDiff:newDiff,
         });
+        console.log(flashcardid);
         handleCloseEdit();
         handlerefresh(update.flashcardset._id);  
         if (res.data == true) {
@@ -112,11 +115,11 @@ function ViewFlashcard() {
 
     }
 
-
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
         });
+        localStorage.setItem('flashcards', JSON.stringify(res.data));
         update.flashcardarray = res.data.flashcardarray;
         update.sortedarray = res.data.sortedarray;
         update.flashcard_id = res.data.flashcard_id;
@@ -129,7 +132,6 @@ function ViewFlashcard() {
         } else if (currSort === "d_d") {
             setCards("diff", false);
         }
-        console.log(update)
     }
 
     const handleinputchange = (e, index) => {
@@ -156,6 +158,7 @@ function ViewFlashcard() {
             shared:statePrivate,
             id:update.flashcardset._id
         }
+        console.log(updatedflashcardstatus.shared)
         await axios.post("http://localhost:3001/setpublic", {
             status:updatedflashcardstatus,
         })
@@ -224,46 +227,47 @@ function ViewFlashcard() {
         }
        
     }
-    const handleDownload = (event) => {
-        event.preventDefault();
-        let output = '';
-        for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
-            output += Object.values(update.flashcardarray)[i].front;
-            output += "\t";
-            output += Object.values(update.flashcardarray)[i].back;
-            output += "\n";
-        }
-        const blob = new Blob([output]);
-        const fileDownloadUrl = URL.createObjectURL(blob);
-        this.setState ({})
 
-    }
     return (
        
         <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
+            <div className="test">
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
+            </div>
             <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
                 <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
                 <Button varient="primary" onClick={handleShow}>+</Button>
-                <Button varient="primary">Download</Button>
+                <Button varient="primary" onClick={handleShowDownload}>Download</Button>
+                <Modal show={showDownload} onHide={handleCloseDownload} backdrop="static">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Download this Flashcardset</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Once you click Download, press ctrl+p to download locally</Modal.Body>
+                    <Modal.Footer>
+                        <Link to="/downloadset" target="_blank">
+                            <Button varient="primary" onClick={handleCloseDownload}>Download</Button>
+                        </Link>
+                    </Modal.Footer>
+                </Modal>
+                
                 {statePrivate &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={true} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={e => setPrivate(e.currentTarget.value)}>
                                 Private
                             </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={false} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="public-button" variant="outline-success" value={false} onChange={e => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
                 {!statePrivate &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={false}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={true} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
                             </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={false} onClick={(e) => setPrivate(e.currentTarget.value)}>
+                            <ToggleButton id="public-button" variant="outline-success" value={false} onChange={(e) => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
@@ -309,6 +313,16 @@ function ViewFlashcard() {
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Back of Card</Form.Label>
                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                    </Form.Group>
+                                    <Form.Group style={{color: "gold"}}>
+                                        <Form.Label>Difficulty Rating</Form.Label>
+                                        <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                            <option selected value={3}>3</option>
+                                            <option value={4}>4</option>
+                                            <option value={5}>5</option>
+                                        </select>
                                     </Form.Group>
                                 </Form>
                             )
@@ -377,6 +391,16 @@ function ViewFlashcard() {
                         <Form.Group style={{color: "gold"}}>
                             <Form.Label>Back of Card</Form.Label>
                             <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => setNewback(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group style={{color: "gold"}}>
+                            <Form.Label>Difficulty Rating</Form.Label>
+                                <select name ="drate" id="Difficulty-Rating" onChange={(e) => setNewDiff(e.target.value)}>
+                                    <option value={1}>1</option>
+                                    <option value={2}>2</option>
+                                    <option selected value={3}>3</option>
+                                    <option value={4}>4</option>
+                                    <option value={5}>5</option>
+                                </select>
                         </Form.Group>
                     </Form>
                 </Modal.Body>

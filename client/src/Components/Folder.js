@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { UNSAFE_enhanceManualRouteObjects, useNavigate } from 'react-router-dom';
 import Header from "./Header";
-import {folder, lib} from './HomeLibrary';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -14,7 +13,6 @@ import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import saveicon from "../images/saveicon.png";
-
 import cookie from 'react-cookies'
 export var flashcards = null;
 
@@ -31,15 +29,16 @@ var currentUser = {
 var index = 0;
 function Folder() {
     const navigate = useNavigate();
-    
+    const fileReader = new FileReader();
     const [show, setShow] = useState(false);
     const [statePrivate, setPrivate] = useState(true);
     const [TMPName, setTMPName] = useState("");
     const [showSetting, setShowSetting] = useState(false);
     const [cookie, setCookie] = useCookies([]);
-    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
     const [name, setName] = useState();
-    const [library, setLibrary] = useState(folder);
+    const [folder, setFolder] = useState(JSON.parse(localStorage.getItem('folder')));
+    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')));
     const [destFolder, setDestFolder] = useState("");
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
@@ -57,6 +56,7 @@ function Folder() {
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
+
     const handleShowFlashcardsetGroupDeleteConfirm = () => {setShowFlashcardsetDeleteGroupConfirm(true);}
     const handleCloseFlashcardsetGroupDeleteConfirmation = () => {setShowFlashcardsetDeleteGroupConfirm(false);}
     const [checkedState, setCheckedState] = useState([])
@@ -139,7 +139,7 @@ function Folder() {
 
     const handleDeleteFolder = async(object) => {
         let res = await axios.post("http://localhost:3001/deletefolder",{
-            folder:library,
+            folder:folder,
         });
         if (res.data == true) {
             handleShowSaved();
@@ -148,12 +148,13 @@ function Folder() {
         
     }
     const handlerefresh = async () => {     
-        console.log(library._id);
+        console.log(folder._id);
         let res = await axios.post("http://localhost:3001/folder", {
-            folderid:library._id
+            folderid:folder._id
         });
         console.log(res.data);
-        setLibrary(res.data);
+        setFolder(res.data);
+        localStorage.setItem('folder', JSON.stringify(res.data));
     }
     //passes in the set to be deleted
     const handleDeleteFlashcardset = async (object) => {
@@ -178,6 +179,7 @@ function Folder() {
             setid:id
         });
         flashcards = res.data;
+        localStorage.setItem('flashcards', JSON.stringify(res.data));
         console.log(flashcards);
         navigate('/flashcard');
     };
@@ -185,7 +187,7 @@ function Folder() {
     {/* Create Flashcard Modal Handlers */}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
@@ -220,7 +222,7 @@ function Folder() {
             inputList:inputList,
             name:name,
             statePrivate:statePrivate,
-            folderid:folder._id,
+            folderid:folder._id
         }
         console.log(flashcardInfo);
         let res = await axios.post("http://localhost:3001/createflashcardset", {
@@ -239,7 +241,7 @@ function Folder() {
     }
     const handleClose = () => {
         setShow(false);
-        setinputList([{front:'', back:'', drate:'3'}]);
+        setinputList([{front:'', back:'', drate:'3', img:''}]);
     }
     const handleShow = () => setShow(true);
 
@@ -247,11 +249,11 @@ function Folder() {
 
     const handleSave = async(event) => {
         event.preventDefault();
-        console.log(library);
-        library.foldername = TMPName;
+        console.log(folder);
+        folder.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
-            folder:library,
+            folder:folder,
         });
         
         if(res.data===true){
@@ -284,7 +286,7 @@ function Folder() {
     const handleGroupDelete = async() => {
         let res = await axios.post("http://localhost:3001/groupdelete", {
             groups:selected,
-            folder:library,
+            folder:folder,
         });
         handlerefresh();
         handleselectall();
@@ -298,13 +300,24 @@ function Folder() {
         let res = await axios.post("http://localhost:3001/groupmove", {
             groups:selected,
             dest: destFolder,
-            folder:library,
+            folder:folder,
         });
         handlerefresh();
         handleselectall();
         if (res.data == true) {
             handleShowSaved();
         }
+    }
+
+    {/* Image Handlers */}
+    const handleimage = (e, i) => {
+        const {name} = e.target;
+        const list = [...inputList];
+        fileReader.onload = r => {
+            list[index][name]=r.target.result;
+        };
+        fileReader.readAsDataURL(e.target.files[0]);
+        setinputList(list);
     }
     return (
         <div>
@@ -315,7 +328,7 @@ function Folder() {
             
             <div className="box">
 
-                <heading className="section-title">{library.foldername}</heading>
+                <heading className="section-title">{folder.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                 <Button variant="warning" onClick={handleselectall}>
                         Select All
@@ -328,10 +341,10 @@ function Folder() {
                     </Button>
                     &nbsp;&nbsp;
                     <Button variant="warning" onClick={handleShowSetting}>
-                        Folder Settings
+                        Rename Folder
                     </Button>
                     &nbsp;&nbsp;
-                    <Button variant='danger' value={library._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    <Button variant='danger' value={folder._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
                     </>
                 }
                 {selectall &&
@@ -347,19 +360,20 @@ function Folder() {
                     &nbsp;&nbsp;
                     <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                         <option value="">---Choose Destination---</option>
-                        {Object.values(lib).map(item => {
+                        {Object.values(library).map(item => {
                             return (
                                 <option value={item._id}>{item.foldername}</option>    
                             );
                         })}
                     </select>
                     <Button variant='danger' value={library._id} onClick={handleShowFlashcardsetGroupDeleteConfirm}>Delete</Button>
+
                     </>
                 }
                 </div>
                 <div className= "library-box">
                 <table>
-                    {Object.values(library.flashcardset).map((item, i) => {
+                    {Object.values(folder.flashcardset).map((item, i) => {
                         
                         return (
                             <row>
@@ -418,6 +432,7 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                        <input type='file' name='img' accept="image/*" onChange={(e) => handleimage(e,i)}/>
                                                     </Form.Group>
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Difficulty Rating</Form.Label>
@@ -474,9 +489,9 @@ function Folder() {
                 <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Are you sure you want to delete {library.foldername}?</Modal.Body>
+                <Modal.Body> Are you sure you want to delete {folder.foldername}?</Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleDeleteFolder(library)}> Delete </Button>
+                    <Button onClick={() => handleDeleteFolder(folder)}> Delete </Button>
                     <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>

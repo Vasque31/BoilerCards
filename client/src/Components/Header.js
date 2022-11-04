@@ -42,6 +42,7 @@ function Header() {
             });
             console.log(res.data);
             setLibrary(res.data);
+            localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
     },[]);

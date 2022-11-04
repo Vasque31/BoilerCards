@@ -6,6 +6,7 @@ class Flashcard{
         this.flagged = false;
         this.belongset = belongsetid;
         this.difficulty = 3;
+        this.image = null;
     }
    
 }

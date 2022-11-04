@@ -12,18 +12,9 @@ import axios from "axios";
 
 function MyLibrary() {
     const navigate = useNavigate();
-    const [library, setLibrary] = useState([]);
+    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')));
     const [cookie, setCookie, removeCookie] = useCookies([]);
     
-    useEffect(()=> {
-        const getLibrary = async () => {
-            let res = await axios.post("http://localhost:3001/loadspace", {
-                uid:getCookie('userid'),
-            });
-            setLibrary(res.data);
-        }
-        getLibrary();
-    },[]);
     const handleSeeMore = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -37,6 +28,7 @@ function MyLibrary() {
             folderid:getCookie('folderid')
         });
         console.log(res.data);
+        localStorage.setItem('folder', JSON.stringify(res.data));
         navigate('/folder');
     };
 
@@ -55,7 +47,7 @@ function MyLibrary() {
                     <row>
                         &nbsp; &nbsp;
                         {/*<h1>{item._id}</h1>*/}
-                        <Button variant='warning' className= "library-buttons" value={item._id}>
+                        <Button variant='warning' className= "library-buttons" value={item._id} onClick= {(e) => handleFolderClick(e.target.value)}>
                             {item.foldername}
                         </Button>
                         &nbsp; &nbsp;
