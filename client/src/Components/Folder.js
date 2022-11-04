@@ -391,12 +391,15 @@ function Folder() {
                                     {item.setname}
                                 </Button>
                                 &nbsp; &nbsp;
+                                {!selectall &&
                                 <Button variant='danger' size='sm' className= "library-buttons" value={item._id} onClick={(e) => handleShowFlashcardsetDeleteConfirm(e.target.value)}>
                                     x
-                                </Button>
+                                </Button>}
+                                {!selectall &&
                                 <Button size='sm'className= "library-buttons" value={item._id} onClick={(e) => handleShowFlashcardsetCopy(e.target.value)}>
                                     Copy
                                 </Button>
+                                }
                                 &nbsp; &nbsp;
                             </row>
                             
