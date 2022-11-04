@@ -26,7 +26,7 @@ var toDeleteFlashcard = {
 function ViewFlashcard() {
 
     const [showEdit, setShowEdit] = useState(false);
-    const [update, setUpdate] = useState(flashcards);
+    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
@@ -95,6 +95,7 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
         });
+        localStorage.setItem('flashcards', JSON.stringify(res.data));
         update.flashcardarray = res.data.flashcardarray;
         update.sortedarray = res.data.sortedarray;
         update.flashcard_id = res.data.flashcard_id;
