@@ -43,6 +43,7 @@ function Folder() {
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
     const [showFlashcardsetCopy, setShowFlashcardsetCopy] = useState(false);
+    const [showFlashcardsetDeleteGroupConfirm, setShowFlashcardsetDeleteGroupConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [selectall, setSelectAll] = useState(false);
     const [selected, setSelected] = useState([]);
@@ -55,8 +56,10 @@ function Folder() {
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
-    const [checkedState, setCheckedState] = useState([]);
 
+    const handleShowFlashcardsetGroupDeleteConfirm = () => {setShowFlashcardsetDeleteGroupConfirm(true);}
+    const handleCloseFlashcardsetGroupDeleteConfirmation = () => {setShowFlashcardsetDeleteGroupConfirm(false);}
+    const [checkedState, setCheckedState] = useState([])
 
     const handleAddGroup = (e, i) => {
         console.log(e.currentTarget.value)
@@ -275,6 +278,9 @@ function Folder() {
         });
         handlerefresh();
         handleselectall();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
     const handleGroupDelete = async() => {
@@ -284,6 +290,10 @@ function Folder() {
         });
         handlerefresh();
         handleselectall();
+        handleCloseFlashcardsetGroupDeleteConfirmation();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
     const handleGroupMove = async() => {
@@ -294,6 +304,9 @@ function Folder() {
         });
         handlerefresh();
         handleselectall();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
     {/* Image Handlers */}
@@ -353,7 +366,8 @@ function Folder() {
                             );
                         })}
                     </select>
-                    <Button variant='danger' value={folder._id} onClick={handleGroupDelete}>Delete</Button>
+                    <Button variant='danger' value={library._id} onClick={handleShowFlashcardsetGroupDeleteConfirm}>Delete</Button>
+
                     </>
                 }
                 </div>
@@ -492,6 +506,16 @@ function Folder() {
                     <Button onClick={() => handleCloseFlashsetDelCon()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>    
+            <Modal show={showFlashcardsetDeleteGroupConfirm} onHide={() => handleCloseFlashcardsetGroupDeleteConfirmation()}>
+                <Modal.Header closeButton={() => handleCloseFlashcardsetGroupDeleteConfirmation()}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> Are you sure you want to delete the selected items?</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleGroupDelete()}> Delete </Button>
+                    <Button onClick={() => handleCloseFlashcardsetGroupDeleteConfirmation()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
             <Modal show={showFlashcardsetCopy} onHide={() => handleCloseFlashcardsetCopy()}>
                 <Modal.Header closeButton={() => handleCloseFlashcardsetCopy()}>
                     <Modal.Title>Copy {selectedFlashcardsetToCopy.setname}</Modal.Title>

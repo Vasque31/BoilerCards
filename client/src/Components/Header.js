@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
+import cookie from 'react-cookie';
+import {useCookies} from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
@@ -31,6 +33,7 @@ function Header() {
     const navigate = useNavigate();
     const fileRef = useRef();
 
+
     const [library, setLibrary] = useState([]);
     useEffect(()=> {
         const getLibrary = async () => {
@@ -46,9 +49,12 @@ function Header() {
 
     
     const [showSaved, setShowSaved] = useState(false);
-
+    
     const handleShowSaved = () => {	setShowSaved(true);	}
-    const handleCloseSaved = () => { setShowSaved(false);}
+    const handleCloseSaved = () => { 
+        setShowSaved(false);
+        window.location.reload(false);
+    }
 
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:'', drate:'3'}]);
@@ -108,11 +114,9 @@ function Header() {
 
 
         handleCloseFolder();
-        window.location.reload(false);
-
+        console.log("code beyond reload executes");
         if (res.data == true) {
             handleShowSaved(); //save icon
-
         }
 
     } 
@@ -281,8 +285,8 @@ function Header() {
 
              {/* Save Modal */}
             
-            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
-                <Modal.Header closeButton={() => handleCloseSaved()}>
+            <Modal show={showSaved}>
+                <Modal.Header closeButton onClick={() => handleCloseSaved()}>
                     <Modal.Title> Successful Operation</Modal.Title>
                 </Modal.Header>
                 <Modal.Body> 
