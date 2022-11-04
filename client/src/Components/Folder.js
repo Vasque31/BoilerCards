@@ -115,17 +115,15 @@ function Folder() {
         //creates set in other folder
 
         //get flashcards
-        var inputList = [];
+        /*var inputList = [];
         Object.values(selectedFlashcardsetToCopy.flashcardarray).map(item => { //pull each card from array create from set to copy
-            inputList.push({front: item.front, back: item.back, drate: item.drate,}); //add flashcard to list
+            inputList.push({front: item.front, back: item.back, drate: item.drate, image: item.image}); //add flashcard to list
         });
-        console.log(inputList);
+        console.log(inputList);*/
         //create in new folder
-        let res = await axios.post("http://localhost:3001/createflashcardset", {
-            inputList: inputList,
-            name: selectedFlashcardsetToCopy.setname,
-            public: false,
-            folderid: copyDestFolderSelect,
+        let res = await axios.post("http://localhost:3001/copy", {
+            groups: selectedFlashcardsetToCopy.flashcardset._id,
+            dest: copyDestFolderSelect,
         });
 
         if (res.data == true) {
@@ -134,6 +132,7 @@ function Folder() {
         }
 
     }
+
 
     {/* Delete Handlers Folder/FlashcardSets */}
 

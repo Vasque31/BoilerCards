@@ -168,7 +168,7 @@ recordRoutes.route("/addmoreFlashcards").post(async function (req, res) {
   const setid = req.body.setid; 
   const list = req.body.inputList;
   for(var i=0;i<list.length;i++){
-    await createFlashcard(list[i].front,list[i].back,setid.toString())
+    await createFlashcard(list[i].front,list[i].back,setid.toString(),list[i].drate,list[i].img)
   }
   res.json(true);
 });
@@ -324,6 +324,7 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
 });
 recordRoutes.route("/groupcopy").post(async function (req, res) {
   const groups = req.body.groups;
+  console.log(groups);
   const dest = req.body.dest;
   //console.log(groups[0].setid);
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(dest));
@@ -352,6 +353,38 @@ recordRoutes.route("/groupcopy").post(async function (req, res) {
       await Flashcarddata.UpdateSet(client,ObjectId(finalset._id),finalset);
     }
   }
+  res.json(true);
+});
+recordRoutes.route("/copy").post(async function (req, res) {
+  const groups = req.body.groups;
+  const dest = req.body.dest;
+  console.log(groups);
+  console.log(dest);
+  //console.log(groups[0].setid);
+  const folder = await Flashcarddata.GetFolderasync(client,ObjectId(dest));
+  const oldset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(groups));
+  var flashcardarray = new Map(Object.entries(oldset.flashcard));
+  flashcardarray = Array.from(flashcardarray.values());
+  const newflashcardmap = new Map();
+  const newset = oldset;
+  delete newset._id;
+  newset.belongfolder = dest;
+  const result = await Flashcarddata.CreateSet(client,newset);
+  const map = new Map(Object.entries(folder.flashcardset));
+  map.set(result.insertedId,await Flashcarddata.GetFlashcardsetasync(client,result.insertedId));
+  const mapobj = Object.fromEntries(map);
+  folder.flashcardset = mapobj;
+  await Flashcarddata.UpdateFolder(client,ObjectId(dest),folder);
+  const finalset = await Flashcarddata.GetFlashcardsetasync(client,result.insertedId);
+  for(j=0;j<flashcardarray.length;j++){
+    const newflashcard = flashcardarray[j];
+    delete newflashcard._id;
+    const result = await Flashcarddata.CreateFlashcard(client,newflashcard);
+    newflashcardmap.set(result.insertedId,await Flashcarddata.GetFlashcardasync(client,result.insertedId));
+    const mapobj = Object.fromEntries(newflashcardmap);
+    finalset.flashcard = mapobj;
+    await Flashcarddata.UpdateSet(client,ObjectId(finalset._id),finalset);
+}
   res.json(true);
 });
 recordRoutes.route("/groupdelete").post(async function (req, res) {
