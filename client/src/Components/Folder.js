@@ -219,7 +219,7 @@ function Folder() {
             inputList:inputList,
             name:name,
             statePrivate:statePrivate,
-            folderid:folder._id,
+            folderid:library._id
         }
         console.log(flashcardInfo);
         let res = await axios.post("http://localhost:3001/createflashcardset", {
