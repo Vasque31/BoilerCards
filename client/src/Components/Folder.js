@@ -300,7 +300,9 @@ function Folder() {
     const handleimage = (e, i) => {
         const {name} = e.target;
         const list = [...inputList];
-        list[index][name]=e.target.files[0];
+        fileReader.onload = r => {
+            list[index][name]=r.target.result;
+        };
         setinputList(list);
         console.log(inputList)
     }
