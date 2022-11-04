@@ -14,7 +14,6 @@ import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import saveicon from "../images/saveicon.png";
-
 import cookie from 'react-cookies'
 export var flashcards = null;
 
@@ -31,7 +30,7 @@ var currentUser = {
 var index = 0;
 function Folder() {
     const navigate = useNavigate();
-    
+    const fileReader = new FileReader();
     const [show, setShow] = useState(false);
     const [statePrivate, setPrivate] = useState(true);
     const [TMPName, setTMPName] = useState("");
@@ -296,6 +295,13 @@ function Folder() {
         handlerefresh();
         handleselectall();
     }
+
+    {/* Image Handlers */}
+    const handleimage = (e) => {
+        
+        
+
+    }
     return (
         <div>
             <Header/>
@@ -408,6 +414,7 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                        <input type='file' accept="image/*" onChange={handleimage}/>
                                                     </Form.Group>
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Difficulty Rating</Form.Label>
