@@ -26,7 +26,6 @@ var selectedFlashcardsetToCopy = {
 var currentUser = {
     folder: new Map(), 
 };
-var index = 0;
 function Folder() {
     const navigate = useNavigate();
     const fileReader = new FileReader();
@@ -314,7 +313,7 @@ function Folder() {
         const {name} = e.target;
         const list = [...inputList];
         fileReader.onload = r => {
-            list[index][name]=r.target.result;
+            list[i][name]=r.target.result;
         };
         fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
@@ -432,7 +431,7 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
-                                                        <input type='file' name='img' accept="image/*" onChange={(e) => handleimage(e,i)}/>
+                                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
                                                     </Form.Group>
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Difficulty Rating</Form.Label>

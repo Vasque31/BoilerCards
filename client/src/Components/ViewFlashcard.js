@@ -25,7 +25,7 @@ var toDeleteFlashcard = {
     front: "defaultname flashcard"
 };
 function ViewFlashcard() {
-
+    const fileReader = new FileReader();
     const [showEdit, setShowEdit] = useState(false);
     const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
@@ -68,7 +68,15 @@ function ViewFlashcard() {
             alert("not enough cards for quiz: Need at least 4");
         }
     }
-
+    const handleimage = (e, i) => {
+        const {name} = e.target;
+        const list = [...inputList];
+        fileReader.onload = r => {
+            list[i][name]=r.target.result;
+        };
+        fileReader.readAsDataURL(e.target.files[0]);
+        setinputList(list);
+    }
     const handleDeleteFlashcard = async (flashcard) => {
         const id = flashcard._id;
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
@@ -85,13 +93,13 @@ function ViewFlashcard() {
     }
 
 
-    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img: ''}]);
     const navigate = useNavigate();
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [statePrivate, setPrivate] = useState(update.flashcardset.private);
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
     const handleeditClick = async (id) => {
         setShowEdit(true);
@@ -175,7 +183,7 @@ function ViewFlashcard() {
         let back = Object.values(update.flashcardarray)[i].back;
         let flashcard_id = Object.values(update.flashcardarray)[i]._id;
         let image = Object.values(update.flashcardarray)[i].image;
-        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image});
+        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
     }
     const [cards, setCard] = useState(temp);
 
@@ -323,6 +331,7 @@ function ViewFlashcard() {
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Back of Card</Form.Label>
                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
                                     </Form.Group>
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Difficulty Rating</Form.Label>

@@ -24,9 +24,10 @@ import {libstorage} from "./signInPage.js";
 
 function Header() {
     const [show, setShow] = useState(false);
+    const fileReader = new FileReader();
     const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
-    const [inputList, setinputList] = useState([{front:'', back:'', drate:'3'}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate:'3', img: ''}]);
     const [folderName, setFoldername] = useState();
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
@@ -55,9 +56,18 @@ function Header() {
         setShowSaved(false);
         window.location.reload(false);
     }
-
+    {/* Image Handlers */}
+    const handleimage = (e, i) => {
+        const {name} = e.target;
+        const list = [...inputList];
+        fileReader.onload = r => {
+            list[i][name]=r.target.result;
+        };
+        fileReader.readAsDataURL(e.target.files[0]);
+        setinputList(list);
+    }
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
     const handleinputchange = (e, index) => {
         const {name, value,rate} = e.target;
@@ -92,7 +102,7 @@ function Header() {
 
     const handleClose = () => {
         setShow(false);
-        setinputList([{front:'', back:'', drate:'3'}]);
+        setinputList([{front:'', back:'', drate:'3', img: ''}]);
     }
     const handleShow = async() => {
         let res = await axios.post("http://localhost:3001/loadspace", {
@@ -232,6 +242,7 @@ function Header() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
                                                     </Form.Group>
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Difficulty Rating</Form.Label>
