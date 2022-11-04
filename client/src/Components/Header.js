@@ -196,18 +196,20 @@ function Header() {
                                     <Button variant="Light" onClick={handleShow}>
                                         Flashcard Set
                                     </Button>
-
                                      {/* Create FlashcardSet Modal */}
-
+                                    <div onKeyDown={e => e.stopPropagation()}
+                                        onClick={e => e.stopPropagation()}
+                                        onFocus={e => e.stopPropagation()}
+                                        onMouseOver={e => e.stopPropagation()} >
                                     <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                                         <Modal.Header closeButton>
                                             <Modal.Title>
-                                            <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
-                                            <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Create Flashcard Set</h2>
+                                            <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center", background: "black"}}>BOILERCARDS</h1>
+                                            <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center", background: "black"}}>Create Flashcard Set</h2>
                                             </Modal.Title>
                                         </Modal.Header>
                                         <Modal.Body>
-                                            <label>Destination Folder</label>&nbsp; &nbsp;
+                                            <label style={{background: "black", color: 'gold'}}>Destination Folder</label>&nbsp; &nbsp;
                                             <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                                                 <option value="">---Choose---</option>
                                                 {Object.values(library).map(item => {
@@ -217,10 +219,10 @@ function Header() {
                                                 })}
                                             </select>
                                             <h1></h1>
-                                            <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name Of FlashCard Set</label>
+                                            <label style = {{paddingRight: "1rem", color: "gold",background: "black", fontSize: "1rem"}}>Name Of FlashCard Set</label>
                                             <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
                                             <h1></h1>
-                                                <label>Private/Public</label>
+                                                <label style={{background: "black", color: 'gold'}}>Private/Public</label>
                                                 <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
                                                     <option value={true}>
                                                         Private
@@ -234,18 +236,22 @@ function Header() {
                                                 return(
                                                 <Form>
                                                     <Form.Group style={{color: "gold"}}>
-                                                        <h1>#{i+1}</h1>
-                                                        <Form.Label>Front of Card</Form.Label>
-                                                        <Form.Control type="text" name= "front" placeholder="Front of FlashCard" onChange={e => handleinputchange(e,i)}/>
+                                                        <h1 style={{background: "black", color: 'gold'}}>#{i+1}</h1>
+                                                        <Form.Label style={{background: "black", color: 'gold'}}>Front of Card</Form.Label>
+                                                        <div>
+                                                        <textarea type="text" name= "front" placeholder="Front of FlashCard" onChange={e => handleinputchange(e,i)}/>
+                                                        </div>
                                                     </Form.Group>
 
                                                     <Form.Group style={{color: "gold"}}>
-                                                        <Form.Label>Back of Card</Form.Label>
-                                                        <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
-                                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
+                                                        <Form.Label style={{background: "black", color: 'gold'}}>Back of Card</Form.Label>
+                                                        <div>
+                                                        <textarea type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                                        </div>
                                                     </Form.Group>
+                                                    <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
                                                     <Form.Group style={{color: "gold"}}>
-                                                        <Form.Label>Difficulty Rating</Form.Label>
+                                                        <Form.Label style={{background: "black", color: 'gold'}}>Difficulty Rating</Form.Label>
                                                         <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
                                                             <option value={1}>1</option>
                                                             <option value={2}>2</option>
@@ -272,6 +278,7 @@ function Header() {
                                             </Button>
                                         </Modal.Footer>
                                     </Modal>
+                                    </div>
                             </NavDropdown.Item> 
                         </NavDropdown>
 
