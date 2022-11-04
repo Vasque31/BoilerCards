@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { UNSAFE_enhanceManualRouteObjects, useNavigate } from 'react-router-dom';
 import Header from "./Header";
-import {folder} from './HomeLibrary';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
@@ -38,7 +37,8 @@ function Folder() {
     const [cookie, setCookie] = useCookies([]);
     const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
     const [name, setName] = useState();
-    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('folder')));
+    const [folder, setFolder] = useState(JSON.parse(localStorage.getItem('folder')));
+    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')));
     const [destFolder, setDestFolder] = useState("");
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
@@ -145,9 +145,9 @@ function Folder() {
         
     }
     const handlerefresh = async () => {     
-        console.log(library._id);
+        console.log(folder._id);
         let res = await axios.post("http://localhost:3001/folder", {
-            folderid:library._id
+            folderid:folder._id
         });
         console.log(res.data);
         setLibrary(res.data);
@@ -290,7 +290,7 @@ function Folder() {
         let res = await axios.post("http://localhost:3001/groupmove", {
             groups:selected,
             dest: destFolder,
-            folder:library,
+            folder:folder,
         });
         handlerefresh();
         handleselectall();
@@ -313,7 +313,7 @@ function Folder() {
             
             <div className="box">
 
-                <heading className="section-title">{library.foldername}</heading>
+                <heading className="section-title">{folder.foldername}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                 <Button variant="warning" onClick={handleselectall}>
                         Select All
@@ -329,7 +329,7 @@ function Folder() {
                         Rename Folder
                     </Button>
                     &nbsp;&nbsp;
-                    <Button variant='danger' value={library._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    <Button variant='danger' value={folder._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
                     </>
                 }
                 {selectall &&
@@ -351,13 +351,13 @@ function Folder() {
                             );
                         })}
                     </select>
-                    <Button variant='danger' value={library._id} onClick={handleGroupDelete}>Delete</Button>
+                    <Button variant='danger' value={folder._id} onClick={handleGroupDelete}>Delete</Button>
                     </>
                 }
                 </div>
                 <div className= "library-box">
                 <table>
-                    {Object.values(library.flashcardset).map((item, i) => {
+                    {Object.values(folder.flashcardset).map((item, i) => {
                         
                         return (
                             <row>
@@ -473,9 +473,9 @@ function Folder() {
                 <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Are you sure you want to delete {library.foldername}?</Modal.Body>
+                <Modal.Body> Are you sure you want to delete {folder.foldername}?</Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleDeleteFolder(library)}> Delete </Button>
+                    <Button onClick={() => handleDeleteFolder(folder)}> Delete </Button>
                     <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>
