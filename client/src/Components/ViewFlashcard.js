@@ -226,7 +226,7 @@ function ViewFlashcard() {
                     <Modal.Body>Once you click Download, press ctrl+p to download locally</Modal.Body>
                     <Modal.Footer>
                         <Link to="/downloadset" target="_blank">
-                            <Button varient="primary">Download</Button>
+                            <Button varient="primary" onClick={handleCloseDownload}>Download</Button>
                         </Link>
                     </Modal.Footer>
                 </Modal>
