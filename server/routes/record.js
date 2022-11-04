@@ -256,8 +256,10 @@ recordRoutes.route("/logout").post(async function (req, res) {
 recordRoutes.route("/edit").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
   const oldflashcard = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
+
   oldflashcard.front = req.body.newfront;
   oldflashcard.back = req.body.newback;
+  oldflashcard.difficulty = req.body.newDiff
   result = await Flashcarddata.UpdateFlashcard(client,ObjectId(flashcardid),oldflashcard);
   belongset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(oldflashcard.belongset));
   const map = new Map(Object.entries(belongset.flashcard));
