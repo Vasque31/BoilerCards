@@ -16,6 +16,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 import { Link } from "react-router-dom";
 //export var flashcardid = null;
+export var image = "";
 
 export var cardsQuiz = [{front: "a", back: "b",}];
 
@@ -24,7 +25,7 @@ var toDeleteFlashcard = {
     front: "defaultname flashcard"
 };
 function ViewFlashcard() {
-
+    const fileReader = new FileReader();
     const [showEdit, setShowEdit] = useState(false);
     const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
@@ -47,6 +48,10 @@ function ViewFlashcard() {
         toDeleteFlashcard = res.data;
         setShowFlashcardDeleteConfirm(true);
     }
+    const handleNote = (e) => {
+        localStorage.setItem('img', JSON.stringify(e.currentTarget.value));
+        console.log(JSON.parse(localStorage.getItem('img')));
+    }
 
     const handleStartQuiz = () => {
         var ready = false;
@@ -63,7 +68,15 @@ function ViewFlashcard() {
             alert("not enough cards for quiz: Need at least 4");
         }
     }
-
+    const handleimage = (e, i) => {
+        const {name} = e.target;
+        const list = [...inputList];
+        fileReader.onload = r => {
+            list[i][name]=r.target.result;
+        };
+        fileReader.readAsDataURL(e.target.files[0]);
+        setinputList(list);
+    }
     const handleDeleteFlashcard = async (flashcard) => {
         const id = flashcard._id;
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
@@ -80,13 +93,13 @@ function ViewFlashcard() {
     }
 
 
-    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img: ''}]);
     const navigate = useNavigate();
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [statePrivate, setPrivate] = useState(update.flashcardset.private);
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
     const handleeditClick = async (id) => {
         setShowEdit(true);
@@ -169,7 +182,8 @@ function ViewFlashcard() {
         let front = Object.values(update.flashcardarray)[i].front;
         let back = Object.values(update.flashcardarray)[i].back;
         let flashcard_id = Object.values(update.flashcardarray)[i]._id;
-        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+        let image = Object.values(update.flashcardarray)[i].image;
+        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
     }
     const [cards, setCard] = useState(temp);
 
@@ -182,7 +196,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.flashcardarray)[i].front;
                 let back = Object.values(update.flashcardarray)[i].back;
                 let flashcard_id = Object.values(update.flashcardarray)[i]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.flashcardarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image});
                 setCurrSort("c_a");
             }
         } else if (arr === "creation" && !ascending) {
@@ -191,7 +206,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].front;
                 let back = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].back;
                 let flashcard_id = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.flashcardarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
                 setCurrSort("c_d");
             }
         } else if (arr === "diff" && ascending) {
@@ -200,7 +216,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].front;
                 let back = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].back;
                 let flashcard_id = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.sortedarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
                 setCurrSort("d_a");
             }
         } else {
@@ -209,7 +226,8 @@ function ViewFlashcard() {
                 let front = Object.values(update.sortedarray)[i].front;
                 let back = Object.values(update.sortedarray)[i].back;
                 let flashcard_id = Object.values(update.sortedarray)[i]._id;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id});
+                let image = Object.values(update.sortedarray)[i].image;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
                 setCurrSort("d_d");
             }
         }
@@ -313,6 +331,7 @@ function ViewFlashcard() {
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Back of Card</Form.Label>
                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
+                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
                                     </Form.Group>
                                     <Form.Group style={{color: "gold"}}>
                                         <Form.Label>Difficulty Rating</Form.Label>
@@ -358,6 +377,12 @@ function ViewFlashcard() {
                                    
                                     <th>
                                         <Button variant="light"> #{index+1} </Button>
+                                        {item.image!==null &&
+                                        <Link to="/note" target="_blank">
+                                            <Button variant='link' value={item.image} onClick={(e) => handleNote(e)}>
+                                                Note
+                                            </Button>
+                                        </Link>}
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>

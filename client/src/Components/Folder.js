@@ -26,7 +26,6 @@ var selectedFlashcardsetToCopy = {
 var currentUser = {
     folder: new Map(), 
 };
-var index = 0;
 function Folder() {
     const navigate = useNavigate();
     const fileReader = new FileReader();
@@ -115,17 +114,15 @@ function Folder() {
         //creates set in other folder
 
         //get flashcards
-        var inputList = [];
+        /*var inputList = [];
         Object.values(selectedFlashcardsetToCopy.flashcardarray).map(item => { //pull each card from array create from set to copy
-            inputList.push({front: item.front, back: item.back, drate: item.drate,}); //add flashcard to list
+            inputList.push({front: item.front, back: item.back, drate: item.drate, image: item.image}); //add flashcard to list
         });
-        console.log(inputList);
+        console.log(inputList);*/
         //create in new folder
-        let res = await axios.post("http://localhost:3001/createflashcardset", {
-            inputList: inputList,
-            name: selectedFlashcardsetToCopy.setname,
-            public: false,
-            folderid: copyDestFolderSelect,
+        let res = await axios.post("http://localhost:3001/copy", {
+            groups: selectedFlashcardsetToCopy.flashcardset._id,
+            dest: copyDestFolderSelect,
         });
 
         if (res.data == true) {
@@ -134,6 +131,7 @@ function Folder() {
         }
 
     }
+
 
     {/* Delete Handlers Folder/FlashcardSets */}
 
@@ -180,6 +178,7 @@ function Folder() {
         });
         flashcards = res.data;
         localStorage.setItem('flashcards', JSON.stringify(res.data));
+        console.log(res.data);
         console.log(flashcards);
         navigate('/flashcard');
     };
@@ -314,7 +313,7 @@ function Folder() {
         const {name} = e.target;
         const list = [...inputList];
         fileReader.onload = r => {
-            list[index][name]=r.target.result;
+            list[i][name]=r.target.result;
         };
         fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
@@ -432,7 +431,7 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
-                                                        <input type='file' name='img' accept="image/*" onChange={(e) => handleimage(e,i)}/>
+                                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
                                                     </Form.Group>
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Difficulty Rating</Form.Label>
