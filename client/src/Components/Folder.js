@@ -43,6 +43,7 @@ function Folder() {
     const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
     const [showFlashcardsetDeleteConfirm, setShowFlashcardsetDeleteConfirm] = useState(false);
     const [showFlashcardsetCopy, setShowFlashcardsetCopy] = useState(false);
+    const [showFlashcardsetDeleteGroupConfirm, setShowFlashcardsetDeleteGroupConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [selectall, setSelectAll] = useState(false);
     const [selected, setSelected] = useState([]);
@@ -55,8 +56,10 @@ function Folder() {
     const handleCloseFlashsetDelCon = () => {setShowFlashcardsetDeleteConfirm(false);}
     const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     const handleShowFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(true);}
-    const [checkedState, setCheckedState] = useState([]);
 
+    const handleShowFlashcardsetGroupDeleteConfirm = () => {setShowFlashcardsetDeleteGroupConfirm(true);}
+    const handleCloseFlashcardsetGroupDeleteConfirmation = () => {setShowFlashcardsetDeleteGroupConfirm(false);}
+    const [checkedState, setCheckedState] = useState([])
 
     const handleAddGroup = (e, i) => {
         console.log(e.currentTarget.value)
@@ -136,7 +139,7 @@ function Folder() {
 
     const handleDeleteFolder = async(object) => {
         let res = await axios.post("http://localhost:3001/deletefolder",{
-            folder:library,
+            folder:folder,
         });
         if (res.data == true) {
             handleShowSaved();
@@ -150,7 +153,7 @@ function Folder() {
             folderid:folder._id
         });
         console.log(res.data);
-        setLibrary(res.data);
+        setFolder(res.data);
         localStorage.setItem('folder', JSON.stringify(res.data));
     }
     //passes in the set to be deleted
@@ -219,7 +222,7 @@ function Folder() {
             inputList:inputList,
             name:name,
             statePrivate:statePrivate,
-            folderid:folder._id,
+            folderid:folder._id
         }
         console.log(flashcardInfo);
         let res = await axios.post("http://localhost:3001/createflashcardset", {
@@ -246,7 +249,7 @@ function Folder() {
 
     const handleSave = async(event) => {
         event.preventDefault();
-        console.log(library);
+        console.log(folder);
         folder.foldername = TMPName;
     
         let res = await axios.post("http://localhost:3001/editfolder", {
@@ -275,15 +278,22 @@ function Folder() {
         });
         handlerefresh();
         handleselectall();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
     const handleGroupDelete = async() => {
         let res = await axios.post("http://localhost:3001/groupdelete", {
             groups:selected,
-            folder:library,
+            folder:folder,
         });
         handlerefresh();
         handleselectall();
+        handleCloseFlashcardsetGroupDeleteConfirmation();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
     const handleGroupMove = async() => {
@@ -294,6 +304,9 @@ function Folder() {
         });
         handlerefresh();
         handleselectall();
+        if (res.data == true) {
+            handleShowSaved();
+        }
     }
 
     {/* Image Handlers */}
@@ -303,8 +316,8 @@ function Folder() {
         fileReader.onload = r => {
             list[index][name]=r.target.result;
         };
+        fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
-        console.log(inputList)
     }
     return (
         <div>
@@ -353,7 +366,8 @@ function Folder() {
                             );
                         })}
                     </select>
-                    <Button variant='danger' value={folder._id} onClick={handleGroupDelete}>Delete</Button>
+                    <Button variant='danger' value={library._id} onClick={handleShowFlashcardsetGroupDeleteConfirm}>Delete</Button>
+
                     </>
                 }
                 </div>
@@ -492,6 +506,16 @@ function Folder() {
                     <Button onClick={() => handleCloseFlashsetDelCon()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>    
+            <Modal show={showFlashcardsetDeleteGroupConfirm} onHide={() => handleCloseFlashcardsetGroupDeleteConfirmation()}>
+                <Modal.Header closeButton={() => handleCloseFlashcardsetGroupDeleteConfirmation()}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> Are you sure you want to delete the selected items?</Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleGroupDelete()}> Delete </Button>
+                    <Button onClick={() => handleCloseFlashcardsetGroupDeleteConfirmation()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
             <Modal show={showFlashcardsetCopy} onHide={() => handleCloseFlashcardsetCopy()}>
                 <Modal.Header closeButton={() => handleCloseFlashcardsetCopy()}>
                     <Modal.Title>Copy {selectedFlashcardsetToCopy.setname}</Modal.Title>

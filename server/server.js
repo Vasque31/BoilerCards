@@ -10,9 +10,11 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit:'50mb'}))
 app.use(require("./routes/record"));
 app.use(cookieParser());
+var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 // Global error handling
 
 // perform a database connection when the server starts
