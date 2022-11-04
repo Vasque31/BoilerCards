@@ -82,15 +82,15 @@ function QuizGame() {
                 if (item.Correct){
                     //Correct answer
                     return(
-                        <div>
-                            <Button onClick={handleSelectCorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
+                        <div style={{textAlign: 'center', justifyContent: 'center'}}>
+                            <Button size='lg' onClick={handleSelectCorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
                         </div>
                     );
                 }
                     //Incorrect answer
                 return(
-                    <div>
-                        <Button onClick={handleSelectIncorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
+                    <div style={{textAlign: 'center', justifyContent: 'center'}}>
+                        <Button size='lg' onClick={handleSelectIncorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
                     </div>
                 )
             })}
