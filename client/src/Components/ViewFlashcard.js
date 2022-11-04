@@ -77,6 +77,12 @@ function ViewFlashcard() {
         fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
     }
+    const handleRemoveNote = async (e) => {
+        let res = await axios.post("http://localhost:3001/removeNote", {
+            flashcardid: e.currentTarget.value,
+        });
+        handlerefresh(update.flashcardset._id);
+    }
     const handleDeleteFlashcard = async (flashcard) => {
         const id = flashcard._id;
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
@@ -95,7 +101,10 @@ function ViewFlashcard() {
 
     const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img: ''}]);
     const navigate = useNavigate();
-    const handleClose = () => setShow(false);
+    const handleClose = () => {     
+        setinputList([{front:'', back:'', drate: '3', img: ''}])
+        setShow(false)
+    };
     const handleShow = () => setShow(true);
     const [statePrivate, setPrivate] = useState(update.flashcardset.private);
     const handleaddmore = () => {
@@ -156,6 +165,7 @@ function ViewFlashcard() {
     }
     const handleSave = async(event) => {
         event.preventDefault();
+        console.log(inputList);
         let res = await axios.post("http://localhost:3001/addmoreFlashcards", {
             inputList:inputList,
             setid:update.flashcardset._id
@@ -165,6 +175,7 @@ function ViewFlashcard() {
             handleClose();
             handlerefresh(update.flashcardset._id);
         }
+        setinputList([{front:'', back:'', drate:'3', img: ''}]);
     }
     const handleSaveFlashcardStatus = async (e) => {
         const updatedflashcardstatus = {
@@ -183,7 +194,8 @@ function ViewFlashcard() {
         let back = Object.values(update.flashcardarray)[i].back;
         let flashcard_id = Object.values(update.flashcardarray)[i]._id;
         let image = Object.values(update.flashcardarray)[i].image;
-        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
+        let drate = Object.values(update.flashcardarray)[i].difficulty;
+        temp.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
     }
     const [cards, setCard] = useState(temp);
 
@@ -197,7 +209,8 @@ function ViewFlashcard() {
                 let back = Object.values(update.flashcardarray)[i].back;
                 let flashcard_id = Object.values(update.flashcardarray)[i]._id;
                 let image = Object.values(update.flashcardarray)[i].image;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image});
+                let drate = Object.values(update.flashcardarray)[i].difficulty;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id,image: image, drate: drate});
                 setCurrSort("c_a");
             }
         } else if (arr === "creation" && !ascending) {
@@ -206,8 +219,9 @@ function ViewFlashcard() {
                 let front = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].front;
                 let back = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].back;
                 let flashcard_id = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1]._id;
-                let image = Object.values(update.flashcardarray)[i].image;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
+                let image = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].image;
+                let drate = Object.values(update.flashcardarray)[Object.values(update.flashcardarray).length - i - 1].difficulty;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
                 setCurrSort("c_d");
             }
         } else if (arr === "diff" && ascending) {
@@ -216,8 +230,9 @@ function ViewFlashcard() {
                 let front = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].front;
                 let back = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].back;
                 let flashcard_id = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1]._id;
-                let image = Object.values(update.sortedarray)[i].image;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
+                let image = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].image;
+                let drate = Object.values(update.sortedarray)[Object.values(update.sortedarray).length - i - 1].difficulty;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
                 setCurrSort("d_a");
             }
         } else {
@@ -227,7 +242,8 @@ function ViewFlashcard() {
                 let back = Object.values(update.sortedarray)[i].back;
                 let flashcard_id = Object.values(update.sortedarray)[i]._id;
                 let image = Object.values(update.sortedarray)[i].image;
-                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image});
+                let drate = Object.values(update.sortedarray)[i].difficulty;
+                new_cards.push({id: idnum, front: front, back: back, flashcard_id: flashcard_id, image: image, drate: drate});
                 setCurrSort("d_d");
             }
         }
@@ -370,6 +386,7 @@ function ViewFlashcard() {
                             <th>Front</th>
                             <th>Back</th>
                             <th>Edit or Delete</th>
+                            <th>Difficulty Level</th>
                         </tr>
                         {cards.map((item, index) => {
                             return (
@@ -377,12 +394,16 @@ function ViewFlashcard() {
                                    
                                     <th>
                                         <Button variant="light"> #{index+1} </Button>
-                                        {item.image!==null &&
+                                        {item.image!=="" &&
                                         <Link to="/note" target="_blank">
                                             <Button variant='link' value={item.image} onClick={(e) => handleNote(e)}>
-                                                Note
+                                                Image
                                             </Button>
                                         </Link>}
+                                        {item.image!=="" &&
+                                        <Button variant='danger' size='sm' value={item.flashcard_id} onClick={(e) => handleRemoveNote(e)}>
+                                                X
+                                        </Button>}
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
@@ -392,6 +413,7 @@ function ViewFlashcard() {
                                             <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
                                         </ButtonGroup>
                                     </th>
+                                    <th>{item.drate}</th>
                                 </tr>
                             );
                         })}

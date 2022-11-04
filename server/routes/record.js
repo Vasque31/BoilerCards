@@ -115,6 +115,11 @@ async function createFlashcard(front,back,belongsetid,difficulty,img){
   const newflashcard = new Flashcard(front,back,belongsetid);
   newflashcard.difficulty = difficulty;
   if (img!=''){
+    console.log(img);
+    var base64Data = img.replace(/^data:image\/png;base64,/, "");
+    require("fs").writeFile("./image/out1.png", base64Data, 'base64', function(err) {
+      console.log('Results Received');
+    });
     await imgbbUploader("72248618eddd9ac14a512e2864ab056c", "./image/out1.png")
   .then((response) => newflashcard.image = response.url);
   }
@@ -135,10 +140,12 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   //null statement check
   const setname = req.body.name;  
   const newset = new Flashcardset(setname);
-  if(req.body.statePrivate==true||req.body.statePrivate=="true"){
+  if(req.body.public==true||req.body.public=="true"){
     newset.private = true;
+    console.log(req.body.public);
   }else{
     newset.private = false;
+    console.log(req.body.public);
   }
   //console.log(newset.private);
   const belongfolderid = req.body.folderid;
@@ -154,12 +161,6 @@ recordRoutes.route("/createflashcardset").post(async function (req, res) {
   belongfolder.flashcardset = mapobj;
   await Flashcarddata.UpdateFolder(client,ObjectId(belongfolderid),belongfolder);
   for(var i=0;i<list.length;i++){
-    if(list[i].img!=''){
-      var base64Data = list[i].img.replace(/^data:image\/png;base64,/, "");
-    require("fs").writeFile("./image/out1.png", base64Data, 'base64', function(err) {
-      console.log('Results Received');
-    });
-    }
     await createFlashcard(list[i].front,list[i].back,myObjectId.toString(),list[i].drate,list[i].img)
   }
   res.json(true);
@@ -168,12 +169,6 @@ recordRoutes.route("/addmoreFlashcards").post(async function (req, res) {
   const setid = req.body.setid; 
   const list = req.body.inputList;
   for(var i=0;i<list.length;i++){
-    if(list[i].img!=''){
-      var base64Data = list[i].img.replace(/^data:image\/png;base64,/, "");
-    require("fs").writeFile("./image/out1.png", base64Data, 'base64', function(err) {
-      console.log('Results Received');
-    });
-    }
     await createFlashcard(list[i].front,list[i].back,setid.toString(),list[i].drate,list[i].img)
   }
   res.json(true);
@@ -407,8 +402,19 @@ recordRoutes.route("/groupdelete").post(async function (req, res) {
   }
   res.json(true);
 });
-recordRoutes.route("/file").post(async function (req, res) {
-
+recordRoutes.route("/removeNote").post(async function (req, res) {
+  const flashcardid = req.body.flashcardid;
+  console.log(flashcardid);
+  var flashcard = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
+  flashcard.image = '';
+  console.log(flashcard);
+  var set = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(flashcard.belongset));
+  var map = new Map(Object.entries(set.flashcard));
+  map.set(flashcardid,flashcard);
+  set.flashcard = Object.fromEntries(map);
+  await Flashcarddata.UpdateSet(client,(ObjectId(set._id)),set);
+  await Flashcarddata.UpdateFlashcard(client,(ObjectId(flashcardid)),flashcard);
+  res.json(true)
 });
 recordRoutes.route("/groupmove").post(async function (req, res) {
   const groups = req.body.groups;
