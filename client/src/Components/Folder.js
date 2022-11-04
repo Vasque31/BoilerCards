@@ -36,7 +36,7 @@ function Folder() {
     const [TMPName, setTMPName] = useState("");
     const [showSetting, setShowSetting] = useState(false);
     const [cookie, setCookie] = useCookies([]);
-    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3'}]);
+    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
     const [name, setName] = useState();
     const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('folder')));
     const [destFolder, setDestFolder] = useState("");
@@ -184,7 +184,7 @@ function Folder() {
     {/* Create Flashcard Modal Handlers */}
 
     const handleaddmore = () => {
-        setinputList([...inputList, {front:'', back:'', drate:'3'}]);
+        setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
     const handleinputchange = (e, index) => {
         const {name, value} = e.target;
@@ -238,7 +238,7 @@ function Folder() {
     }
     const handleClose = () => {
         setShow(false);
-        setinputList([{front:'', back:'', drate:'3'}]);
+        setinputList([{front:'', back:'', drate:'3', img:''}]);
     }
     const handleShow = () => setShow(true);
 
@@ -297,10 +297,12 @@ function Folder() {
     }
 
     {/* Image Handlers */}
-    const handleimage = (e) => {
-        
-        
-
+    const handleimage = (e, i) => {
+        const {name} = e.target;
+        const list = [...inputList];
+        list[index][name]=e.target.files[0];
+        setinputList(list);
+        console.log(inputList)
     }
     return (
         <div>
@@ -414,7 +416,7 @@ function Folder() {
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Back of Card</Form.Label>
                                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
-                                                        <input type='file' accept="image/*" onChange={handleimage}/>
+                                                        <input type='file' name='img' accept="image/*" onChange={(e) => handleimage(e,i)}/>
                                                     </Form.Group>
                                                     <Form.Group style={{color: "gold"}}>
                                                         <Form.Label>Difficulty Rating</Form.Label>
