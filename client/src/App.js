@@ -16,6 +16,7 @@ import Folder from './Components/Folder';
 import ViewFlashCard from './Components/ViewFlashcard.js'
 import EditFlashcard from './Components/EditFlashcard';
 import { useCookies } from 'react-cookie';
+import QuizGame from './Components/QuizGame.js';
 function App() {
 
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/flashcard" element={<ViewFlashCard/>} />
         <Route path="/editflashcard" element={<EditFlashcard/>} />
         <Route path="/saveicon" element={<SavedIcon/>} />
+        <Route path="/quizgame" element={<QuizGame/>} />
       </Routes>
     </div>
   );

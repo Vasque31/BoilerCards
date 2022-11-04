@@ -18,6 +18,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 //export var flashcardid = null;
 
+export var cardsQuiz = [{front: "a", back: "b",}];
 
 export var flashcardid = null;
 var toDeleteFlashcard = {
@@ -45,6 +46,23 @@ function ViewFlashcard() {
         toDeleteFlashcard = res.data;
         setShowFlashcardDeleteConfirm(true);
     }
+
+    const handleStartQuiz = () => {
+        var ready = false;
+        cardsQuiz = []
+        Object.values(update.flashcardset.flashcard).map(item => {
+            cardsQuiz.push({front: item.front, back: item.back,});
+        })
+        console.log(cardsQuiz);
+        console.log("verify flashcards still exist");
+        console.log(update);
+        if (cardsQuiz != null && cardsQuiz.length >= 4) {
+            navigate("/quizgame");
+        } else {
+            alert("not enough cards for quiz: Need at least 4");
+        }
+    }
+
     const handleDeleteFlashcard = async (flashcard) => {
         const id = flashcard._id;
         let res = await axios.post("http://localhost:3001/deletFlashcard",{
@@ -87,6 +105,9 @@ function ViewFlashcard() {
         });
         handleCloseEdit();
         handlerefresh(update.flashcardset._id);  
+        if (res.data == true) {
+            handleShowSaved();
+        }
              
 
     }
@@ -125,6 +146,7 @@ function ViewFlashcard() {
             setid:update.flashcardset._id
         });
         if (res.data == true) {
+            handleShowSaved();
             handleClose();
             handlerefresh(update.flashcardset._id);
         }
@@ -265,6 +287,7 @@ function ViewFlashcard() {
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
+                <Button varient="primary" onClick={() => handleStartQuiz()}>Quiz</Button>
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
