@@ -26,14 +26,14 @@ var toDeleteFlashcard = {
 function ViewFlashcard() {
 
     const [showEdit, setShowEdit] = useState(false);
-    const [update, setUpdate] = useState(flashcards);
+    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     const [newfront, setNewfront] = useState();
     const [newback, setNewback] = useState();
     const [currSort, setCurrSort] = useState("c_a");
-
+    const [newDiff, setNewDiff] = useState();
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
 
@@ -84,6 +84,7 @@ function ViewFlashcard() {
             flashcardid:flashcardid,
             newfront:newfront,
             newback:newback,
+            newDiff:newDiff,
         });
         console.log(flashcardid);
         handleCloseEdit();
@@ -96,6 +97,7 @@ function ViewFlashcard() {
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
         });
+        localStorage.setItem('flashcards', JSON.stringify(res.data));
         update.flashcardarray = res.data.flashcardarray;
         update.sortedarray = res.data.sortedarray;
         update.flashcard_id = res.data.flashcard_id;
@@ -286,6 +288,16 @@ function ViewFlashcard() {
                                         <Form.Label>Back of Card</Form.Label>
                                         <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
                                     </Form.Group>
+                                    <Form.Group style={{color: "gold"}}>
+                                        <Form.Label>Difficulty Rating</Form.Label>
+                                        <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                            <option selected value={3}>3</option>
+                                            <option value={4}>4</option>
+                                            <option value={5}>5</option>
+                                        </select>
+                                    </Form.Group>
                                 </Form>
                             )
                         })
@@ -353,6 +365,16 @@ function ViewFlashcard() {
                         <Form.Group style={{color: "gold"}}>
                             <Form.Label>Back of Card</Form.Label>
                             <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => setNewback(e.target.value)}/>
+                        </Form.Group>
+                        <Form.Group style={{color: "gold"}}>
+                            <Form.Label>Difficulty Rating</Form.Label>
+                                <select name ="drate" id="Difficulty-Rating" onChange={(e) => setNewDiff(e.target.value)}>
+                                    <option value={1}>1</option>
+                                    <option value={2}>2</option>
+                                    <option selected value={3}>3</option>
+                                    <option value={4}>4</option>
+                                    <option value={5}>5</option>
+                                </select>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
