@@ -43,12 +43,12 @@ function QuizGame() {
 
     const handleSelectCorrectAnswer = () => {
         score++;
-        setCorrectness("Correct");
+        setCorrectness("✅Correct\n");
         previousPrompt = [selectedPromptIndex];
         setShowContinueorExit(true);
     }
     const handleSelectIncorrectAnswer = () => {
-        setCorrectness("Incorrect");
+        setCorrectness("⛔️Incorrect\n");
         setShowContinueorExit(true);
     }
     
@@ -101,8 +101,8 @@ function QuizGame() {
                     <Modal.Title> Another Round? </Modal.Title>
                 </Modal.Header>
                 <Modal.Body> 
-                    {correctness}       
-                    Score: {score} 
+                    <h1>{correctness}</h1>       
+                    <h1>Score: {score}</h1>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={() => handleNewRound()}> New Round </Button>

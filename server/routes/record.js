@@ -347,6 +347,7 @@ recordRoutes.route("/groupcopy").post(async function (req, res) {
     for(j=0;j<flashcardarray.length;j++){
       const newflashcard = flashcardarray[j];
       delete newflashcard._id;
+      newflashcard.belongset = finalset._id;
       const result = await Flashcarddata.CreateFlashcard(client,newflashcard);
       newflashcardmap.set(result.insertedId,await Flashcarddata.GetFlashcardasync(client,result.insertedId));
       const mapobj = Object.fromEntries(newflashcardmap);
@@ -380,6 +381,7 @@ recordRoutes.route("/copy").post(async function (req, res) {
   for(j=0;j<flashcardarray.length;j++){
     const newflashcard = flashcardarray[j];
     delete newflashcard._id;
+    newflashcard.belongset = finalset._id;
     const result = await Flashcarddata.CreateFlashcard(client,newflashcard);
     newflashcardmap.set(result.insertedId,await Flashcarddata.GetFlashcardasync(client,result.insertedId));
     const mapobj = Object.fromEntries(newflashcardmap);
