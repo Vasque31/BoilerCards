@@ -19,6 +19,40 @@ class userDBService {
       `New listing created with the following id: ${result.insertedId}`
     );
   }
+  async Addverification(client, newListing) {
+    const result = await client
+      .db("User")
+      .collection("Verification code")
+      .insertOne(newListing);
+    console.log(
+      `New listing created with the following id: ${result.insertedId}`
+    );
+  }
+  async addVerificationMap(client, newListing) {
+    const result = await client
+      .db("User")
+      .collection("Verification")
+      .insertOne(newListing);
+    console.log(
+      `New listing created with the following id: ${result.insertedId}`
+    );
+  }
+  async Getverificationcode(client, nameOfListing) {
+    const result = await client
+      .db("User")
+      .collection("Verification")
+      .findOne({ _id: nameOfListing });
+    /*const json = JSON.stringify(result);
+  const obj = JSON.parse(json);*/
+    if (result) {
+      /*console.log(`Found a listing in the collection with the name '${nameOfListing}':`);
+      console.log(result);*/
+      return result;
+    } else {
+      //console.log(`No listings found with the name '${nameOfListing}'`);
+      return false;
+    }
+  }
   async UpdateAsync(client, nameOfListing, updatedListing) {
     const result = await client
       .db("User")

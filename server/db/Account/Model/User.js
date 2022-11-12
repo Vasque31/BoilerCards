@@ -6,6 +6,7 @@ class userinfo {
     this.AccountCreateTime = moment().format("YYYY-MM-DD HH:mm:ss");
     this.defaultfolder =  null;
     this.folder = new Map();
+    this.email = null;
   }
 }
 exports.userinfo = userinfo;

@@ -6,6 +6,7 @@ const {Flashcardset} = require ("../db/Flashcard/Model/Flashcardset.js")
 const {Folder} = require("../db/Flashcard/Model/Folder.js");
 const {Flashcard} = require("../db/Flashcard/Model/Flashcard.js");
 const {FlascardDBService} = require("../db/Flashcard/Service/ilfashcard.js");
+const nodemailer = require('nodemailer');
 const cookieParser = require('cookie-parser');
 const imgbbUploader = require ("imgbb-uploader");
 const uri =
@@ -418,6 +419,35 @@ recordRoutes.route("/removeNote").post(async function (req, res) {
   await Flashcarddata.UpdateFlashcard(client,(ObjectId(flashcardid)),flashcard);
   res.json(true)
 });
+recordRoutes.route("/verification").post(async function (req, res) {
+  const user = await userdata.GetAsyncbyid(client,(ObjectId(req.body.userid)));
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'boilercard1@gmail.com',
+      pass: 'hwgprezcxqzkxexk' 
+    }
+  });
+  var val = Math.floor(1000 + Math.random() * 9000);
+  const mailOptions = {
+    from: 'boilercard1@gmail.com',
+    to: user.email,
+    subject: 'Verification code',
+    text: 'Your code for recover password is: '+val+', Do not send it to anyone.'
+  };
+  var map = new Map();
+  map.set(user._id,val);
+  const obj = Object.fromEntries(map);
+  transporter.sendMail(mailOptions, async function(error, info){
+    if (error) {
+    console.log(error);
+    } else {
+      await userdata.Addverification(client,obj);
+      console.log('Email sent: ' + info.response);
+    }
+  });
+  res.json(true);
+});
 recordRoutes.route("/groupmove").post(async function (req, res) {
   const groups = req.body.groups;
   var folder = req.body.folder;
@@ -440,5 +470,16 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
 
   }
   res.json(true);
+});
+recordRoutes.route("/forgotpassword").post(async function (req, res) {
+  const userid = req.body.userid;
+  const code = req.body.code;
+  const codemap = new Map(Object.entries(userdata.Getverificationcode(client,Object("637031a05d2937e578edddf2"))));
+  const realcode = codemap.get(userid);
+  if(code === realcode){
+    res.json(true)
+  }else{
+    res.json(false);
+  }
 });
 module.exports = recordRoutes;
