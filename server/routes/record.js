@@ -24,6 +24,7 @@ app.use(cookieParser());
 const recordRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require("../db/conn");
+const { set } = require("mongoose");
 client.connect();
 // This section will help you get a list of all the records.
 const Flashcarddata = new  FlascardDBService();
@@ -455,6 +456,33 @@ recordRoutes.route("/verification").post(async function (req, res) {
   });
   res.json(true);
 });
+recordRoutes.route("/addlabel").post(async function(req,res){
+  const folder = await Flashcarddata.GetFolderasync(client,ObjectId(req.body.folderid));
+  folder.subject = req.body.label;
+  await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
+  res.json(true);
+})
+recordRoutes.route("/searchkeywords").post(async function(req,res){
+  var keyword = req.body.keyword;
+  //console.log(keyword);
+  //"Virtural memory"
+  var myArray = keyword.split(",").map(function(item) {
+    return item.trim();
+  });
+  myArray = myArray[0].split(" ");
+  var resultmap = new Map();
+  console.log(myArray);
+  for(var i=0;i<myArray.length;i++){
+    var set = await Flashcarddata.SearchSet(client,myArray[i])
+    for(var j=0;j<set.length;j++){
+      resultmap.set(set[j]._id.toString(),set[j]);
+      console.log(set[j]._id);
+    }
+  }
+  const result = Array.from(resultmap.values());
+  console.log(result);
+  res.json(result);
+})
 recordRoutes.route("/groupmove").post(async function (req, res) {
   const groups = req.body.groups;
   var folder = req.body.folder;

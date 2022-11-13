@@ -24,6 +24,18 @@ async  UpdateFolder(client, nameOfListing, updatedListing){
   console.log(`${result.matchedCount} document(s) matched the query criteria.`);
   console.log(`${result.modifiedCount} document(s) was/were updated.`);
 }
+async SearchSet(client,nameOfListing){
+  const result = await client.db("Flashcard").collection("Flashcardset").find({setname:{ $regex: ".*"+nameOfListing+".*" }}).toArray();
+  //console.log(result);
+  if (result) {
+    console.log(`Found ${result.length} results `+'matched based on criteria '+"'"+nameOfListing+"'");
+    
+    return result;
+} else {
+    console.log(`no search result`);
+    return false;
+}
+}
 async  UpdateSet(client, nameOfListing, updatedListing){
   const result = await client.db("Flashcard").collection("Flashcardset")
                       .updateOne({ _id: nameOfListing }, { $set: updatedListing });
@@ -89,9 +101,7 @@ async  deleteSet(client, id) {
           .deleteOne({ _id: id });
   console.log(`${result.deletedCount} document(s) was/were deleted.`);
 }
-async searchSet(client, name){
-  const result = await client.db("Flashcard").collection("Flashcardset").find({$text:{$search: name}});
-}
+
 }
 exports.FlascardDBService=FlascardDBService;
 
