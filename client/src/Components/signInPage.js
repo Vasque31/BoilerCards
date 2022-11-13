@@ -7,6 +7,7 @@ import { useRef } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
+import FacebookLogin from 'react-facebook-login';
 import cookie from 'react-cookies'
 //Use states for Sign In
 const errors = {
@@ -65,6 +66,9 @@ function SignInPage() {
         }
        
       };
+    const responseFacebook = (response) => {
+        console.log(response.email);
+    }
     return (
         <div className = "login-form">
             <form onSubmit = {handleSignIn}>
@@ -84,6 +88,12 @@ function SignInPage() {
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
                 </div>
+                <FacebookLogin
+                    appId="491848086337502"
+                    autoLoad={true}
+                    fields="name,email,picture"
+                    size="small"
+                    callback={responseFacebook} />
              
             </form>
             
