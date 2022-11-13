@@ -29,6 +29,7 @@ function Header() {
     const [showFolder, setShowFolder] = useState(false);
     const [inputList, setinputList] = useState([{front:'', back:'', drate:'3', img: ''}]);
     const [folderName, setFoldername] = useState();
+    const [subject, setSubject] = useState();
     const [statePrivate, setPrivate] = useState(true);
     const [name, setName] = useState();
     const navigate = useNavigate();
@@ -121,6 +122,7 @@ function Header() {
     const handleSaveFolder = async(event) => {
         let res = await axios.post("http://localhost:3001/createfolder",{
             folderName:folderName,
+            folderSubject:subject,
             uid:getCookie('userid'),    
         });
 
@@ -185,6 +187,8 @@ function Header() {
                                     <Modal.Body>
                                             <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Name of New Folder: </label>
                                             <input type="text" name = "folderName" onChange={(e) => setFoldername(e.target.value)} required />
+                                            <label style = {{paddingRight: "1rem", color: "gold", fontSize: "1rem"}}>Folder Subject: </label>
+                                            <input type="text" name = "subject" onChange={(e) => setSubject(e.target.value)} required />
                                     </Modal.Body>
                                     <Modal.Footer>
                                             <Button variant="secondary" onClick={handleCloseFolder}>
