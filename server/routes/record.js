@@ -421,6 +421,10 @@ recordRoutes.route("/removeNote").post(async function (req, res) {
 });
 recordRoutes.route("/verification").post(async function (req, res) {
   const user = await userdata.GetAsyncbyid(client,(ObjectId(req.body.userid)));
+  var val = Math.floor(1000 + Math.random() * 9000);
+  var map = new Map();
+  map.set(user._id,val);
+  const obj = Object.fromEntries(map);
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -428,21 +432,18 @@ recordRoutes.route("/verification").post(async function (req, res) {
       pass: 'hwgprezcxqzkxexk' 
     }
   });
-  var val = Math.floor(1000 + Math.random() * 9000);
   const mailOptions = {
     from: 'boilercard1@gmail.com',
     to: user.email,
     subject: 'Verification code',
     text: 'Your code for recover password is: '+val+', Do not send it to anyone.'
   };
-  var map = new Map();
-  map.set(user._id,val);
-  const obj = Object.fromEntries(map);
+  
   transporter.sendMail(mailOptions, async function(error, info){
     if (error) {
     console.log(error);
     } else {
-      await userdata.Addverification(client,obj);
+      await userdata.Addverification(client,ObjectId("637031a05d2937e578edddf2"),obj);
       console.log('Email sent: ' + info.response);
     }
   });
@@ -474,9 +475,31 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
 recordRoutes.route("/forgotpassword").post(async function (req, res) {
   const userid = req.body.userid;
   const code = req.body.code;
-  const codemap = new Map(Object.entries(userdata.Getverificationcode(client,Object("637031a05d2937e578edddf2"))));
+  const password = await userdata.GetAsyncbyid(client,ObjectId(userid)).password;
+  const codemap = new Map(Object.entries(userdata.Getverificationcode(client,ObjectId("637031a05d2937e578edddf2"))));
   const realcode = codemap.get(userid);
   if(code === realcode){
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'boilercard1@gmail.com',
+        pass: 'hwgprezcxqzkxexk' 
+      }
+    });
+    const mailOptions = {
+      from: 'boilercard1@gmail.com',
+      to: user.email,
+      subject: 'Your password',
+      text: 'Your old password is: '+password+', Do not send it to anyone.'
+    };
+    transporter.sendMail(mailOptions, async function(error, info){
+      if (error) {
+      console.log(error);
+      } else {
+        await userdata.Addverification(client,obj);
+        console.log('Email sent: ' + info.response);
+      }
+    });
     res.json(true)
   }else{
     res.json(false);
