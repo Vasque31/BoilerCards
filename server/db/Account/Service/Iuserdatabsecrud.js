@@ -28,14 +28,15 @@ class userDBService {
       `New listing created with the following id: ${result.insertedId}`
     );
   }
-  async addVerificationMap(client, newListing) {
+  async Updateverification(client, nameOfListing, updatedListing) {
     const result = await client
       .db("User")
       .collection("Verification")
-      .insertOne(newListing);
+      .updateOne({ _id: nameOfListing }, { $set: updatedListing });
     console.log(
-      `New listing created with the following id: ${result.insertedId}`
+      `${result.matchedCount} document(s) matched the query criteria.`
     );
+    console.log(`${result.modifiedCount} document(s) was/were updated.`);
   }
   async Getverificationcode(client, nameOfListing) {
     const result = await client

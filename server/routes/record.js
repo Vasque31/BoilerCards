@@ -31,6 +31,8 @@ const Flashcarddata = new  FlascardDBService();
 recordRoutes.route("/createaccount").post(async function (req, res) {
   const username = req.body.registrationInfo.username;
   const password = req.body.registrationInfo.password;
+  const email = req.body.registrationInfo.email;
+  console.log(req.body.registrationInfo);
   if (await userdata.GetAsync(client, username)) {
     console.log("username exist");
     res.json(false);
@@ -45,6 +47,7 @@ recordRoutes.route("/createaccount").post(async function (req, res) {
     map.set(res3.insertedId,await Flashcarddata.GetFolderasync(client,res3.insertedId));
     const obj = Object.fromEntries(map);
     user.folder = obj;
+    user.email = email;
     await userdata.UpdateUser(client,res2.insertedId,user);
     res.json(true);
     return;
@@ -420,11 +423,14 @@ recordRoutes.route("/removeNote").post(async function (req, res) {
   res.json(true)
 });
 recordRoutes.route("/verification").post(async function (req, res) {
-  const user = await userdata.GetAsyncbyid(client,(ObjectId(req.body.userid)));
+  console.log(req.body.username);
+  const user = await userdata.GetAsync(client,(req.body.username));
   var val = Math.floor(1000 + Math.random() * 9000);
-  var map = new Map();
+  console.log(user);
+  var map = new Map(Object.entries(await userdata.Getverificationcode(client,ObjectId("637031a05d2937e578edddf2"))));;
   map.set(user._id,val);
   const obj = Object.fromEntries(map);
+  console.log(obj);
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -443,7 +449,7 @@ recordRoutes.route("/verification").post(async function (req, res) {
     if (error) {
     console.log(error);
     } else {
-      await userdata.Addverification(client,ObjectId("637031a05d2937e578edddf2"),obj);
+      await userdata.Updateverification(client,ObjectId("637031a05d2937e578edddf2"),obj);
       console.log('Email sent: ' + info.response);
     }
   });
@@ -473,12 +479,14 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
   res.json(true);
 });
 recordRoutes.route("/forgotpassword").post(async function (req, res) {
-  const userid = req.body.userid;
+  const username = req.body.username;
   const code = req.body.code;
-  const password = await userdata.GetAsyncbyid(client,ObjectId(userid)).password;
-  const codemap = new Map(Object.entries(userdata.Getverificationcode(client,ObjectId("637031a05d2937e578edddf2"))));
-  const realcode = codemap.get(userid);
-  if(code === realcode){
+  console.log(code);
+  const user = await userdata.GetAsync(client,username);
+  const password = user.password;
+  const codemap = new Map(Object.entries(await userdata.Getverificationcode(client,ObjectId("637031a05d2937e578edddf2"))));
+  const realcode = codemap.get(user._id.toString());
+  if(code == realcode){
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -496,7 +504,6 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
       if (error) {
       console.log(error);
       } else {
-        await userdata.Addverification(client,obj);
         console.log('Email sent: ' + info.response);
       }
     });
