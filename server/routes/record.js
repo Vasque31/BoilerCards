@@ -472,6 +472,11 @@ recordRoutes.route("/searchkeywords").post(async function(req,res){
   myArray = myArray[0].split(" ");
   var resultmap = new Map();
   console.log(myArray);
+  const initialsearch = await Flashcarddata.SearchSet(client,keyword);
+  for(var j=0;j<initialsearch.length;j++){
+    resultmap.set(initialsearch[j]._id.toString(),initialsearch[j]);
+    console.log(initialsearch[j]._id);
+  }
   for(var i=0;i<myArray.length;i++){
     var set = await Flashcarddata.SearchSet(client,myArray[i])
     for(var j=0;j<set.length;j++){
