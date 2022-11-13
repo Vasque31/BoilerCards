@@ -336,6 +336,7 @@ function Folder() {
             <div className="box">
 
                 <heading className="section-title">{folder.foldername}</heading>
+                <heading className="folder-subject">{folder.foldersubject}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                 <Button variant="warning" onClick={handleselectall}>
                         Select All
