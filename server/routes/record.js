@@ -9,6 +9,7 @@ const {FlascardDBService} = require("../db/Flashcard/Service/ilfashcard.js");
 const nodemailer = require('nodemailer');
 const cookieParser = require('cookie-parser');
 const imgbbUploader = require ("imgbb-uploader");
+//const {Label} = require("../db/Flashcard/Model/Label.js");
 const uri =
   "mongodb+srv://wang4633:Wwq010817@cluster0.asirh9k.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useUnifiedTopology: true });
@@ -458,9 +459,38 @@ recordRoutes.route("/verification").post(async function (req, res) {
 });
 recordRoutes.route("/addlabel").post(async function(req,res){
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(req.body.folderid));
-  folder.subject = req.body.label;
-  await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
+  var label = req.body.label;
+  label = label.toLowerCase();
+  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("63713508f1ace0940ff6445b"));
+  labelmap = new Map(Object.entries(labelmap));
+  if(labelmap.get(label)==null){
+    const array = new Array();
+    array.push(folder);
+    labelmap.set(label,array);
+  }else{
+    const array = labelmap.get(label);
+    array.push(folder);
+    labelmap.set(label,array);
+  }
+  await Flashcarddata.UpdateLabel(client,ObjectId("63713508f1ace0940ff6445b"),labelmap);
   res.json(true);
+})
+recordRoutes.route("/searchsubject").post(async function(req,res){
+  const subject = req.body.subject;
+  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("63713508f1ace0940ff6445b"));
+  labelmap = new Map(Object.entries(labelmap));
+  const subjectarray = labelmap.get(subject);
+  //console.log(subjectarray);
+  const resultarray = new Array();
+  for(var i=0;i<subjectarray.length;i++){
+    //console.log(subjectarray[i].flashcardset);
+    var setarray = new Map(Object.entries(subjectarray[i].flashcardset))
+    setarray = Array.from(setarray.values());
+    for(var j=0;j<setarray.length;j++){
+      resultarray.push(setarray[j]);
+    }
+  }
+  res.json(resultarray);
 })
 recordRoutes.route("/searchkeywords").post(async function(req,res){
   var keyword = req.body.keyword;
