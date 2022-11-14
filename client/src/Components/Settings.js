@@ -13,6 +13,8 @@ function Settings() {
     const [cookies, setCookie, removeCookie] = useCookies(['userid']);
     const handleClick = () => {
         removeCookie('userid');
+        removeCookie('folderid');
+        setCookie('remember', false, { path: '/'})
         navigate("/");
     };
     return (
@@ -32,8 +34,8 @@ function Settings() {
                     </ListGroup.Item>
                     <ListGroup.Item action>
                         <Button variant="Light" onClick={handleClick}>
-                                    Logout
-                            </Button>
+                            Logout
+                        </Button>
                     </ListGroup.Item>
                 </ListGroup>
             </div>
