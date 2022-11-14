@@ -28,7 +28,8 @@ function SignInPage() {
     const passwordRef = useRef();
     const handleResetShow = () => setResetShow(true);
     const handleResetClose = () => setResetShow(false);
-    const resetEmail = "";
+    let resetEmail = "";
+    let resetUsername = "";
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -40,7 +41,12 @@ function SignInPage() {
         resetEmail = event.target.value;
     }
     const handleSubmitReset = () => {
-
+        console.log(resetEmail);
+        console.log(resetUsername);
+        handleResetClose();
+    }
+    const handleChangeName = (event) => {
+        resetUsername = event.target.value;
     }
     const handleSignIn = async (event) => {
         //prevents page reload
@@ -99,27 +105,7 @@ function SignInPage() {
                     <input type="Submit" value="Sign-In" />
                 </div>
                 <Button variant="link" onClick={handleResetShow}>Forgot Your Password?</Button>
-                <Modal 
-                    show={resetShow}
-                    onHide={handleResetClose}
-                    backdrop="static">
-                    
-                    <Modal.Header closeButton>
-                        <Modal.Title>Recover Password</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Enter the email address you used to sign up for BoilerCards</Modal.Body>
-                    <Form>
-                        <Form.Group>
-                            <Form.Label>
-                                Email Address
-                            </Form.Label>
-                            <Form.Control type="email" placeholder="Enter email"/>
-                            <Form.Text>We'll never share your email with anyone else</Form.Text>
-                        </Form.Group>
-                        <Button variant="primary" type="submit">Submit</Button>
-                    </Form>
-
-                </Modal>
+                
 
                 <FacebookLogin
                     appId="491848086337502"
@@ -129,6 +115,31 @@ function SignInPage() {
                     callback={responseFacebook} />
              
             </form>
+            <div>
+            <Modal 
+                    show={resetShow}
+                    onHide={handleResetClose}
+                    backdrop="static">
+                    
+                    <Modal.Header closeButton>
+                        <Modal.Title>Recover Password</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Enter the email address you used to sign up for BoilerCards</Modal.Body>
+                    <Form onSubmit={handleSubmitReset}>
+                        <Form.Group>
+                            <Form.Label>
+                                Email Address
+                            </Form.Label>
+                            <Form.Control type="email" placeholder="Enter email" onChange={handleChangeEmail}/>
+                            <Form.Text>We'll never share your email with anyone else<br/><br/></Form.Text>
+                            <Form.Label>Username<br/></Form.Label>
+                            <Form.Control type="name" placeholder="Name" onChange={handleChangeName}/>
+                        </Form.Group>
+                        <Button variant="primary" type="submit" >Submit</Button>
+                    </Form>
+
+            </Modal>
+            </div>
             
         </div>
     );
