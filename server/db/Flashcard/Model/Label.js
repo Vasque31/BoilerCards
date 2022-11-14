@@ -1,9 +1,9 @@
 class Label{ 
     
-    constructor(Label) {
-        this.subjectname = Label
-        this.subject = new Array();
+    constructor() {
+        this.name = "Label"
+        this.subject = new Map();
     }
    
 }
-exports.Label = Folder;
+exports.Label = Label;

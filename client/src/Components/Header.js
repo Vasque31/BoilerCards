@@ -122,7 +122,7 @@ function Header() {
     const handleSaveFolder = async(event) => {
         let res = await axios.post("http://localhost:3001/createfolder",{
             folderName:folderName,
-            folderSubject:subject,
+            label:subject,
             uid:getCookie('userid'),    
         });
 

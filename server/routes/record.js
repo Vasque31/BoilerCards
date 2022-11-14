@@ -107,18 +107,28 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
   newfolder.label = label;
   const object = await Flashcarddata.Createfolder(client,newfolder);
   const folder = await Flashcarddata.GetFolderasync(client,object.insertedId);
-  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("63713508f1ace0940ff6445b"));
-  labelmap = new Map(Object.entries(labelmap));
-  if(labelmap.get(label)==null){
-    const map = new Map();
-    map.set(folder._id.toString(),folder);
-    labelmap.set(label,map);
+  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
+  if(labelmap.map==null){
+    labelmap.map = new Map();
   }else{
-    const map = new Map(Object.entries(labelmap.get(label)));
-    map.set(folder._id.toString(),folder);
-    labelmap.set(label,map);
+    labelmap.map = new Map(Object.entries(labelmap.map));
   }
-  await Flashcarddata.UpdateLabel(client,ObjectId("63713508f1ace0940ff6445b"),labelmap);
+  if(labelmap.map.get(label)==null){
+    const map = new Map();
+    map.set(folder._id.toString(),folder._id);
+    labelmap.map.set(label,map);
+    const subjectarray = await  Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
+    if(subjectarray.array==null){
+      subjectarray.array = new Array();
+    }
+    subjectarray.array.push(label);
+    await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e59"),subjectarray);
+  }else{
+    const map = new Map(Object.entries(labelmap.map.get(label)));
+    map.set(folder._id.toString(),folder._id);
+    labelmap.map.set(label,map);
+  }
+  await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e58"),labelmap);
   if(object){
       const myuserobjectid = ObjectId(uid);
       const user = await userdata.GetAsyncbyid(client,myuserobjectid);
@@ -289,7 +299,6 @@ recordRoutes.route("/logout").post(async function (req, res) {
 recordRoutes.route("/edit").post(async function (req, res) {
   const flashcardid = req.body.flashcardid;
   const oldflashcard = await Flashcarddata.GetFlashcardasync(client,ObjectId(flashcardid));
-
   oldflashcard.front = req.body.newfront;
   oldflashcard.back = req.body.newback;
   oldflashcard.difficulty = req.body.newDiff
@@ -331,12 +340,22 @@ recordRoutes.route("/editfolder").post(async function (req, res) {
   res.json(true);
 });
 recordRoutes.route("/deletefolder").post(async function (req, res) {
-  const folder = req.body.folder;
+  var folder = req.body.folder;
+  //folder = await Flashcarddata.GetFolderasync(client,ObjectId(folder));
+  var subjmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
+  var setmap = new Map(Object.entries(subjmap.map));
+  var foldermap = setmap;
+  foldermap = foldermap.get(folder.label);
+  foldermap = new Map(Object.entries(foldermap));
+  foldermap.delete(folder._id.toString());
+  setmap.set(folder.label,foldermap);
+  setmap = Object.fromEntries(setmap);
+  subjmap.map = setmap;
+  await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e58"),subjmap);
   const user = await userdata.GetAsyncbyid(client,ObjectId(folder.owner));
   const map = new Map(Object.entries(user.folder));
   map.delete(folder._id);
   const mapobj = Object.fromEntries(map);
-  //console.log(mapobj);
   user.folder = mapobj;
   folder._id = ObjectId(folder._id);
   result = await Flashcarddata.deleteFlashcardFolder(client,ObjectId(folder._id));
@@ -479,40 +498,51 @@ recordRoutes.route("/addlabel").post(async function(req,res){
   label = label.toLowerCase();
   folder.label = label;
   await Flashcarddata.UpdateFolder(client,ObjectId(folder._id),folder);
-  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("63713508f1ace0940ff6445b"));
-  labelmap = new Map(Object.entries(labelmap));
-  var oldmap = labelmap.get(oldlabel);
+  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
+  if(labelmap.map==null){
+    labelmap.map = new Map();
+  }else{
+    labelmap.map = new Map(Object.entries(labelmap.map));
+  }
+  var oldmap = labelmap.map.get(oldlabel);
   oldmap = new Map(Object.entries(oldmap))
   oldmap.delete(folder._id.toString());
-  labelmap.set(oldlabel,oldmap);
-  if(labelmap.get(label)==null){
+  labelmap.map.set(oldlabel,oldmap);
+  if(labelmap.map.get(label)==null){
     const map = new Map();
-    map.set(folder._id.toString(),folder);
-    labelmap.set(label,map);
+    map.set(folder._id.toString(),folder._id);
+    labelmap.map.set(label,map);
+    const subjectarray = await  Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
+    if(subjectarray.array==null){
+      subjectarray.array = new Array();
+    }
+    subjectarray.array.push(label);
+    await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e59"),subjectarray);
   }else{
-    const map = new Map(Object.entries(labelmap.get(label)));
-    map.set(folder._id.toString(),folder);
-    labelmap.set(label,map);
+    const map = new Map(Object.entries(labelmap.map.get(label)));
+    map.set(folder._id.toString(),folder._id);
+    labelmap.map.set(label,map);
   }
-  await Flashcarddata.UpdateLabel(client,ObjectId("63713508f1ace0940ff6445b"),labelmap);
+  await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e58"),labelmap);
   res.json(true);
 })
-
 recordRoutes.route("/searchsubject").post(async function(req,res){
   const subject = req.body.subject;
   //dshaj
-  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("63713508f1ace0940ff6445b"));
-  labelmap = new Map(Object.entries(labelmap));
-  const subjectarray = labelmap.get(subject);
-  //console.log(subjectarray);
+  var labelmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
+  labelmap = new Map(Object.entries(labelmap.map));
+  //console.log(labelmap);
+  var subjectarray = labelmap.get(subject);
   const resultarray = new Array();
+  subjectarray = new Map(Object.entries(subjectarray));
+  subjectarray = Array.from(subjectarray.values());
   for(var i=0;i<subjectarray.length;i++){
-    //console.log(subjectarray[i].flashcardset);
-    var setarray = new Map(Object.entries(subjectarray[i].flashcardset))
-    setarray = Array.from(setarray.values());
-    for(var j=0;j<setarray.length;j++){
-      resultarray.push(setarray[j]);
-    }
+    var result = await Flashcarddata.GetFolderasync(client,ObjectId(subjectarray[i]));
+    result = new Map(Object.entries(result));
+    result = Array.from(result.values);
+    if(result.length!=0){
+      resultarray.push(result);
+    } 
   }
   res.json(resultarray);
 })
