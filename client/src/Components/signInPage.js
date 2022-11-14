@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./signInPage.css";
 import mylogo from "../images/PurdueTrain.png";
@@ -19,11 +19,18 @@ const errors = {
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [remember, setRememberMe] = useState(false);
     const [cookie, setCookie] = useCookies([]);
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
 
+    useEffect(()=> {
+        console.log(getCookie('remember'));
+        if(getCookie('remember') === "true") {
+            navigate("/HomePage");
+        }
+    },[]);
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
@@ -57,9 +64,11 @@ function SignInPage() {
             });
             
             libstorage = res.data;
-         
-
+            if (remember === true) {
+                setCookie('remember', true, { path: '/'});
+            }
             navigate("/HomePage");
+
         }      
         else{
             alert("incorrect information");
@@ -83,7 +92,8 @@ function SignInPage() {
                     <label style={{textAlign: "left"}}>Password </label>
                     <input type="password" name="password" placeholder="Enter Password" ref={passwordRef} required />
                 </div>
-               
+                <input onClick={(e) => setRememberMe(!remember)} type="checkbox" />
+                <b style ={{color: "gold"}}> Remember Me!</b>
                 <div className="button-container">
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
