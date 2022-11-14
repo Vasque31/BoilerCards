@@ -48,8 +48,17 @@ function QuizGame() {
     var mode = "All prompts once";
 
     var selectedPromptIndex;
-    if (mode == "All prompts once") {selectedPromptIndex = randomCard(previousCorrectPrompts.concat(previousIncorrectPrompts));
+    if (mode == "All prompts once") {
+        selectedPromptIndex = randomCard(previousCorrectPrompts.concat(previousIncorrectPrompts));
+        if (selectedPromptIndex < 0 || selectedPromptIndex >= cardsQuiz.length) {
+            console.log("Out of bounds index");
+            selectedPromptIndex = 0; //avoid crash/err
+        }
+        //console.log("length of exclusion" + );
+        if (previousCorrectPrompts.concat(previousIncorrectPrompts).length >= cardsQuiz.length) setShowContinueorExit(true);
     } else {console.log("error: Invalid mode")}
+
+
 
     var selectedCorrectPosition = randomButtonPlace();
     var selectedIncorrectAnswers = randomIncorrectArray([selectedPromptIndex]); //array size 3, indices, parameter is array because includes expects an array (prevent skip check of first index)
@@ -58,7 +67,7 @@ function QuizGame() {
     console.log("correct answer index:" + selectedPromptIndex);
     console.log("Incorrect: " + selectedIncorrectAnswers);
     for (var i = 0; i < cardsQuiz.length; i++) {
-        console.log(cardsQuiz[i].front + cardsQuiz[i].back);
+    //    console.log(cardsQuiz[i].front + cardsQuiz[i].back);
     }
     
 
@@ -106,7 +115,10 @@ function QuizGame() {
             score: score,
         });*/
         //returns {BestScore: value, NewBestScore: true/false}
-        
+        console.log("correct: " + previousCorrectPrompts);
+        console.log("incorrect: " + previousIncorrectPrompts); 
+        previousCorrectPrompts = [];
+        previousIncorrectPrompts = [];
         score = 0;
         setShowContinueorExit(false);
     }
@@ -120,7 +132,10 @@ function QuizGame() {
             score: score,
         });*/
         //returns {BestScore: value, NewBestScore: true/false}
-        
+        console.log("correct: " + previousCorrectPrompts);
+        console.log("incorrect: " + previousIncorrectPrompts); 
+        previousCorrectPrompts = [];
+        previousIncorrectPrompts = [];
         score = 0;
         clearInterval(clockInterval);
         setShowContinueorExit(false);
