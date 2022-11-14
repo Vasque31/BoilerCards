@@ -8,26 +8,60 @@ import "./QuizGame.css";
 
 var flashcardarray;
 var score = 0;
-var previousPrompt = [];
+var previousCorrectPrompts = [];
+var previousIncorrectPrompts = [];
+var clock = {
+    tenthSec: 0,
+    sec: 0,
+};
 
+function timer() {
+    //     setClock({tenthSec: clock.tenthSec + 0, sec: clock.sec + 5});
+    //     if (clock.tenthSec >= 10) {
+    //         setClock({
+    //             tenthSec: clock.tenthSec - 10,
+    //             sec: clock.sec + 1,
+    //         });
+    //     }
+        clock.tenthSec += 2;
+        if (clock.tenthSec >= 10) {
+            clock.tenthSec -= 10;
+            clock.sec += 1
+        }
+}
 
+var clockInterval = setInterval(timer(), 200)
 //Assume new round onHide for now
 
 function QuizGame() {
     console.log("Rendering Quiz Game")
-    for (var i = 0; i < cardsQuiz.length; i++) {
-        console.log(cardsQuiz[i].front + cardsQuiz[i].back);
-    }
-    flashcardarray = cardsQuiz;
+    //flashcardarray = cardsQuiz;
+    
+    /*const [clock, setClock] = useState({
+        tenthSec: 0,
+        sec: 0,
+    });*/
     const [correctness, setCorrectness] = useState("Correct");
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
-    var selectedPromptIndex = randomCard(previousPrompt);
+    const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
+    var mode = "All prompts once";
+
+    var selectedPromptIndex;
+    if (mode == "All prompts once") {selectedPromptIndex = randomCard(previousCorrectPrompts.concat(previousIncorrectPrompts));
+    } else {console.log("error: Invalid mode")}
+
     var selectedCorrectPosition = randomButtonPlace();
+    var selectedIncorrectAnswers = randomIncorrectArray([selectedPromptIndex]); //array size 3, indices, parameter is array because includes expects an array (prevent skip check of first index)
+    
     console.log("position: " + selectedCorrectPosition);
     console.log("correct answer index:" + selectedPromptIndex);
-    var selectedIncorrectAnswers = randomIncorrectArray([selectedPromptIndex]); //array size 3, indices, parameter is array because includes expects an array (prevent skip check of first index)
     console.log("Incorrect: " + selectedIncorrectAnswers);
+    for (var i = 0; i < cardsQuiz.length; i++) {
+        console.log(cardsQuiz[i].front + cardsQuiz[i].back);
+    }
+    
+
     var answerIndices = []; //empty, used to fill answer options
     //loops through all possible positions of correct
     for (var i = 0; i < 4; i++) {
@@ -41,22 +75,31 @@ function QuizGame() {
     //const [showSaved, setShowSaved] = useState(false);
 
 
+    
+    
+
+
+
+
     const handleSelectCorrectAnswer = () => {
         score++;
         setCorrectness("✅Correct\n");
-        previousPrompt = [selectedPromptIndex];
-        setShowContinueorExit(true);
+        previousCorrectPrompts.push(selectedPromptIndex);
+        setShowQuestionFeedback(true);
     }
     const handleSelectIncorrectAnswer = () => {
+        score--;
         setCorrectness("⛔️Incorrect\n");
-        setShowContinueorExit(true);
+        previousIncorrectPrompts.push(selectedPromptIndex);
+        setShowQuestionFeedback(true);
     }
     
-    const handleNewRound = () => {
+    const handleNextQuestion = () => {
 
-        setShowContinueorExit(false);
+        setShowQuestionFeedback(false);
     }
-    const handleExitQuiz = () => {
+
+    const handleNewRound = () => {
         /*let res = await axios.post("http://localhost:3001/bestscore",{
             uid: getCookie('u_id'),
             setid: cardsQuiz[0].belongset
@@ -66,11 +109,33 @@ function QuizGame() {
         
         score = 0;
         setShowContinueorExit(false);
+    }
+
+    
+
+    const handleExitQuiz = () => {
+        /*let res = await axios.post("http://localhost:3001/bestscore",{
+            uid: getCookie('u_id'),
+            setid: cardsQuiz[0].belongset
+            score: score,
+        });*/
+        //returns {BestScore: value, NewBestScore: true/false}
+        
+        score = 0;
+        clearInterval(clockInterval);
+        setShowContinueorExit(false);
         navigate(-1);
 
     }
+
+
+
+
     return(
         <div>
+            <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
+            <h1 style={{textAlign: "right", color: "gold"}}> {clock.sec}.{clock.tenthSec} sec </h1>
+            
             <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
             <br></br>
             <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[selectedPromptIndex].front}</h1>
@@ -84,6 +149,7 @@ function QuizGame() {
                     return(
                         <div style={{textAlign: 'center', justifyContent: 'center'}}>
                             <Button size='lg' onClick={handleSelectCorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
+                            <br></br>
                         </div>
                     );
                 }
@@ -91,6 +157,7 @@ function QuizGame() {
                 return(
                     <div style={{textAlign: 'center', justifyContent: 'center'}}>
                         <Button size='lg' onClick={handleSelectIncorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
+                        <br></br>
                     </div>
                 )
             })}
@@ -102,6 +169,7 @@ function QuizGame() {
                 </Modal.Header>
                 <Modal.Body> 
                     <h1>{correctness}</h1>       
+                    <br></br>
                     <h1>Score: {score}</h1>
                 </Modal.Body>
                 <Modal.Footer>
@@ -110,6 +178,19 @@ function QuizGame() {
                 </Modal.Footer>
             </Modal>
 
+            <Modal show={showQuestionFeedback} onHide={() => handleNextQuestion()}>
+                <Modal.Header>
+                    <Modal.Title> Another Round? </Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                    <h1>{correctness}</h1>      
+                    <br></br> 
+                    <h1>Score: {score}</h1>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleNextQuestion()}> Next Question </Button>
+                </Modal.Footer>
+            </Modal>
             
         </div>
     );
@@ -123,6 +204,7 @@ function includes(array, value) {
     for (var i = 0; i < array.length; i++) {
         if (array[i] == value) return true;
     }
+    console.log("includes - false");
     return false;
 }
 
