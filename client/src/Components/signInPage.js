@@ -30,8 +30,9 @@ function SignInPage() {
     const [resetShow, setResetShow] = useState(false);
     const handleResetShow = () => setResetShow(true);
     const handleResetClose = () => setResetShow(false);
-    let resetEmail = "";
+    const [resetCode, setResetCode] = useState([{}]);
     let resetUsername = "";
+    let resetCodeNum = 0;
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
@@ -45,20 +46,28 @@ function SignInPage() {
         //Call to backend to check validity
 
     };
-    const handleChangeEmail = (event) => {
-        resetEmail = event.target.value;
-        console.log(resetEmail);
-    }
     const handleSubmitReset = async (event) => {
         event.preventDefault();
-        console.log(resetEmail);
-        console.log(resetUsername);
-        let res = await axios.post("http://localhost:3001/forgotpassword");
+        setResetCode([{code: 0}]);
+        let res = await axios.post("http://localhost:3001/verification", {
+            username: resetUsername
+        });
+        
+    }
+    const handleSubmitCode = async (event) => {
+        event.preventDefault();
+        let res = await axios.post("http://localhost:3001/forgotpassword", {
+            username: resetUsername,
+            code: resetCodeNum
+        });
         handleResetClose();
     }
     const handleChangeName = (event) => {
         resetUsername = event.target.value;
         console.log(resetUsername);
+    }
+    const handleCodeChange = (event) => {
+        resetCodeNum = event.target.value;
     }
     const handleSignIn = async (event) => {
         //prevents page reload
@@ -120,8 +129,13 @@ function SignInPage() {
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
                 </div>
-                <Button variant="link" onClick={handleResetShow}>Forgot Your Password?</Button>
-                
+                <Button variant="link" onClick={handleResetShow}>Forgot Your Password?<br></br></Button>
+                <FacebookLogin
+                    appId="491848086337502"
+                    autoLoad={true}
+                    fields="name,email,picture"
+                    size="small"
+                    callback={responseFacebook} />
             </form>
             
         
@@ -137,16 +151,20 @@ function SignInPage() {
                 <Modal.Body>Enter the email address you used to sign up for BoilerCards</Modal.Body>
                 <Form onSubmit={handleSubmitReset}>
                     <Form.Group>
-                        <Form.Label>
-                            Email Address
-                        </Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" onChange={handleChangeEmail}/>
-                            <Form.Text>We'll never share your email with anyone else<br/><br/></Form.Text>
                         <Form.Label>Username<br/></Form.Label>
                         <Form.Control type="name" placeholder="Name" onChange={handleChangeName}/>
                     </Form.Group>
-                    <Button variant="primary" type="submit">Submit</Button>
+                    <Button variant="primary" type="submit">Send Email</Button>
                 </Form>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmitCode}>
+                        <Form.Group>
+                            <Form.Label>Enter Verification Code from your Email</Form.Label>
+                            <Form.Control type = "number" placeholder="Code" onChange = {handleCodeChange}/>
+                        </Form.Group>
+                        <Button variant="primary" type = "submit">Submit</Button>
+                    </Form>
+                </Modal.Body>
 
             </Modal>
         </div>
