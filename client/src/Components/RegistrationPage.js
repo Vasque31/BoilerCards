@@ -36,6 +36,7 @@ function SignInPage() {
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
+    const emailRef = useRef();
     
 
     const handleSignUp = (event) => {
@@ -51,7 +52,8 @@ function SignInPage() {
 
         const registrationInfo = {
             username: usernameRef.current.value,
-            password: passwordRef.current.value
+            password: passwordRef.current.value,
+            email: emailRef.current.value
         }
         if(checkvalidpassword(registrationInfo.password)&&checkvalidusername(registrationInfo.username) ){
             console.log(registrationInfo);
@@ -74,6 +76,10 @@ function SignInPage() {
             <form onSubmit = {handleCreateAccount}>
                 <img alt = "Logo" className = "photo" src= {mylogo}/>
 				<h1 style={{textAlign: "center", color: "gold"}}>Create BoilerCards Account</h1>
+                <div className = "input-container">
+                    <label style = {{textAlign: "left"}}>Email</label>
+                    <input type="email" name = "email" placeholder="Enter Email" ref={emailRef} required />
+                </div>
                 <div className = "input-container">
                     <label style={{textAlign: "left"}}>Username</label>
                     <input type="text" name="username" placeholder="Enter Username" ref={usernameRef} required />

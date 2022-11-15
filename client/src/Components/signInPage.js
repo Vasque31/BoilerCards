@@ -8,6 +8,9 @@ import axios from "axios";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import FacebookLogin from 'react-facebook-login';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 import cookie from 'react-cookies'
 //Use states for Sign In
 const errors = {
@@ -24,7 +27,11 @@ function SignInPage() {
     const navigate = useNavigate();
     const usernameRef = useRef();
     const passwordRef = useRef();
-
+    const [resetShow, setResetShow] = useState(false);
+    const handleResetShow = () => setResetShow(true);
+    const handleResetClose = () => setResetShow(false);
+    let resetEmail = "";
+    let resetUsername = "";
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
@@ -38,9 +45,24 @@ function SignInPage() {
         //Call to backend to check validity
 
     };
-    
+    const handleChangeEmail = (event) => {
+        resetEmail = event.target.value;
+        console.log(resetEmail);
+    }
+    const handleSubmitReset = async (event) => {
+        event.preventDefault();
+        console.log(resetEmail);
+        console.log(resetUsername);
+        let res = await axios.post("http://localhost:3001/forgotpassword");
+        handleResetClose();
+    }
+    const handleChangeName = (event) => {
+        resetUsername = event.target.value;
+        console.log(resetUsername);
+    }
     const handleSignIn = async (event) => {
         //prevents page reload
+        console.log("HELLLDSKFJOEIJFOWIEFJSOKDLFJLSDKFJ");
         event.preventDefault();
         const ip = await axios.get('https://geolocation-db.com/json/');
         const logginInfo = {
@@ -98,15 +120,36 @@ function SignInPage() {
                     <input type="Button" value="Sign-Up" onClick = {handleSignUp}/>
                     <input type="Submit" value="Sign-In" />
                 </div>
-                <FacebookLogin
-                    appId="491848086337502"
-                    autoLoad={true}
-                    fields="name,email,picture"
-                    size="small"
-                    callback={responseFacebook} />
-             
+                <Button variant="link" onClick={handleResetShow}>Forgot Your Password?</Button>
+                
             </form>
             
+        
+        <div>
+            <Modal 
+                show={resetShow}
+                onHide={handleResetClose}
+                backdrop="static">
+        
+                <Modal.Header closeButton>
+                    <Modal.Title>Recover Password</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Enter the email address you used to sign up for BoilerCards</Modal.Body>
+                <Form onSubmit={handleSubmitReset}>
+                    <Form.Group>
+                        <Form.Label>
+                            Email Address
+                        </Form.Label>
+                        <Form.Control type="email" placeholder="Enter email" onChange={handleChangeEmail}/>
+                            <Form.Text>We'll never share your email with anyone else<br/><br/></Form.Text>
+                        <Form.Label>Username<br/></Form.Label>
+                        <Form.Control type="name" placeholder="Name" onChange={handleChangeName}/>
+                    </Form.Group>
+                    <Button variant="primary" type="submit">Submit</Button>
+                </Form>
+
+            </Modal>
+        </div>
         </div>
     );
 }
