@@ -27,6 +27,7 @@ function Header() {
     const fileReader = new FileReader();
     const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
+    const [searchMethod, setSearchMethod] = useState(true);
     const [inputList, setinputList] = useState([{front:'', back:'', drate:'3', img: ''}]);
     const [folderName, setFoldername] = useState();
     const [subject, setSubject] = useState();
@@ -143,6 +144,16 @@ function Header() {
     const onFileChange = () => {
         
     }
+    const [search, setSearch] = useState("");
+    const handleSearch = async () => {
+        console.log(search);
+        let res = await axios.post("http://localhost:3001/searchkeywords", {
+                keyword:search,
+        });
+        localStorage.setItem('searchResults', JSON.stringify(res.data));
+        console.log(res.data);
+        navigate('/search');
+    }
     return (
         <div className="app">
             <Navbar variant="dark" expand="lg">
@@ -158,14 +169,39 @@ function Header() {
                                 </Button>
                             </Link>
                         </Nav.Link>
+                        {searchMethod && <div style={{paddingTop: '1rem', paddingRight: '0.5rem'}}>
+                        <Form>
+                        <Form.Check 
+                            type="switch"
+                            id="custom-switch"
+                            label="Search By Keyword"
+                            onChange={() => setSearchMethod(false)}
+                        />
+                        </Form>
+                        </div>}
+                        {!searchMethod && <div style={{paddingTop: '1rem', paddingRight: '0.5rem'}}>
+                        <Form>
+                        <Form.Check 
+                            type="switch"
+                            id="custom-switch"
+                            label="Search By Label"
+                            onClick={() => setSearchMethod(true)}
+                            defaultChecked
+                        />
+                        </Form>
+                        </div>}
+
+
                         <Form className="d-flex">
                             <Form.Control
                                 type="search"
                                 placeholder="Search"
+                                id='search'
                                 className="me-2"
                                 aria-label="Search"
+                                onChange={(e) => setSearch(e.target.value)}
                             />
-                            <Button variant="dark">Search</Button>
+                            <Button variant="dark" onClick={handleSearch}>Search</Button>
                         </Form>
                         <NavDropdown title="Create" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">
