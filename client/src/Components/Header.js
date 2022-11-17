@@ -36,6 +36,7 @@ function Header() {
     const navigate = useNavigate();
     const fileRef = useRef();
     const [label, setLabel] = useState('');
+    const [subjects, setSubjects] = useState([JSON.parse(localStorage.getItem('subjects'))])
 
 
     const [library, setLibrary] = useState([]);
@@ -47,6 +48,11 @@ function Header() {
             console.log(res.data);
             setLibrary(res.data);
             localStorage.setItem('libdata', JSON.stringify(res.data));
+            res = await axios.get("http://localhost:3001/subjectarray", {
+
+            });
+            localStorage.setItem('subjects', JSON.stringify(res.data));
+            setSubjects(JSON.parse(localStorage.getItem('subjects')));
         }
         getLibrary();
     },[]);
@@ -158,7 +164,7 @@ function Header() {
 
     const handleSearchLabel = async () => {
         let res = await axios.post("http://localhost:3001/searchsubject", {
-                suubject:label,
+                subject:label,
         });
         localStorage.setItem('searchResults', JSON.stringify(res.data));
         console.log(res.data);
@@ -204,11 +210,11 @@ function Header() {
                         {!searchMethod && <div style={{paddingTop: '1rem', paddingRight: '0.5rem'}}>
                             <select name="LabelSelectList" id="LabelList" onChange={(e) => setLabel(e.currentTarget.value)}>
                             <option value="">---Choose---</option>
-                                {/*{Object.values().map(item => {
+                                {subjects.map(item => {
                                     return (
-                                        <option value={item.label}>{item.label}</option>    
+                                        <option value={item}>{item}</option>    
                                     );
-                                })}*/}
+                                })}
                             </select>
                             <Button variant="dark" onClick={handleSearchLabel}>Search</Button>
                         </div>}
