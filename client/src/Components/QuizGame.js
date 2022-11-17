@@ -4,107 +4,57 @@ import { cardsQuiz } from "./ViewFlashcard";
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import {CloseButton} from 'react';
+
+import * as React from 'react';
+import ReactStopwatch from 'react-stopwatch';
 import "./QuizGame.css";
 
 var flashcardarray;
 var score = 0;
 var previousCorrectPrompts = [];
 var previousIncorrectPrompts = [];
-var clock = {
-    tenthSec: 0,
-    sec: 0,
-};
 
-function timer() {
-    //     setClock({tenthSec: clock.tenthSec + 0, sec: clock.sec + 5});
-    //     if (clock.tenthSec >= 10) {
-    //         setClock({
-    //             tenthSec: clock.tenthSec - 10,
-    //             sec: clock.sec + 1,
-    //         });
-    //     }
-        clock.tenthSec += 2;
-        if (clock.tenthSec >= 10) {
-            clock.tenthSec -= 10;
-            clock.sec += 1
-        }
-}
+var readyForNewQuestion = true;
+var currPrompt = 0;
+var currQuestion = [{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0, Correct:true}];
 
-var clockInterval = setInterval(timer(), 200)
 //Assume new round onHide for now
 
 function QuizGame() {
     console.log("Rendering Quiz Game")
     //flashcardarray = cardsQuiz;
-    
-    /*const [clock, setClock] = useState({
-        tenthSec: 0,
-        sec: 0,
-    });*/
+        /****************************************************
+         *      Const definitions: states                   *
+         *                                                  *
+         ****************************************************/    
     const [correctness, setCorrectness] = useState("Correct");
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
     var mode = "All prompts once";
 
-    var selectedPromptIndex;
-    if (mode == "All prompts once") {
-        selectedPromptIndex = randomCard(previousCorrectPrompts.concat(previousIncorrectPrompts));
-        if (selectedPromptIndex < 0 || selectedPromptIndex >= cardsQuiz.length) {
-            console.log("Out of bounds index");
-            selectedPromptIndex = 0; //avoid crash/err
-        }
-        //console.log("length of exclusion" + );
-        if (previousCorrectPrompts.concat(previousIncorrectPrompts).length >= cardsQuiz.length) setShowContinueorExit(true);
-    } else {console.log("error: Invalid mode")}
 
-
-
-    var selectedCorrectPosition = randomButtonPlace();
-    var selectedIncorrectAnswers = randomIncorrectArray([selectedPromptIndex]); //array size 3, indices, parameter is array because includes expects an array (prevent skip check of first index)
-    
-    console.log("position: " + selectedCorrectPosition);
-    console.log("correct answer index:" + selectedPromptIndex);
-    console.log("Incorrect: " + selectedIncorrectAnswers);
-    for (var i = 0; i < cardsQuiz.length; i++) {
-    //    console.log(cardsQuiz[i].front + cardsQuiz[i].back);
-    }
-    
-
-    var answerIndices = []; //empty, used to fill answer options
-    //loops through all possible positions of correct
-    for (var i = 0; i < 4; i++) {
-        if (i == selectedCorrectPosition) {
-            answerIndices.push({Index: selectedPromptIndex, Correct:true}); //add when at selected index
-        }
-        if (i != 3) answerIndices.push({Index: selectedIncorrectAnswers[i], Correct:false}); //add with index of incorrect array, not out of bounds
-        
-    }
-    console.log("Array of options" + answerIndices);
-    //const [showSaved, setShowSaved] = useState(false);
-
-
-    
-    
-
-
-
+        /****************************************************
+         *      Handlers                                   *
+         *                                                  *
+         ****************************************************/
 
     const handleSelectCorrectAnswer = () => {
+        readyForNewQuestion = true;
         score++;
         setCorrectness("✅Correct\n");
-        previousCorrectPrompts.push(selectedPromptIndex);
+        previousCorrectPrompts.push(currPrompt);
         setShowQuestionFeedback(true);
     }
     const handleSelectIncorrectAnswer = () => {
+        readyForNewQuestion = true;
         score--;
         setCorrectness("⛔️Incorrect\n");
-        previousIncorrectPrompts.push(selectedPromptIndex);
+        previousIncorrectPrompts.push(currPrompt);
         setShowQuestionFeedback(true);
     }
     
     const handleNextQuestion = () => {
-
         setShowQuestionFeedback(false);
     }
 
@@ -123,7 +73,13 @@ function QuizGame() {
         setShowContinueorExit(false);
     }
 
-    
+    const handleShowExitQuiz = () => {
+        setShowContinueorExit(true);
+    }
+
+    const handleHideExit = () => {
+        setShowContinueorExit(false);
+    }
 
     const handleExitQuiz = () => {
         /*let res = await axios.post("http://localhost:3001/bestscore",{
@@ -137,28 +93,90 @@ function QuizGame() {
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
         score = 0;
-        clearInterval(clockInterval);
         setShowContinueorExit(false);
         navigate(-1);
 
     }
+        /****************************************************
+         *      Core    Logic                               *
+         *                                                  *
+         ****************************************************/
 
 
+    var selectedPromptIndex;
+    if (readyForNewQuestion) {
+        if (mode == "All prompts once") {
+            selectedPromptIndex = randomCard(previousCorrectPrompts.concat(previousIncorrectPrompts));
+            if (selectedPromptIndex < 0 || selectedPromptIndex >= cardsQuiz.length) {
+                console.log("Out of bounds index");
+                selectedPromptIndex = 0; //avoid crash/err
+            }
+            //console.log("length of exclusion" + );
+            if (previousCorrectPrompts.concat(previousIncorrectPrompts).length >= cardsQuiz.length) {
+                setShowContinueorExit(true);
+                handleExitQuiz();
+            }
+        } else {console.log("error: Invalid mode")}
+
+        var selectedCorrectPosition = randomButtonPlace();
+        var selectedIncorrectAnswers = randomIncorrectArray([selectedPromptIndex]); //array size 3, indices, parameter is array because includes expects an array (prevent skip check of first index)
+        
+        console.log("position: " + selectedCorrectPosition);
+        console.log("correct answer index:" + selectedPromptIndex);
+        console.log("Incorrect: " + selectedIncorrectAnswers);
+        for (var i = 0; i < cardsQuiz.length; i++) {
+        //    console.log(cardsQuiz[i].front + cardsQuiz[i].back);
+        }
+        
+
+        var answerIndices = []; //empty, used to fill answer options
+        //loops through all possible positions of correct
+        for (var i = 0; i < 4; i++) {
+            if (i == selectedCorrectPosition) {
+                answerIndices.push({Index: selectedPromptIndex, Correct:true}); //add when at selected index
+            }
+            if (i != 3) answerIndices.push({Index: selectedIncorrectAnswers[i], Correct:false}); //add with index of incorrect array, not out of bounds
+            
+        }
+        readyForNewQuestion = false; 
+        currPrompt = selectedPromptIndex;
+        currQuestion = answerIndices;
+        console.log("Array of options" + answerIndices);
+    
+    }
+    //const [showSaved, setShowSaved] = useState(false);
+    
+    
+
+    /*const reactstopwatch = () => (<ReactStopwatch
+        seconds={0}
+        minutes={0}
+        hours={0}
+        render={({hours,minutes,seconds})=>{
+            return(
+                <h1 style={{textAlign: "right", color: "gold"}}>{hours}:{minutes}:{seconds}</h1>
+            );
+        }}>
+</ReactStopwatch>);*/
 
 
     return(
         <div>
-            <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
-            <h1 style={{textAlign: "right", color: "gold"}}> {clock.sec}.{clock.tenthSec} sec </h1>
             
+            <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
+            <h1 style={{textAlign: "right", color: "gold"}}>  sec </h1>
+
+            <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
+            
+
             <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
             <br></br>
-            <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[selectedPromptIndex].front}</h1>
+            <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[currPrompt].front}</h1>
             <br></br>
             <h1 style={{textAlign: "center", color: "gold"}}> Answer Choices:</h1>
             <br></br>
             
-            {answerIndices.map((item) => { 
+            {currQuestion.map((item) => { 
                 if (item.Correct){
                     //Correct answer
                     return(
@@ -178,9 +196,9 @@ function QuizGame() {
             })}
             
                     
-            <Modal show={showContinueorExit} onHide={() => handleNewRound}>
+            <Modal show={showContinueorExit} onHide={() => handleHideExit}>
                 <Modal.Header>
-                    <Modal.Title> Another Round? </Modal.Title>
+                    <Modal.Title> Exit Quiz? </Modal.Title>
                 </Modal.Header>
                 <Modal.Body> 
                     <h1>{correctness}</h1>       
@@ -188,14 +206,14 @@ function QuizGame() {
                     <h1>Score: {score}</h1>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleNewRound()}> New Round </Button>
+                    <Button onClick={() => handleHideExit()}> Continue </Button>
                     <Button onClick={() => handleExitQuiz()}> Exit Quiz </Button>
                 </Modal.Footer>
             </Modal>
 
             <Modal show={showQuestionFeedback} onHide={() => handleNextQuestion()}>
                 <Modal.Header>
-                    <Modal.Title> Another Round? </Modal.Title>
+                    <Modal.Title> Question Feedback </Modal.Title>
                 </Modal.Header>
                 <Modal.Body> 
                     <h1>{correctness}</h1>      

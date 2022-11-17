@@ -63,7 +63,7 @@ function ViewFlashcard() {
         console.log("verify flashcards still exist");
         console.log(update);
         if (cardsQuiz != null && cardsQuiz.length >= 4) {
-            navigate("/quizgame");
+            navigate("/quizselection");
         } else {
             alert("not enough cards for quiz: Need at least 4");
         }
