@@ -31,8 +31,8 @@ function SignInPage() {
     const handleResetShow = () => setResetShow(true);
     const handleResetClose = () => setResetShow(false);
     const [resetCode, setResetCode] = useState([{}]);
-    let resetUsername = "";
-    let resetCodeNum = 0;
+    const [resetUsername, setResetUsername] = useState("");
+    const [resetCodeNum, setResetCodeNum] = useState(0);
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
@@ -64,11 +64,10 @@ function SignInPage() {
         handleResetClose();
     }
     const handleChangeName = (event) => {
-        resetUsername = event.target.value;
-        console.log(resetUsername);
+        setResetUsername(event.target.value);
     }
     const handleCodeChange = (event) => {
-        resetCodeNum = event.target.value;
+        setResetCodeNum(event.target.value);
     }
     const handleSignIn = async (event) => {
         //prevents page reload
