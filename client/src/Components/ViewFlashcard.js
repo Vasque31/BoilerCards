@@ -264,17 +264,22 @@ function ViewFlashcard() {
 
     return (
        
-        <div style={{display: 'block', backgroundColor: 'darkgray', width: '100%'}}>
+        <div style={{display: 'block', width: '100%'}}>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
             <div className="test">
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
             </div>
-            <div style={{backgroundColor: 'darkgray', width: '100%', height:'70%'}}>
-                <Button varient="primary" onClick={(e) => handlerefresh(update.flashcardset._id)}>Refresh</Button>
-                <Button varient="primary" onClick={handleShow}>+</Button>
-                <Button varient="primary" onClick={handleShowDownload}>Download</Button>
+            <div style={{width: '100%', height:'70%'}}>
+                <Dropdown style={{float: "right"}}>
+                    <Dropdown.Toggle variant="info">Options</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={handleShow}>Add more Flashcards</Dropdown.Item>
+                        <Dropdown.Item onClick={handleShowDownload}>Download this Set</Dropdown.Item>
+                        <Dropdown.Item onClick={handleStartQuiz}>Quiz Yourself!</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
                 <Modal show={showDownload} onHide={handleCloseDownload} backdrop="static">
                     <Modal.Header closeButton>
                         <Modal.Title>Download this Flashcardset</Modal.Title>
@@ -306,7 +311,7 @@ function ViewFlashcard() {
                             </ToggleButton>
                 </ToggleButtonGroup> }
                 <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>
-                <Dropdown as={ButtonGroup}>
+                <Dropdown as={ButtonGroup} style={{float: "left"}}>
                     <Button variant="secondary">Sort By:</Button>
                     <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
 
@@ -325,7 +330,6 @@ function ViewFlashcard() {
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-                <Button varient="primary" onClick={() => handleStartQuiz()}>Quiz</Button>
                 <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -379,7 +383,7 @@ function ViewFlashcard() {
                 </Modal.Footer>
              
             </Modal>
-                <Table striped bordered hover>
+                <Table striped bordered hover style= {{color:"gold"}}>
                     <thead>
                         <tr>
                             <th>Flashcard</th>
@@ -393,7 +397,7 @@ function ViewFlashcard() {
                                 <tr>
                                    
                                     <th>
-                                        <Button variant="light"> #{index+1} </Button>
+                                        #{index+1}
                                         {item.image!=="" &&
                                         <Link to="/note" target="_blank">
                                             <Button variant='link' value={item.image} onClick={(e) => handleNote(e)}>
