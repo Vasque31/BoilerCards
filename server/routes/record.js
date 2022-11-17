@@ -539,6 +539,7 @@ recordRoutes.route("/subjectarray").get(async function(req,res){
 })
 recordRoutes.route("/searchsubject").post(async function(req,res){
   const subject = req.body.subject;
+  console.log(subject)
   var labelmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
   labelmap = new Map(Object.entries(labelmap.map));
   //console.log(labelmap);
