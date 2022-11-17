@@ -340,7 +340,7 @@ function Folder() {
                 <heading style={{color: "white"}}>Label: {folder.label}</heading>
                 <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                 <Button variant="warning" onClick={handleselectall}>
-                        Select All
+                        Select
                 </Button>
                 {!selectall &&
                 <>
