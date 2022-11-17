@@ -56,6 +56,7 @@ function SignInPage() {
     }
     const handleSubmitCode = async (event) => {
         event.preventDefault();
+        console.log(resetUsername);
         let res = await axios.post("http://localhost:3001/forgotpassword", {
             username: resetUsername,
             code: resetCodeNum

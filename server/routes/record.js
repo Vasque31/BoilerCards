@@ -84,7 +84,7 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
   const oldusername = req.body.oldusername;
   const oldpassword = req.body.oldpassword;
   const result = await userdata.GetAsync(client, oldusername);
- 
+  
   if (result.password == oldpassword) {
     const newuserinfo = result;
     const newpassword = req.body.newpassword;
@@ -118,10 +118,13 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
     map.set(folder._id.toString(),folder._id);
     labelmap.map.set(label,map);
     const subjectarray = await  Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
-    if(subjectarray.array==null){
-      subjectarray.array = new Array();
+    if(subjectarray.Map==null){
+      subjectarray.Map = new Map();
     }
-    subjectarray.array.push(label);
+    subjectarray.Map = new Map(Object.entries(subjectarray.Map));
+    subjectarray.Map.set(label,label);
+    subjectarray.Map = Object.fromEntries(subjectarray.Map);
+    console.log("subjectarray is"+ subjectarray);
     await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e59"),subjectarray);
   }else{
     const map = new Map(Object.entries(labelmap.map.get(label)));
@@ -136,7 +139,7 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
       map.set(object.insertedId,folder);
       const obj = Object.fromEntries(map);
       user.folder = obj;
-      console.log(user.folder);
+      //console.log(user.folder);
       await userdata.UpdateUser(client,ObjectId(uid.toString()),user);
       res.json(true);
   }
@@ -279,7 +282,7 @@ function insertionSort(arr, n)
 }
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
- 
+  
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(folderid.toString()));
   res.json(folder);
 });
@@ -349,6 +352,17 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
   foldermap = new Map(Object.entries(foldermap));
   foldermap.delete(folder._id.toString());
   setmap.set(folder.label,foldermap);
+  console.log("foldermap.lengthis "+foldermap.length);
+  if(foldermap.size==0){
+    setmap.delete(folder.label);
+    var changesubjectarray = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
+    var changesubjectarraymap = new Map(Object.entries(changesubjectarray.Map));
+    console.log("change subject is "+changesubjectarraymap);
+    changesubjectarraymap.delete(folder.label);
+    changesubjectarraymap = Object.fromEntries(changesubjectarraymap);
+    changesubjectarray.Map = changesubjectarraymap;
+    await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e59"),changesubjectarray);
+  }
   setmap = Object.fromEntries(setmap);
   subjmap.map = setmap;
   await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e58"),subjmap);
@@ -479,7 +493,7 @@ recordRoutes.route("/verification").post(async function (req, res) {
     subject: 'Verification code',
     text: 'Your code for recover password is: '+val+', Do not send it to anyone.'
   };
- 
+  
   transporter.sendMail(mailOptions, async function(error, info){
     if (error) {
     console.log(error);
@@ -515,15 +529,27 @@ recordRoutes.route("/addlabel").post(async function(req,res){
   oldmap = new Map(Object.entries(oldmap))
   oldmap.delete(folder._id.toString());
   labelmap.map.set(oldlabel,oldmap);
+  if(oldmap.size==0){
+    labelmap.map.delete(oldlabel);
+    var changesubjectarray = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
+    var changesubjectarraymap = new Map(Object.entries(changesubjectarray.Map));
+    changesubjectarraymap.delete(oldlabel);
+    console.log(changesubjectarraymap);
+    changesubjectarraymap = Object.fromEntries(changesubjectarraymap);
+    changesubjectarray.Map = changesubjectarraymap;
+    await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e59"),changesubjectarray);
+  }
   if(labelmap.map.get(label)==null){
     const map = new Map();
     map.set(folder._id.toString(),folder._id);
     labelmap.map.set(label,map);
     const subjectarray = await  Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
-    if(subjectarray.array==null){
-      subjectarray.array = new Array();
+    if(subjectarray.Map==null){
+      subjectarray.Map = new Map();
     }
-    subjectarray.array.push(label);
+    subjectarray.Map = new Map(Object.entries(subjectarray.Map));
+    subjectarray.Map.set(label,label);
+    subjectarray.Map = Object.fromEntries(subjectarray.Map);
     await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e59"),subjectarray);
   }else{
     const map = new Map(Object.entries(labelmap.map.get(label)));
@@ -535,7 +561,10 @@ recordRoutes.route("/addlabel").post(async function(req,res){
 })
 recordRoutes.route("/subjectarray").get(async function(req,res){
   const array = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
-  res.json(array.array);
+  const map = new Map(Object.entries(array.Map));
+  const finalarray = Array.from(map.values());
+  console.log("subject array is"+finalarray);
+  res.json(finalarray);
 })
 recordRoutes.route("/searchsubject").post(async function(req,res){
   const subject = req.body.subject;
@@ -626,7 +655,7 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
 });
 recordRoutes.route("/forgotpassword").post(async function (req, res) {
   const username = req.body.username;
-  console.log(username);
+  console.log("username:"+ username);
   const code = req.body.code;
   console.log(code);
   const user = await userdata.GetAsync(client,username);
