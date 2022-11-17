@@ -271,7 +271,7 @@ function ViewFlashcard() {
             <div className="test">
             <FlashcardArray cards={cards} containerStyle={{paddingRight: "9rem"}}/>
             </div>
-            <div style={{width: '100%', height:'70%'}}>
+            <div style={{width: '100%', height:'70%', paddingRight:"2rem", paddingLeft: "2rem"}}>
                 <Dropdown style={{float: "right"}}>
                     <Dropdown.Toggle variant="info">Options</Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -383,7 +383,7 @@ function ViewFlashcard() {
                 </Modal.Footer>
              
             </Modal>
-                <Table striped bordered hover style= {{color:"gold"}}>
+                <Table striped bordered hover style= {{color:"gold", paddingRight:"1.5rem", paddingLeft:"1.5rem"}}>
                     <thead>
                         <tr>
                             <th>Flashcard</th>
