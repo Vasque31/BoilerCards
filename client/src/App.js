@@ -19,6 +19,7 @@ import DownloadFlashcard from "./Components/DownloadFlashcard";
 import { useCookies } from 'react-cookie';
 import QuizGame from './Components/QuizGame.js';
 import ImageNote from './Components/ImageNote.js';
+import Search from './Components/Search';
 import QuizSelect from './Components/QuizSelect.js';
 import TypedQuiz from './Components/TypedQuiz.js';
 
@@ -28,6 +29,7 @@ function App() {
     <div  className="App">
       <Routes>
         <Route path="/" element={<SignInPage/>} />
+        <Route path="/search" element={<Search/>} />
         <Route path="/register" element={<RegistrationPage/>} />
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
         <Route path="/mylibrary" element={<MyLibrary/>} />

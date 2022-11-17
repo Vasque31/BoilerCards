@@ -27,6 +27,7 @@ function Header() {
     const fileReader = new FileReader();
     const [destFolder, setDestFolder] = useState("");
     const [showFolder, setShowFolder] = useState(false);
+    const [searchMethod, setSearchMethod] = useState(true);
     const [inputList, setinputList] = useState([{front:'', back:'', drate:'3', img: ''}]);
     const [folderName, setFoldername] = useState();
     const [subject, setSubject] = useState();
@@ -34,6 +35,8 @@ function Header() {
     const [name, setName] = useState();
     const navigate = useNavigate();
     const fileRef = useRef();
+    const [label, setLabel] = useState('');
+    const [subjects, setSubjects] = useState([JSON.parse(localStorage.getItem('subjects'))])
 
 
     const [library, setLibrary] = useState([]);
@@ -45,6 +48,11 @@ function Header() {
             console.log(res.data);
             setLibrary(res.data);
             localStorage.setItem('libdata', JSON.stringify(res.data));
+            res = await axios.get("http://localhost:3001/subjectarray", {
+
+            });
+            localStorage.setItem('subjects', JSON.stringify(res.data));
+            setSubjects(JSON.parse(localStorage.getItem('subjects')));
         }
         getLibrary();
     },[]);
@@ -122,7 +130,7 @@ function Header() {
     const handleSaveFolder = async(event) => {
         let res = await axios.post("http://localhost:3001/createfolder",{
             folderName:folderName,
-            folderSubject:subject,
+            label:subject,
             uid:getCookie('userid'),    
         });
 
@@ -143,6 +151,27 @@ function Header() {
     const onFileChange = () => {
         
     }
+    const [search, setSearch] = useState("");
+    const handleSearch = async () => {
+        console.log(search);
+        let res = await axios.post("http://localhost:3001/searchkeywords", {
+                keyword:search,
+        });
+        localStorage.setItem('searchResults', JSON.stringify(res.data));
+        console.log(res.data);
+        navigate('/search');
+        window.location.reload();
+    }
+
+    const handleSearchLabel = async () => {
+        let res = await axios.post("http://localhost:3001/searchsubject", {
+                subject:label,
+        });
+        localStorage.setItem('searchResults', JSON.stringify(res.data));
+        console.log(res.data);
+        navigate('/search');
+        window.location.reload();
+    }
     return (
         <div className="app">
             <Navbar variant="dark" expand="lg">
@@ -158,16 +187,52 @@ function Header() {
                                 </Button>
                             </Link>
                         </Nav.Link>
-                        <Form className="d-flex">
+                        {searchMethod && <div style={{paddingTop: '1rem', paddingRight: '0.5rem'}}>
+                        <Form>
+                        <Form.Check 
+                            type="switch"
+                            id="custom-switch"
+                            label="Search By Keyword"
+                            onClick={() => setSearchMethod(false)}
+                        />
+                        </Form>
+                        </div>}
+                        {!searchMethod && <div style={{paddingTop: '1rem', paddingRight: '0.5rem'}}>
+                        <Form>
+                        <Form.Check 
+                            type="switch"
+                            id="custom-switch"
+                            label="Search By Label"
+                            onClick={() => setSearchMethod(true)}
+                            defaultChecked
+                        />
+                        </Form>
+                        </div>}
+
+                        {!searchMethod && <div style={{paddingTop: '1rem', paddingRight: '0.5rem'}}>
+                            <select name="LabelSelectList" id="LabelList" onChange={(e) => setLabel(e.currentTarget.value)}>
+                            <option value="">---Choose---</option>
+                                {subjects.map(item => {
+                                    return (
+                                        <option value={item}>{item}</option>    
+                                    );
+                                })}
+                            </select>
+                            <Button variant="dark" onClick={handleSearchLabel}>Search</Button>
+                        </div>}
+
+                        {searchMethod && <Form className="d-flex">
                             <Form.Control
                                 type="search"
                                 placeholder="Search"
+                                id='search'
                                 className="me-2"
                                 aria-label="Search"
+                                onChange={(e) => setSearch(e.target.value)}
                             />
-                            <Button variant="dark">Search</Button>
-                        </Form>
-                        <NavDropdown title="Create" id="basic-nav-dropdown">
+                            <Button variant="dark" onClick={handleSearch}>Search</Button>
+                        </Form>}
+                        <NavDropdown title="Create" id="basic-nav-dropdown" style={{paddingTop: '0.45rem'}}>
                             <NavDropdown.Item href="#action/3.1">
                                 Class
                             </NavDropdown.Item>
@@ -296,7 +361,7 @@ function Header() {
 
                          {/* Profile DropDown */}
                         
-                        <NavDropdown title="Profile" id="basic-nav-dropdown">
+                        <NavDropdown title="Profile" id="basic-nav-dropdown" style={{paddingTop: '0.45rem'}}>
                             <NavDropdown.Item href="#action/3.1">
                                 Account Data
                             </NavDropdown.Item>

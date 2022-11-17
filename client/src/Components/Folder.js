@@ -62,6 +62,30 @@ function Folder() {
     const handleShowFlashcardsetGroupDeleteConfirm = () => {setShowFlashcardsetDeleteGroupConfirm(true);}
     const handleCloseFlashcardsetGroupDeleteConfirmation = () => {setShowFlashcardsetDeleteGroupConfirm(false);}
     const [checkedState, setCheckedState] = useState([])
+    const [setting, setSetting] = useState(false);
+    const [showChangeLabel, setShowChangeLabel] = useState(false);
+    const [newLabel, setNewLabel] = useState('');
+
+    const handleSettingClick = () => {
+        setSetting(!setting);
+        setSelectAll(false);
+    }
+    const handleCloseChangeLabel = () => {
+        setShowChangeLabel(false);
+        setNewLabel('');
+    }
+    const handleShowChangeLabel = () => {
+        setShowChangeLabel(true);
+    }
+    const handleSaveChangeLabel = async () => {
+        console.log(newLabel);
+        let res = await axios.post("http://localhost:3001/addLabel", {
+            label:newLabel,
+            folderid: folder._id
+        });
+        handlerefresh();
+        handleCloseChangeLabel();
+    }
 
     const handleAddGroup = (e, i) => {
         console.log(e.currentTarget.value)
@@ -177,7 +201,7 @@ function Folder() {
         //prevents page reload
         console.log(id);
         let res = await axios.post("http://localhost:3001/flsahcardset", {
-            setid:id
+            setid:id 
         });
         flashcards = res.data;
         localStorage.setItem('flashcards', JSON.stringify(res.data));
@@ -336,27 +360,27 @@ function Folder() {
             <div className="box">
 
                 <heading className="section-title">{folder.foldername}</heading>
-                <heading className="folder-subject">{folder.foldersubject}</heading>
-                <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
-                <Button variant="warning" onClick={handleselectall}>
-                        Select All
-                </Button>
+                <div></div>
+                <heading style={{color: "white"}}>Label: {folder.label}</heading>
+                {!setting && <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
                 {!selectall &&
                 <>
+                    <Button variant="warning" onClick={handleselectall}>
+                        Select
+                    </Button>
                     &nbsp;&nbsp;
                     <Button variant="warning" onClick={handleShow}>
                         Create Flashcard Set
                     </Button>
                     &nbsp;&nbsp;
-                    <Button variant="warning" onClick={handleShowSetting}>
-                        Rename Folder
-                    </Button>
-                    &nbsp;&nbsp;
-                    <Button variant='danger' value={folder._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    <Button variant='light' onClick={handleSettingClick}><div style={{color: 'black'}}>Settings</div></Button>
                     </>
                 }
                 {selectall &&
                 <>
+                    <Button variant="warning" onClick={handleselectall}>
+                        UnSelect
+                    </Button>
                     &nbsp;&nbsp;
                     <Button variant="warning" onClick={handleGroupMove}>
                         Move
@@ -378,7 +402,21 @@ function Folder() {
 
                     </>
                 }
-                </div>
+                </div>}
+                {setting && 
+                    <div style ={{textAlign: "right", paddingBottom: "0.5rem"}}>
+                    <Button variant="warning" onClick={handleShowSetting}>
+                        Rename Folder
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant="warning" onClick={handleShowChangeLabel}>
+                        Change Label
+                    </Button>
+                    &nbsp;&nbsp;
+                    <Button variant='danger' value={folder._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    &nbsp;&nbsp;
+                    <Button variant='light' onClick={handleSettingClick}><div style={{color: 'black'}}>Close Settings</div></Button>
+                    </div>}
                 <div className= "library-box">
                 <table>
                     {Object.values(folder.flashcardset).map((item, i) => {
@@ -481,13 +519,13 @@ function Folder() {
                 <Modal.Header>
                     <Modal.Title>
                         <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
-                        <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Folder Settings</h2>
+                        <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Rename Folder</h2>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group style={{color: "gold"}}>
-                            <input onChange={e => handleFolderNameChange(e)}></input>
+                            New Folder Name: <input onChange={e => handleFolderNameChange(e)}></input>
                         </Form.Group>
                     </Form>                    
                 </Modal.Body>
@@ -508,6 +546,30 @@ function Folder() {
                 <Modal.Footer>
                     <Button onClick={() => handleDeleteFolder(folder)}> Delete </Button>
                     <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showChangeLabel} onHide={handleCloseChangeLabel} dialogClassName="general-box-createflash">
+                <Modal.Header>
+                    <Modal.Title>
+                        <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
+                        <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Change Label</h2>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        
+                        <Form.Group style={{color: "gold"}}>
+                            New Label: <input onChange={e => setNewLabel(e.currentTarget.value)}></input>
+                        </Form.Group>
+                    </Form>                    
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseChangeLabel}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSaveChangeLabel}>
+                        Save Changes
+                    </Button>
                 </Modal.Footer>
             </Modal>
 
