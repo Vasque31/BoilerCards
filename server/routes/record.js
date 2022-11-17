@@ -548,11 +548,17 @@ recordRoutes.route("/searchsubject").post(async function(req,res){
   subjectarray = Array.from(subjectarray.values());
   for(var i=0;i<subjectarray.length;i++){
     var result = await Flashcarddata.GetFolderasync(client,ObjectId(subjectarray[i]));
-    var map = new Map(Object.entries(result.flashcardset));
-    var newresult = Array.from(map.values());
-    if(newresult.length!=0){
-      resultarray.push(newresult);
-    } 
+    if(result!=false){
+      var map = new Map(Object.entries(result.flashcardset));
+      var newresult = Array.from(map.values());
+      //console.log(newresult);
+      for(var j=0;j<newresult.length;j++){
+        var flashcardset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(newresult[j]._id));
+        if(flashcardset.private==false){
+          resultarray.push(flashcardset);
+        }
+      }
+    }
   }
   console.log(resultarray);
   res.json(resultarray);
@@ -569,14 +575,17 @@ recordRoutes.route("/searchkeywords").post(async function(req,res){
   console.log(myArray);
   const initialsearch = await Flashcarddata.SearchSet(client,keyword);
   for(var j=0;j<initialsearch.length;j++){
-    resultmap.set(initialsearch[j]._id.toString(),initialsearch[j]);
-    console.log(initialsearch[j]._id);
+    if(initialsearch[j].private==false){
+      resultmap.set(initialsearch[j]._id.toString(),initialsearch[j]);
+    }
   }
   for(var i=0;i<myArray.length;i++){
     var set = await Flashcarddata.SearchSet(client,myArray[i])
     for(var j=0;j<set.length;j++){
-      resultmap.set(set[j]._id.toString(),set[j]);
-      console.log(set[j]._id);
+      if(set[j].private==false){
+        resultmap.set(set[j]._id.toString(),set[j]);
+      }
+      
     }
   }
   const result = Array.from(resultmap.values());
