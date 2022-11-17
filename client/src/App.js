@@ -20,6 +20,7 @@ import { useCookies } from 'react-cookie';
 import QuizGame from './Components/QuizGame.js';
 import ImageNote from './Components/ImageNote.js';
 import Search from './Components/Search';
+
 function App() {
 
   return (
