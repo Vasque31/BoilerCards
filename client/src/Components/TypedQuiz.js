@@ -9,34 +9,27 @@ import * as React from 'react';
 import ReactStopwatch from 'react-stopwatch';
 import "./QuizGame.css";
 
-var flashcardarray;
+
 var score = 0;
 var previousCorrectPrompts = [];
 var previousIncorrectPrompts = [];
 
-var readyForNewQuestion = true;
 var currPrompt = 0;
-var currQuestion = [{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0, Correct:true}];
+var promptNeedSelected = true;
 
 var timerToStart = true;
 var timerToStop = false;
-
 var globalTime = 0;
-//Assume new round onHide for now
 
-function QuizGame() {
-    console.log("Rendering Quiz Game")
-    //flashcardarray = cardsQuiz;
-        /****************************************************
-         *      Const definitions: states                   *
-         *                                                  *
-         ****************************************************/    
+function TypedQuiz()  {
+
+    var mode = "All prompts once"
     const [correctness, setCorrectness] = useState("Correct");
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
+    const [answer, setAnswer] = useState("");
     const [time, setTime] = useState(0);
-    var mode = "All prompts once";
 
     React.useEffect(() => {
         var clockInterval;
@@ -50,46 +43,45 @@ function QuizGame() {
         if (timerToStop) {
             timerToStop = false;
             clearInterval(clockInterval);
+            globalTime = 0
         }
 
 
     }, [])
-        /****************************************************
-         *      Handlers                                   *
-         *                                                  *
-         ****************************************************/
-
-    const handleSelectCorrectAnswer = () => {
-        score++;
-        setCorrectness("✅Correct\n");
-        previousCorrectPrompts.push(currPrompt);
-        setShowQuestionFeedback(true);
-    }
-    const handleSelectIncorrectAnswer = () => {
-        score--;
-        setCorrectness("⛔️Incorrect\n");
-        previousIncorrectPrompts.push(currPrompt);
-        setShowQuestionFeedback(true);
-    }
     
-    const handleNextQuestion = () => {
-        readyForNewQuestion = true;
+    
+
+    /*****************************************************
+     *      Handlers                                     *
+     *                                                   *
+     ****************************************************/
+     const handleNextQuestion = () => {
+        promptNeedSelected = true;
         setShowQuestionFeedback(false);
     }
 
-    const handleNewRound = () => {
-        /*let res = await axios.post("http://localhost:3001/bestscore",{
-            uid: getCookie('u_id'),
-            setid: cardsQuiz[0].belongset
-            score: score,
-        });*/
-        //returns {BestScore: value, NewBestScore: true/false}
-        console.log("correct: " + previousCorrectPrompts);
-        console.log("incorrect: " + previousIncorrectPrompts); 
-        previousCorrectPrompts = [];
-        previousIncorrectPrompts = [];
-        score = 0;
-        setShowContinueorExit(false);
+    const handleTypedAnswer = () => {
+        console.log("Answer: " + answer + "Expected: " + cardsQuiz[currPrompt].back);
+
+        var correct;
+        if (cardsQuiz[currPrompt].back == answer) {
+            correct = true;
+        } else {
+            correct = false;
+        }
+
+        if (correct == true) {
+            score++;
+            previousCorrectPrompts.push(currPrompt);
+            setCorrectness("✅Correct\n");
+
+        } else {
+            score--;
+            previousIncorrectPrompts.push(currPrompt);
+            setCorrectness("⛔️Incorrect\n");
+        }
+
+        setShowQuestionFeedback(true);
     }
 
     const handleShowExitQuiz = () => {
@@ -111,8 +103,9 @@ function QuizGame() {
         console.log("incorrect: " + previousIncorrectPrompts); 
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
-        timerToStop = true;
         score = 0;
+        globalTime = 0;
+        timerToStop = true;
         setShowContinueorExit(false);
         timerToStart = true;
         navigate(-1);
@@ -123,10 +116,10 @@ function QuizGame() {
          *                                                  *
          ****************************************************/
 
+    if (promptNeedSelected == true) {
 
-    var selectedPromptIndex;
-    if (readyForNewQuestion) {
-        if (mode == "All prompts once") {
+        var selectedPromptIndex = 0;
+        
             selectedPromptIndex = randomCard(previousCorrectPrompts.concat(previousIncorrectPrompts));
             if (selectedPromptIndex < 0 || selectedPromptIndex >= cardsQuiz.length) {
                 console.log("Out of bounds index");
@@ -137,86 +130,31 @@ function QuizGame() {
                 setShowContinueorExit(true);
                 handleExitQuiz();
             }
-        } else {console.log("error: Invalid mode")}
-
-        var selectedCorrectPosition = randomButtonPlace();
-        var selectedIncorrectAnswers = randomIncorrectArray([selectedPromptIndex]); //array size 3, indices, parameter is array because includes expects an array (prevent skip check of first index)
         
-        console.log("position: " + selectedCorrectPosition);
-        console.log("correct answer index:" + selectedPromptIndex);
-        console.log("Incorrect: " + selectedIncorrectAnswers);
-        for (var i = 0; i < cardsQuiz.length; i++) {
-        //    console.log(cardsQuiz[i].front + cardsQuiz[i].back);
-        }
-        
-
-        var answerIndices = []; //empty, used to fill answer options
-        //loops through all possible positions of correct
-        for (var i = 0; i < 4; i++) {
-            if (i == selectedCorrectPosition) {
-                answerIndices.push({Index: selectedPromptIndex, Correct:true}); //add when at selected index
-            }
-            if (i != 3) answerIndices.push({Index: selectedIncorrectAnswers[i], Correct:false}); //add with index of incorrect array, not out of bounds
-            
-        }
-        readyForNewQuestion = false; 
         currPrompt = selectedPromptIndex;
-        currQuestion = answerIndices;
-        console.log("Array of options" + answerIndices);
-    
+        promptNeedSelected = false; //wait till answer to select new prompt
     }
-    //const [showSaved, setShowSaved] = useState(false);
-    
-    
 
-    /*const reactstopwatch = () => (<ReactStopwatch
-        seconds={0}
-        minutes={0}
-        hours={0}
-        render={({hours,minutes,seconds})=>{
-            return(
-                <h1 style={{textAlign: "right", color: "gold"}}>{hours}:{minutes}:{seconds}</h1>
-            );
-        }}>
-</ReactStopwatch>);*/
 
 
     return(
         <div>
+            <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
+
             
             <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
             <h1 style={{textAlign: "right", color: "gold"}}>  {time/100}sec </h1>
 
-            <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
             
-
             <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
             <br></br>
             <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[currPrompt].front}</h1>
             <br></br>
-            <h1 style={{textAlign: "center", color: "gold"}}> Answer Choices:</h1>
+            <h1 style={{textAlign: "center", color: "gold"}}> Answer:</h1>
             <br></br>
-            
-            {currQuestion.map((item) => { 
-                if (item.Correct){
-                    //Correct answer
-                    return(
-                        <div style={{textAlign: 'center', justifyContent: 'center'}}>
-                            <Button size='lg' onClick={handleSelectCorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
-                            <br></br>
-                        </div>
-                    );
-                }
-                    //Incorrect answer
-                return(
-                    <div style={{textAlign: 'center', justifyContent: 'center'}}>
-                        <Button size='lg' onClick={handleSelectIncorrectAnswer}> {cardsQuiz[item.Index].back}</Button>
-                        <br></br>
-                    </div>
-                )
-            })}
-            
-                    
+            <textarea type="text" name="answer" onChange={e => setAnswer(e.target.value)}></textarea>
+            <Button onClick={handleTypedAnswer}>Submit Answer</Button>
+
             <Modal show={showContinueorExit} onHide={() => handleHideExit}>
                 <Modal.Header>
                     <Modal.Title> Exit Quiz? </Modal.Title>
@@ -245,37 +183,27 @@ function QuizGame() {
                     <Button onClick={() => handleNextQuestion()}> Next Question </Button>
                 </Modal.Footer>
             </Modal>
-            
+
+
         </div>
     );
-
-
 }
+
 
 //check if value is in array
 function includes(array, value) {
-    console.log("inclusion check" + array + ",  " + value)
+    //console.log("inclusion check" + array + ",  " + value)
     for (var i = 0; i < array.length; i++) {
         if (array[i] == value) return true;
     }
-    console.log("includes - false");
+    //console.log("includes - false");
     return false;
-}
-
-//randomization functions, return idices @param array to exclude
-function randomButtonPlace() {
-        var index = -1;
-        //random number 0-3
-        index = Math.random() * 4;
-        if (index == 4) index = 3;
-        index = Math.floor(index);
-        return index;
 }
 
 //returns index of a card within cardsQuiz
 function randomCard(excludedIndices) {
     if (excludedIndices == null) {
-        console.log("no exclusion")
+        //console.log("no exclusion")
         var index = -1;
         index = Math.random() * cardsQuiz.length;
         if (index == cardsQuiz.length) index = cardsQuiz.length - 1;
@@ -285,7 +213,7 @@ function randomCard(excludedIndices) {
     var index = -1;
     while (true) {
         //Attempts to get unused indices limitted, used to prevent infinite loops
-        console.log("exclusion present")
+        //console.log("exclusion present")
         var attempts = 100;
         var i = 0;
         for (i=0; i < attempts; i++) {
@@ -301,7 +229,6 @@ function randomCard(excludedIndices) {
     }
 }
 
-
 //returns an array of 3 indices
 //place array of correct index to exclude it from options
 //Purpose: ensure non-duplicate indexed options
@@ -314,7 +241,4 @@ function randomIncorrectArray(excludedIndices) {
     return incorrectArray;
 }
 
-
-
-
-export default QuizGame;
+export default TypedQuiz;

@@ -160,6 +160,7 @@ function Header() {
         localStorage.setItem('searchResults', JSON.stringify(res.data));
         console.log(res.data);
         navigate('/search');
+        window.location.reload();
     }
 
     const handleSearchLabel = async () => {
@@ -169,6 +170,7 @@ function Header() {
         localStorage.setItem('searchResults', JSON.stringify(res.data));
         console.log(res.data);
         navigate('/search');
+        window.location.reload();
     }
     return (
         <div className="app">

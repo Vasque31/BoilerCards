@@ -84,7 +84,7 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
   const oldusername = req.body.oldusername;
   const oldpassword = req.body.oldpassword;
   const result = await userdata.GetAsync(client, oldusername);
-  
+ 
   if (result.password == oldpassword) {
     const newuserinfo = result;
     const newpassword = req.body.newpassword;
@@ -279,7 +279,7 @@ function insertionSort(arr, n)
 }
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
-  
+ 
   const folder = await Flashcarddata.GetFolderasync(client,ObjectId(folderid.toString()));
   res.json(folder);
 });
@@ -479,7 +479,7 @@ recordRoutes.route("/verification").post(async function (req, res) {
     subject: 'Verification code',
     text: 'Your code for recover password is: '+val+', Do not send it to anyone.'
   };
-  
+ 
   transporter.sendMail(mailOptions, async function(error, info){
     if (error) {
     console.log(error);
