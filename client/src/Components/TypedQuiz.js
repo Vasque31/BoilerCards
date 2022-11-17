@@ -17,6 +17,9 @@ var previousIncorrectPrompts = [];
 var currPrompt = 0;
 var promptNeedSelected = true;
 
+var timerToStart = true;
+var timerToStop = false;
+var globalTime = 0;
 
 function TypedQuiz()  {
 
@@ -26,6 +29,26 @@ function TypedQuiz()  {
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
     const [answer, setAnswer] = useState("");
+    const [time, setTime] = useState(0);
+
+    React.useEffect(() => {
+        var clockInterval;
+        if (timerToStart) {
+            timerToStart = false;
+            clockInterval = setInterval(() => {
+                globalTime++;
+                setTime(globalTime);
+            }, 10);
+        }
+        if (timerToStop) {
+            timerToStop = false;
+            clearInterval(clockInterval);
+            globalTime = 0
+        }
+
+
+    }, [])
+    
     
 
     /*****************************************************
@@ -81,7 +104,10 @@ function TypedQuiz()  {
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
         score = 0;
+        globalTime = 0;
+        timerToStop = true;
         setShowContinueorExit(false);
+        timerToStart = true;
         navigate(-1);
 
     }
@@ -114,6 +140,10 @@ function TypedQuiz()  {
     return(
         <div>
             <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
+
+            
+            <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
+            <h1 style={{textAlign: "right", color: "gold"}}>  {time/100}sec </h1>
 
             
             <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>

@@ -18,6 +18,10 @@ var readyForNewQuestion = true;
 var currPrompt = 0;
 var currQuestion = [{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0, Correct:true}];
 
+var timerToStart = true;
+var timerToStop = false;
+
+var globalTime = 0;
 //Assume new round onHide for now
 
 function QuizGame() {
@@ -31,9 +35,25 @@ function QuizGame() {
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
+    const [time, setTime] = useState(0);
     var mode = "All prompts once";
 
+    React.useEffect(() => {
+        var clockInterval;
+        if (timerToStart) {
+            timerToStart = false;
+            clockInterval = setInterval(() => {
+                globalTime++;
+                setTime(globalTime);
+            }, 10);
+        }
+        if (timerToStop) {
+            timerToStop = false;
+            clearInterval(clockInterval);
+        }
 
+
+    }, [])
         /****************************************************
          *      Handlers                                   *
          *                                                  *
@@ -91,8 +111,10 @@ function QuizGame() {
         console.log("incorrect: " + previousIncorrectPrompts); 
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
+        timerToStop = true;
         score = 0;
         setShowContinueorExit(false);
+        timerToStart = true;
         navigate(-1);
 
     }
@@ -163,7 +185,7 @@ function QuizGame() {
         <div>
             
             <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
-            <h1 style={{textAlign: "right", color: "gold"}}>  sec </h1>
+            <h1 style={{textAlign: "right", color: "gold"}}>  {time/100}sec </h1>
 
             <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
             
