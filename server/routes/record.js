@@ -573,16 +573,26 @@ recordRoutes.route("/searchkeywords").post(async function(req,res){
   myArray = myArray[0].split(" ");
   var resultmap = new Map();
   console.log(myArray);
+  var folder;
   const initialsearch = await Flashcarddata.SearchSet(client,keyword);
   for(var j=0;j<initialsearch.length;j++){
-    if(initialsearch[j].private==false){
+    folder = await Flashcarddata.GetFolderasync(client,ObjectId(initialsearch[j].belongfolder));
+    console.log(folder);
+    if (folder == false){
+      continue;
+    }
+    else if(initialsearch[j].private==false){
       resultmap.set(initialsearch[j]._id.toString(),initialsearch[j]);
     }
   }
   for(var i=0;i<myArray.length;i++){
     var set = await Flashcarddata.SearchSet(client,myArray[i])
     for(var j=0;j<set.length;j++){
-      if(set[j].private==false){
+      folder = await Flashcarddata.GetFolderasync(client,ObjectId(set[j].belongfolder));
+      if (folder == false){
+        continue;
+      }
+      else if(set[j].private==false){
         resultmap.set(set[j]._id.toString(),set[j]);
       }
     }
