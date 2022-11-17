@@ -490,7 +490,14 @@ recordRoutes.route("/verification").post(async function (req, res) {
   });
   res.json(true);
 });
+recordRoutes.route("/report").post(async function(req,res){
+  var reportset = req.body.setid;
+  reportset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(reportset));
+  reportset.private = true;
+  reportset.flagged = true;
+  await Flashcarddata.UpdateSet(client,ObjectId(reportset),reportset);
 
+})
 recordRoutes.route("/addlabel").post(async function(req,res){
   var folder = await Flashcarddata.GetFolderasync(client,ObjectId(req.body.folderid));
   var oldlabel = folder.label;
@@ -526,9 +533,12 @@ recordRoutes.route("/addlabel").post(async function(req,res){
   await Flashcarddata.UpdateLabel(client,ObjectId("637287af2c8cf8c067cd2e58"),labelmap);
   res.json(true);
 })
+recordRoutes.route("/subjectarray").get(async function(req,res){
+  const array = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e59"));
+  res.json(array.array);
+})
 recordRoutes.route("/searchsubject").post(async function(req,res){
   const subject = req.body.subject;
-  //dshaj
   var labelmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
   labelmap = new Map(Object.entries(labelmap.map));
   //console.log(labelmap);
@@ -538,12 +548,13 @@ recordRoutes.route("/searchsubject").post(async function(req,res){
   subjectarray = Array.from(subjectarray.values());
   for(var i=0;i<subjectarray.length;i++){
     var result = await Flashcarddata.GetFolderasync(client,ObjectId(subjectarray[i]));
-    result = new Map(Object.entries(result));
-    result = Array.from(result.values);
-    if(result.length!=0){
-      resultarray.push(result);
+    var map = new Map(Object.entries(result.flashcardset));
+    var newresult = Array.from(map.values());
+    if(newresult.length!=0){
+      resultarray.push(newresult);
     } 
   }
+  console.log(resultarray);
   res.json(resultarray);
 })
 recordRoutes.route("/searchkeywords").post(async function(req,res){
@@ -597,6 +608,7 @@ recordRoutes.route("/groupmove").post(async function (req, res) {
 });
 recordRoutes.route("/forgotpassword").post(async function (req, res) {
   const username = req.body.username;
+  console.log(username);
   const code = req.body.code;
   console.log(code);
   const user = await userdata.GetAsync(client,username);
