@@ -20,6 +20,8 @@ import { useCookies } from 'react-cookie';
 import QuizGame from './Components/QuizGame.js';
 import ImageNote from './Components/ImageNote.js';
 import Search from './Components/Search';
+import QuizSelect from './Components/QuizSelect.js';
+import TypedQuiz from './Components/TypedQuiz.js';
 
 function App() {
 
@@ -41,7 +43,8 @@ function App() {
         <Route path="/downloadset" element={<DownloadFlashcard/>} />
         <Route path="/note" element={<ImageNote/>} />
         <Route path="/quizgame" element={<QuizGame/>} />
-
+        <Route path="/quizselection" element={<QuizSelect/>}/>
+        <Route path="/typedquiz" element={<TypedQuiz/>}/>
       </Routes>
     </div>
   );
