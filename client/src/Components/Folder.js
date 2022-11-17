@@ -177,7 +177,7 @@ function Folder() {
         //prevents page reload
         console.log(id);
         let res = await axios.post("http://localhost:3001/flsahcardset", {
-            setid:id
+            setid:id 
         });
         flashcards = res.data;
         localStorage.setItem('flashcards', JSON.stringify(res.data));
