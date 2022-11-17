@@ -40,14 +40,12 @@ function QuizGame() {
          ****************************************************/
 
     const handleSelectCorrectAnswer = () => {
-        readyForNewQuestion = true;
         score++;
         setCorrectness("✅Correct\n");
         previousCorrectPrompts.push(currPrompt);
         setShowQuestionFeedback(true);
     }
     const handleSelectIncorrectAnswer = () => {
-        readyForNewQuestion = true;
         score--;
         setCorrectness("⛔️Incorrect\n");
         previousIncorrectPrompts.push(currPrompt);
@@ -55,6 +53,7 @@ function QuizGame() {
     }
     
     const handleNextQuestion = () => {
+        readyForNewQuestion = true;
         setShowQuestionFeedback(false);
     }
 
