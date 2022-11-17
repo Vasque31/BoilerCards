@@ -491,12 +491,12 @@ recordRoutes.route("/verification").post(async function (req, res) {
   res.json(true);
 });
 recordRoutes.route("/report").post(async function(req,res){
-  var reportset = req.body.setid;
-  reportset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(reportset));
+  var reportsetid = req.body.setid;
+  var reportset = await Flashcarddata.GetFlashcardsetasync(client,ObjectId(reportsetid));
   reportset.private = true;
   reportset.flagged = true;
-  await Flashcarddata.UpdateSet(client,ObjectId(reportset),reportset);
-
+  await Flashcarddata.UpdateSet(client,ObjectId(reportsetid),reportset);
+  res.json(true);
 })
 recordRoutes.route("/addlabel").post(async function(req,res){
   var folder = await Flashcarddata.GetFolderasync(client,ObjectId(req.body.folderid));
@@ -539,10 +539,9 @@ recordRoutes.route("/subjectarray").get(async function(req,res){
 })
 recordRoutes.route("/searchsubject").post(async function(req,res){
   const subject = req.body.subject;
-  console.log(subject)
+  console.log("subject: "+ subject);
   var labelmap = await Flashcarddata.GetLabel(client,ObjectId("637287af2c8cf8c067cd2e58"));
   labelmap = new Map(Object.entries(labelmap.map));
-  //console.log(labelmap);
   var subjectarray = labelmap.get(subject);
   const resultarray = new Array();
   subjectarray = new Map(Object.entries(subjectarray));
@@ -586,7 +585,6 @@ recordRoutes.route("/searchkeywords").post(async function(req,res){
       if(set[j].private==false){
         resultmap.set(set[j]._id.toString(),set[j]);
       }
-      
     }
   }
   const result = Array.from(resultmap.values());
