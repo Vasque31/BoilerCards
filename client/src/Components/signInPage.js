@@ -12,6 +12,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import cookie from 'react-cookies'
+import { GoogleLogin } from 'react-google-login';
+import { gapi } from 'gapi-script';
 //Use states for Sign In
 const errors = {
     uname: "Invalid Username",
@@ -37,6 +39,10 @@ function SignInPage() {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
             navigate("/HomePage");
+        }
+        const initClient = () => {
+            gapi.client.init({clientId: "787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com", scope: ''});
+            gapi.load('client:auth2', initClient);
         }
     },[]);
     const handleSignUp = (event) => {
@@ -109,6 +115,12 @@ function SignInPage() {
     const responseFacebook = (response) => {
         console.log(response.email);
     }
+    const onGoogleSuccess = (res) => {
+        console.log(res);
+    }
+    const onGoogleFailure = (res) => {
+        console.log(res);
+    }
     return (
         <div className = "login-form">
             <form onSubmit = {handleSignIn}>
@@ -130,15 +142,22 @@ function SignInPage() {
                     <input type="Submit" value="Sign-In" />
                 </div>
                 <Button variant="link" onClick={handleResetShow}>Forgot Your Password?<br></br></Button>
-                <FacebookLogin
+                
+            </form>
+            
+            <FacebookLogin
                     appId="491848086337502"
                     autoLoad={true}
                     fields="name,email,picture"
                     size="small"
-                    callback={responseFacebook} />
-            </form>
-            
-        
+                    callback={responseFacebook} /> <br/>
+            <GoogleLogin
+                clientId="787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com"
+                buttonText="Sign in with Google"
+                onSuccess={onGoogleSuccess}
+                onFailure={onGoogleFailure}
+                isSignedIn={true} />
+
         <div>
             <Modal 
                 show={resetShow}
