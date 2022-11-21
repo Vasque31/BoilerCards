@@ -19,10 +19,20 @@ function QuizSelect() {
         navigate("/quizgame");
     }
 
+    const handleLeaderboard = () => {
+
+
+        navigate("/leaderboard");
+    }
+
+
+
     const handleReturnToSet = () => {
 
         navigate(-1);
     }
+
+
 
     return(
         <div>
@@ -37,6 +47,10 @@ function QuizSelect() {
             </Button>
             <Button show={showSelection} onClick={handleChoiceQuiz}>
                 Select Answer
+            </Button>
+            <br></br>
+            <Button show={showSelection} onClick={handleLeaderboard}>
+                Leaderboard
             </Button>
         </div>
     );

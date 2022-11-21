@@ -22,6 +22,7 @@ import ImageNote from './Components/ImageNote.js';
 import Search from './Components/Search';
 import QuizSelect from './Components/QuizSelect.js';
 import TypedQuiz from './Components/TypedQuiz.js';
+import Leaderboard from './Components/Leaderboard.js';
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/quizgame" element={<QuizGame/>} />
         <Route path="/quizselection" element={<QuizSelect/>}/>
         <Route path="/typedquiz" element={<TypedQuiz/>}/>
+        <Route path="/leaderboard" element={<Leaderboard/>}/>
       </Routes>
     </div>
   );
