@@ -20,7 +20,20 @@ const errors = {
     pass: "Invalid Password"
 };
  export var libstorage = null;
-
+ function generateP() {
+    var pass = '';
+    var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' + 
+            'abcdefghijklmnopqrstuvwxyz0123456789@#$';
+      
+    for (let i = 1; i <= 8; i++) {
+        var char = Math.floor(Math.random()
+                    * str.length + 1);
+          
+        pass += str.charAt(char)
+    }
+      
+    return pass;
+}
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -115,8 +128,42 @@ function SignInPage() {
     const responseFacebook = (response) => {
         console.log(response.email);
     }
-    const onGoogleSuccess = (res) => {
-        console.log(res);
+    const onGoogleSuccess = async (res) => {
+        const password = generateP();
+        const username = res.profileObj.email;
+        const email = res.profileObj.email;
+        const registrationInfo = {
+            username:username,
+            email:email,
+            password:password
+        };
+        const checkEmail = await axios.post("http://localhost:3001/checkEmail",{
+            email:email
+        })
+        if(checkEmail===false){
+            await axios.post("http://localhost:3001/createaccount", {
+                registrationInfo:registrationInfo,
+        });
+        }else{
+            console.log("already exist");
+        }
+        const logginInfo = {
+            username: email,
+        };
+        //Call to backend to check validity
+        //if good link to homepage with the persons info
+        let signin = await axios.post("http://localhost:3001/googleSignin", {
+          logginfo: logginInfo,
+        }); 
+        let data = signin.data;
+        setCookie('userid', data, { path: '/' });
+        setCookie('remember', true, { path: '/'});
+        console.log(getCookie('userid'));
+        let loadspace = await axios.post("http://localhost:3001/loadspace", {
+            uid:data,
+        });
+        libstorage = loadspace.data;
+        navigate("/HomePage");
     }
     const onGoogleFailure = (res) => {
         console.log(res);
@@ -156,7 +203,7 @@ function SignInPage() {
                 buttonText="Sign in with Google"
                 onSuccess={onGoogleSuccess}
                 onFailure={onGoogleFailure}
-                isSignedIn={true} />
+                />
 
         <div>
             <Modal 

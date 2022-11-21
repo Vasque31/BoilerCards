@@ -55,7 +55,15 @@ recordRoutes.route("/createaccount").post(async function (req, res) {
     return;
   }
 });
-
+recordRoutes.route("/checkEmail").post(async function (req, res) {
+  const email = req.body.email;
+  const bool = await userdata.GetEmailAsync(client,email);
+  if(bool!=false){
+    res.json(true);
+  }else{
+    res.json(false);
+  }
+})
 recordRoutes.route("/signin").post(async function (req, res) {
   const username = req.body.logginfo.username;
   const password = req.body.logginfo.password;
@@ -168,6 +176,17 @@ async function createFlashcard(front,back,belongsetid,difficulty,img){
   belongset.flashcard = mapobj;
   await Flashcarddata.UpdateSet(client,ObjectId(belongsetid),belongset);
 }
+recordRoutes.route("/googleSignin").post(async function (req, res) {
+  const username = req.body.logginfo.username;
+  const ip = req.body.logginfo.ip;
+  const result = await userdata.GetAsync(client, username);
+  if (result) {
+      res.json(result._id);
+    }
+  else {
+    res.json(false);
+  } 
+});
 recordRoutes.route("/createflashcardset").post(async function (req, res) {
   const list = req.body.inputList;
   //null statement check

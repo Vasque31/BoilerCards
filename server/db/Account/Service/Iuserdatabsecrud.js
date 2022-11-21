@@ -10,6 +10,35 @@ class userDBService {
     );
     return result;
   }
+  
+  async addPlayer(client,newListing){
+         const result = await client
+      .db("game")
+      .collection("room")
+      .insertOne(newListing);
+    console.log(
+      `New listing created with the following id: ${result.insertedId}`
+    );
+  
+  }
+  async AddScore(client,newListing){
+    const result = await client.db("User").collection("Score").insertOne(newListing);
+    console.log(`New listing created with the following id: ${result.insertedId}`);
+    return result;
+  }
+  async GetScore(client,id){
+    const result = await client.db("Flashcard").collection("Label").findOne({ _id:id });
+    /*const json = JSON.stringify(result);
+    const obj = JSON.parse(json);*/
+    if (result) {
+        /*console.log(`Found a listing in the collection with the name '${nameOfListing}':`);
+        console.log(result);*/
+        return result;
+    } else {
+        //console.log(`No listings found with the name '${nameOfListing}'`);
+        return false;
+    }
+  }
   async AddLogAsync(client, newListing) {
     const result = await client
       .db("User")
@@ -69,6 +98,22 @@ class userDBService {
       .db("User")
       .collection("Userdata")
       .findOne({ username: nameOfListing });
+    /*const json = JSON.stringify(result);
+  const obj = JSON.parse(json);*/
+    if (result) {
+      /*console.log(`Found a listing in the collection with the name '${nameOfListing}':`);
+      console.log(result);*/
+      return result;
+    } else {
+      //console.log(`No listings found with the name '${nameOfListing}'`);
+      return false;
+    }
+  }
+  async GetEmailAsync(client, nameOfListing) {
+    const result = await client
+      .db("User")
+      .collection("Userdata")
+      .findOne({ email: nameOfListing });
     /*const json = JSON.stringify(result);
   const obj = JSON.parse(json);*/
     if (result) {
