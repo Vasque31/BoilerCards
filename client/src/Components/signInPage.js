@@ -12,6 +12,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import cookie from 'react-cookies'
+import { GoogleLogin } from 'react-google-login';
+import { gapi } from 'gapi-script';
 //Use states for Sign In
 const errors = {
     uname: "Invalid Username",
@@ -31,12 +33,16 @@ function SignInPage() {
     const handleResetShow = () => setResetShow(true);
     const handleResetClose = () => setResetShow(false);
     const [resetCode, setResetCode] = useState([{}]);
-    let resetUsername = "";
-    let resetCodeNum = 0;
+    const [resetUsername, setResetUsername] = useState("");
+    const [resetCodeNum, setResetCodeNum] = useState(0);
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
             navigate("/HomePage");
+        }
+        const initClient = () => {
+            gapi.client.init({clientId: "787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com", scope: ''});
+            gapi.load('client:auth2', initClient);
         }
     },[]);
     const handleSignUp = (event) => {
@@ -56,6 +62,7 @@ function SignInPage() {
     }
     const handleSubmitCode = async (event) => {
         event.preventDefault();
+        console.log(resetUsername);
         let res = await axios.post("http://localhost:3001/forgotpassword", {
             username: resetUsername,
             code: resetCodeNum
@@ -63,11 +70,10 @@ function SignInPage() {
         handleResetClose();
     }
     const handleChangeName = (event) => {
-        resetUsername = event.target.value;
-        console.log(resetUsername);
+        setResetUsername(event.target.value);
     }
     const handleCodeChange = (event) => {
-        resetCodeNum = event.target.value;
+        setResetCodeNum(event.target.value);
     }
     const handleSignIn = async (event) => {
         //prevents page reload
@@ -109,6 +115,12 @@ function SignInPage() {
     const responseFacebook = (response) => {
         console.log(response.email);
     }
+    const onGoogleSuccess = (res) => {
+        console.log(res);
+    }
+    const onGoogleFailure = (res) => {
+        console.log(res);
+    }
     return (
         <div className = "login-form">
             <form onSubmit = {handleSignIn}>
@@ -130,15 +142,22 @@ function SignInPage() {
                     <input type="Submit" value="Sign-In" />
                 </div>
                 <Button variant="link" onClick={handleResetShow}>Forgot Your Password?<br></br></Button>
-                <FacebookLogin
+                
+            </form>
+            
+            <FacebookLogin
                     appId="491848086337502"
                     autoLoad={true}
                     fields="name,email,picture"
                     size="small"
-                    callback={responseFacebook} />
-            </form>
-            
-        
+                    callback={responseFacebook} /> <br/>
+            <GoogleLogin
+                clientId="787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com"
+                buttonText="Sign in with Google"
+                onSuccess={onGoogleSuccess}
+                onFailure={onGoogleFailure}
+                isSignedIn={true} />
+
         <div>
             <Modal 
                 show={resetShow}
