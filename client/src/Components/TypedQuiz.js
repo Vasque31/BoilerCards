@@ -6,7 +6,6 @@ import Modal from 'react-bootstrap/Modal';
 import {CloseButton} from 'react';
 
 import * as React from 'react';
-import ReactStopwatch from 'react-stopwatch';
 import "./QuizGame.css";
 
 
@@ -19,7 +18,8 @@ var promptNeedSelected = true;
 
 var timerToStart = true;
 var timerToStop = false;
-var globalTime = 0;
+var globalTime = 0; // hundreth's of a second
+var globalScopeClock = null;
 
 function TypedQuiz()  {
 
@@ -29,22 +29,22 @@ function TypedQuiz()  {
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
     const [answer, setAnswer] = useState("");
-    const [time, setTime] = useState(0);
+    const [time, setTime] = useState(0); // hundreth's of a second
 
     React.useEffect(() => {
         var clockInterval;
         if (timerToStart) {
             timerToStart = false;
-            clockInterval = setInterval(() => {
-                globalTime++;
-                setTime(globalTime);
-            }, 10);
-        }
-        if (timerToStop) {
             timerToStop = false;
-            clearInterval(clockInterval);
-            globalTime = 0
+            globalTime = 0;
+            clockInterval = setInterval(() => {
+                globalTime += 20;
+                setTime(globalTime);
+            }, 200);
+            
+            globalScopeClock = clockInterval;
         }
+        
 
 
     }, [])
@@ -101,11 +101,13 @@ function TypedQuiz()  {
         //returns {BestScore: value, NewBestScore: true/false}
         console.log("correct: " + previousCorrectPrompts);
         console.log("incorrect: " + previousIncorrectPrompts); 
+    
+            //reset values
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
         score = 0;
         globalTime = 0;
-        timerToStop = true;
+        clearInterval(globalScopeClock); 
         setShowContinueorExit(false);
         timerToStart = true;
         navigate(-1);
@@ -143,7 +145,7 @@ function TypedQuiz()  {
 
             
             <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
-            <h1 style={{textAlign: "right", color: "gold"}}>  {time/100}sec </h1>
+            <h1 style={{textAlign: "right", color: "gold"}}>  {(time - (time % 100))/100}.{(time % 100)/10}sec </h1>
 
             
             <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
