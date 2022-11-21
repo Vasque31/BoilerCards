@@ -140,7 +140,7 @@ function SignInPage() {
         const checkEmail = await axios.post("http://localhost:3001/checkEmail",{
             email:email
         })
-        if(checkEmail===false){
+        if(checkEmail.data===false){
             await axios.post("http://localhost:3001/createaccount", {
                 registrationInfo:registrationInfo,
         });
@@ -155,6 +155,7 @@ function SignInPage() {
         let signin = await axios.post("http://localhost:3001/googleSignin", {
           logginfo: logginInfo,
         }); 
+        console.log(signin);
         let data = signin.data;
         setCookie('userid', data, { path: '/' });
         setCookie('remember', true, { path: '/'});
