@@ -20,8 +20,9 @@ var currQuestion = [{Index: 0, Correct:true},{Index: 0, Correct:true},{Index: 0,
 
 var timerToStart = true;
 var timerToStop = false;
+var clockThisTime = null;
 
-var globalTime = 0;
+var globalTime = 0; // 1/100th seconds
 //Assume new round onHide for now
 
 function QuizGame() {
@@ -35,23 +36,28 @@ function QuizGame() {
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
-    const [time, setTime] = useState(0);
+    const [time, setTime] = useState(0); // 1/100th seconds
     var mode = "All prompts once";
 
     React.useEffect(() => {
         var clockInterval;
         if (timerToStart) {
+            globalTime = 0;
             timerToStart = false;
+            timerToStop = false;
+            console.log("Run clock speed")
             clockInterval = setInterval(() => {
-                globalTime++;
+                globalTime += 20;
                 setTime(globalTime);
-            }, 10);
+            }, 200);
+            clockThisTime = clockInterval; // access thru global scope
         }
+        /*
         if (timerToStop) {
             timerToStop = false;
             clearInterval(clockInterval);
         }
-
+        */
 
     }, [])
         /****************************************************
@@ -112,6 +118,7 @@ function QuizGame() {
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
         timerToStop = true;
+        clearInterval(clockThisTime); //clear the current quiz's clock
         score = 0;
         setShowContinueorExit(false);
         timerToStart = true;
@@ -185,7 +192,7 @@ function QuizGame() {
         <div>
             
             <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
-            <h1 style={{textAlign: "right", color: "gold"}}>  {time/100}sec </h1>
+            <h1 style={{textAlign: "right", color: "gold"}}>  {(time - (time % 100))/100}.{(time % 100)/10}sec </h1>
 
             <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
             
