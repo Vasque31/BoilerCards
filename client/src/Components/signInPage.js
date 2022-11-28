@@ -154,7 +154,7 @@ function SignInPage() {
         //if good link to homepage with the persons info
         let signin = await axios.post("http://localhost:3001/googleSignin", {
           logginfo: logginInfo,
-        }); 
+        });   
         console.log(signin);
         let data = signin.data;
         setCookie('userid', data, { path: '/' });
