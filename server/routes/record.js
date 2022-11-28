@@ -904,7 +904,7 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
     res.json(false);
   }
 });
-const { teacherAccount } = require("../db/Account/Model/teacherAccount.js");
+
 recordRoutes.route("/createTeacher").post(async function (req, res) {
   const userName = req.body.userName;
   const password = req.body.password;
