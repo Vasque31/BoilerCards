@@ -966,6 +966,45 @@ recordRoutes.route("/joinClass").post(async function (req, res) {
     res.json(false);
   }
 });
+recordRoutes.route("/storeScore").post(async function (req, res) {
+  const userID = req.body.userID;
+  const userInfo = await userdata.GetAsyncbyid(client, userID);
+  const userName = userInfo.username;
+  const score = req.body.score;
+  const setID = req.body.setID;
+  const result = await Flashcarddata.GetFlashcardsetasync(
+    client,
+    ObjectId(setID)
+  );
+  if (result != false) {
+    if (result.score.get(userName == null)) {
+      result.score.set(userName, score);
+    } else {
+      if (result.score.get(userName) < score) {
+        result.delete(userName);
+        result.score.set(userName, score);
+      }
+    }
+    await Flashcarddata.UpdateSet(result);
+  } else {
+    res.json(false);
+  }
+});
+recordRoutes.route("/getMaxScore").post(async function (req, res) {
+  const setID = req.body.setID;
+  const result = await Flashcarddata.GetFlashcardsetasync(
+    client,
+    ObjectId(setID)
+  );
+  if (result != false) {
+    var score = new Map(Object.entries(result.score));
+    score = Array.from(score.values);
+    const maxScore = Math.max(...score);
+    res.json(maxScore);
+  } else {
+    res.json(false);
+  }
+});
 recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const list = req.body.inputList;
   //null statement check
