@@ -935,16 +935,19 @@ recordRoutes.route("/createClass").post(async function (req, res) {
   const teacher = req.body.userName;
   const className = req.body.className;
   var val = Math.floor(1000 + Math.random() * 9000);
+  console.log(val);
   const newClass = new Class(className, teacher, val);
-  const teacherAccount = await userdata.GetTeacher(client, userName);
+  const teacherAccount = await userdata.GetTeacher(client, teacher);
   teacherAccount.class.push(newClass);
   await userdata.UpdateTeacher(client, teacher, teacherAccount);
   await userdata.AddClass(client, newClass);
   res.json(true);
 });
+var NumberInt = require("mongodb").Int32;
 recordRoutes.route("/Class").post(async function (req, res) {
   const classCode = req.body.classCode;
-  const result = await userdata.GetClass(client, classCode);
+  console.log(classCode);
+  const result = await userdata.GetClass(client, NumberInt(classCode));
   if (result != false) {
     res.json(result);
   } else {
@@ -953,20 +956,24 @@ recordRoutes.route("/Class").post(async function (req, res) {
 });
 recordRoutes.route("/joinClass").post(async function (req, res) {
   const userID = req.body.userID;
-  const userInfo = await userdata.GetAsyncbyid(client, userID);
+  const userInfo = await userdata.GetAsyncbyid(client, ObjectId(userID));
+  console.log(userInfo);
   const userName = userInfo.username;
   const classCode = req.body.classCode;
-  const result = await userdata.GetClass(client, classCode);
+  const result = await userdata.GetClass(client, NumberInt(classCode));
   if (result != false) {
-    const studentMap = new Map(Object.fromEntries(result.student));
+    console.log(result.student);
+    const studentMap = new Map(Object.entries(result.student));
     if (studentMap.get(userName) == null) {
       studentMap.set(userName, userName);
       result.student = studentMap;
-      const classMap = new Map(Object.fromEntries(userInfo.class));
-      await userdata.UpdateClass(client, classCode, result);
-      classMap.set(result, result);
-      userInfo.class = classMap;
-      await userdata.UpdateUser(client, userID, userInfo);
+      console.log(result);
+      const classMap = new Map(Object.entries(userInfo.class));
+      await userdata.UpdateClass(client, NumberInt(classCode), result);
+      classMap.set(result._id, result);
+      userInfo.class = Object.fromEntries(classMap);
+      await userdata.UpdateUser(client, ObjectId(userID), userInfo);
+      res.json(true);
     } else {
       res.json(false);
     }
@@ -976,24 +983,31 @@ recordRoutes.route("/joinClass").post(async function (req, res) {
 });
 recordRoutes.route("/storeScore").post(async function (req, res) {
   const userID = req.body.userID;
-  const userInfo = await userdata.GetAsyncbyid(client, userID);
+  const userInfo = await userdata.GetAsyncbyid(client, ObjectId(userID));
   const userName = userInfo.username;
-  const score = req.body.score;
+  var score = req.body.score;
+  score = NumberInt(score);
+  console.log(score.value);
   const setID = req.body.setID;
   const result = await Flashcarddata.GetFlashcardsetasync(
     client,
     ObjectId(setID)
   );
   if (result != false) {
-    if (result.score.get(userName == null)) {
-      result.score.set(userName, score);
+    const scoremap = new Map(Object.entries(result.score));
+    //console.log(scoremap);
+    if (scoremap.get(userName) == null) {
+      scoremap.set(userName, score);
+      console.log(scoremap);
     } else {
-      if (result.score.get(userName) < score) {
-        result.delete(userName);
-        result.score.set(userName, score);
+      if (NumberInt(scoremap.get(userName)) < score) {
+        scoremap.delete(userName);
+        scoremap.set(userName, score);
       }
     }
-    await Flashcarddata.UpdateSet(result);
+    result.student = scoremap;
+    await Flashcarddata.UpdateSet(client, ObjectId(setID), result);
+    res.json(true);
   } else {
     res.json(false);
   }
@@ -1005,9 +1019,11 @@ recordRoutes.route("/getMaxScore").post(async function (req, res) {
     ObjectId(setID)
   );
   if (result != false) {
-    var score = new Map(Object.entries(result.score));
-    score = Array.from(score.values);
+    var score = new Map(Object.entries(result.student));
+    console.log(score);
+    score = Array.from(score.values());
     const maxScore = Math.max(...score);
+    console.log(maxScore);
     res.json(maxScore);
   } else {
     res.json(false);
@@ -1016,11 +1032,18 @@ recordRoutes.route("/getMaxScore").post(async function (req, res) {
 recordRoutes.route("/getScoreList").post(async function (req, res) {
   const setID = req.body.setID;
   const classCode = req.body.classCode;
-  const Class = await userdata.GetClass(client, classCode);
-  const setInfo = await Flashcarddata.GetFlashcardsetasync(client, setID);
+  const Class = await userdata.GetClass(client, NumberInt(classCode));
+  const setInfo = await Flashcarddata.GetFlashcardsetasync(
+    client,
+    ObjectId(setID)
+  );
+
   var studentList = new Map(Object.entries(Class.student));
-  var scoreMap = new Map(Obejct.entries(setInfo.score));
+  var scoreMap = new Map(Object.entries(setInfo.student));
+  console.log(studentList);
+  console.log(scoreMap);
   const finalarray = new Array();
+  studentList = Array.from(studentList.values());
   for (var i = 0; i < studentList.length; i++) {
     if (scoreMap.get(studentList[i]) == null) {
       finalarray.push({

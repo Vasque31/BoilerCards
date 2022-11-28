@@ -49,8 +49,8 @@ class userDBService {
   }
   async GetClass(client, id) {
     const result = await client
-      .db("Flashcard")
-      .collection("Label")
+      .db("User")
+      .collection("Class")
       .findOne({ classCode: id });
     /*const json = JSON.stringify(result);
     const obj = JSON.parse(json);*/
