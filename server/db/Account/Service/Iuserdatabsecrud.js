@@ -204,6 +204,7 @@ class userDBService {
     );
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
   }
+
   async UpdateClass(client, nameOfListing, updatedListing) {
     const result = await client
       .db("User")

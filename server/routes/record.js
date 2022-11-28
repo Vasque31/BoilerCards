@@ -952,13 +952,21 @@ recordRoutes.route("/Class").post(async function (req, res) {
   }
 });
 recordRoutes.route("/joinClass").post(async function (req, res) {
-  const userName = req.body.userName;
+  const userID = req.body.userID;
+  const userInfo = await userdata.GetAsyncbyid(client, userID);
+  const userName = userInfo.username;
   const classCode = req.body.classCode;
   const result = await userdata.GetClass(client, classCode);
   if (result != false) {
-    if (result.student.get(userName) == null) {
-      result.student.set(userName, userName);
+    const studentMap = new Map(Object.fromEntries(result.student));
+    if (studentMap.get(userName) == null) {
+      studentMap.set(userName, userName);
+      result.student = studentMap;
+      const classMap = new Map(Object.fromEntries(userInfo.class));
       await userdata.UpdateClass(client, classCode, result);
+      classMap.set(result, result);
+      userInfo.class = classMap;
+      await userdata.UpdateUser(client, userID, userInfo);
     } else {
       res.json(false);
     }
@@ -1004,6 +1012,29 @@ recordRoutes.route("/getMaxScore").post(async function (req, res) {
   } else {
     res.json(false);
   }
+});
+recordRoutes.route("/getScoreList").post(async function (req, res) {
+  const setID = req.body.setID;
+  const classCode = req.body.classCode;
+  const Class = await userdata.GetClass(client, classCode);
+  const setInfo = await Flashcarddata.GetFlashcardsetasync(client, setID);
+  var studentList = new Map(Object.entries(Class.student));
+  var scoreMap = new Map(Obejct.entries(setInfo.score));
+  const finalarray = new Array();
+  for (var i = 0; i < studentList.length; i++) {
+    if (scoreMap.get(studentList[i]) == null) {
+      finalarray.push({
+        name: studentList[i],
+        score: 0,
+      });
+    } else {
+      finalarray.push({
+        name: studentList[i],
+        score: scoreMap.get(studentList[i]),
+      });
+    }
+  }
+  res.json(finalarray);
 });
 recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const list = req.body.inputList;
