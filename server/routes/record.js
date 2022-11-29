@@ -1061,6 +1061,11 @@ recordRoutes.route("/send").post(async function (req, res) {
       flashcardSetMap = Object.fromEntries(flashcardSetMap);
       folderResult.flashcardset = flashcardSetMap;
       await Flashcarddata.UpdateFolder(client, folderResult._id, folder);
+      var folderMap = new Map(Object.entries(user.folder));
+      folderMap.set(folderResult._id, folderResult);
+      folderMap = Object.fromEntries(folderMap);
+      user.folder = folderMap;
+      await userdata.UpdateUser(client, user._id, user);
     }
     res.json(true);
   } else {
