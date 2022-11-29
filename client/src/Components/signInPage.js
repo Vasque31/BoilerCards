@@ -7,7 +7,6 @@ import { useRef } from "react";
 import axios from "axios";
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
-import FacebookLogin from 'react-facebook-login';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -193,12 +192,6 @@ function SignInPage() {
                 
             </form>
             
-            <FacebookLogin
-                    appId="491848086337502"
-                    autoLoad={true}
-                    fields="name,email,picture"
-                    size="small"
-                    callback={responseFacebook} /> <br/>
             <GoogleLogin
                 clientId="787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com"
                 buttonText="Sign in with Google"
