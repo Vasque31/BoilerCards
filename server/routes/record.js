@@ -931,6 +931,7 @@ recordRoutes.route("/teacherSignIn").post(async function (req, res) {
 });
 const { Class } = require("../db/Flashcard/Model/Class.js");
 const { resolveObjectURL } = require("buffer");
+const { FormProvider } = require("rc-field-form");
 recordRoutes.route("/createClass").post(async function (req, res) {
   const teacher = req.body.userName;
   const className = req.body.className;
@@ -1025,6 +1026,43 @@ recordRoutes.route("/getMaxScore").post(async function (req, res) {
     const maxScore = Math.max(...score);
     console.log(maxScore);
     res.json(maxScore);
+  } else {
+    res.json(false);
+  }
+});
+recordRoutes.route("/send").post(async function (req, res) {
+  const setID = req.body.setID;
+  const userName = req.body.userName;
+  console;
+  const user = await userdata.GetAsync(client, userName);
+  if (user != false) {
+    var set = await Flashcarddata.GetFlashcardsetasync(client, ObjectId(setID));
+    delete set._id;
+    const folder = await Flashcarddata.GetFolderasync(
+      client,
+      ObjectId(user.defaultfolder)
+    );
+    console.log("nice");
+    if (folder != false) {
+      set.belongfolder = folder._id;
+      const result = await Flashcarddata.CreateSet(client, set);
+      var flashcardSetMap = new Map(Object.entries(folder.flashcardset));
+      flashcardSetMap.set(result._id, result);
+      flashcardSetMap = Object.fromEntries(flashcardSetMap);
+      folder.flashcardset = flashcardSetMap;
+      await Flashcarddata.UpdateFolder(client, folder._id, folder);
+    } else {
+      const newFolder = new Folder("copyFolder", user._id);
+      const folderResult = await Flashcarddata.Createfolder(client, newFolder);
+      set.belongfolder = folderResult._id;
+      const result = await Flashcarddata.CreateSet(client, set);
+      var flashcardSetMap = new Map(Object.entries(folderResult.flashcardset));
+      flashcardSetMap.set(result._id, result);
+      flashcardSetMap = Object.fromEntries(flashcardSetMap);
+      folderResult.flashcardset = flashcardSetMap;
+      await Flashcarddata.UpdateFolder(client, folderResult._id, folder);
+    }
+    res.json(true);
   } else {
     res.json(false);
   }
