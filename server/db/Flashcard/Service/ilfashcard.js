@@ -23,6 +23,7 @@ async CreateLabel(client,newListing){
   console.log(`New listing created with the following id: ${result.insertedId}`);
   return result;
 }
+
 async GetLabel(client,id){
   const result = await client.db("Flashcard").collection("Label").findOne({ _id:id });
   /*const json = JSON.stringify(result);
