@@ -27,6 +27,7 @@ var toDeleteFlashcard = {
 function ViewFlashcard() {
     const fileReader = new FileReader();
     const [showEdit, setShowEdit] = useState(false);
+    const [showSend, setShowSend] = useState(false);
     const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
@@ -35,6 +36,7 @@ function ViewFlashcard() {
     const [newback, setNewback] = useState();
     const [currSort, setCurrSort] = useState("c_a");
     const [newDiff, setNewDiff] = useState();
+    const [sendUsername, setSendUsername] = useState("");
     const [showDownload, setShowDownload] = useState(false);
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
@@ -136,7 +138,18 @@ function ViewFlashcard() {
              
 
     }
-
+    const handleShowSend = () => {
+        setShowSend(true);
+    }
+    const handleCloseSend = () => {
+        setShowSend(false);
+    }
+    const handleChangeSendName = (event) => {
+        setSendUsername(event.target.value);
+    }
+    const handleSubmitSend = () => {
+        console.log(sendUsername);
+    }
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
             setid:id
@@ -278,6 +291,7 @@ function ViewFlashcard() {
                         <Dropdown.Item onClick={handleShow}>Add more Flashcards</Dropdown.Item>
                         <Dropdown.Item onClick={handleShowDownload}>Download this Set</Dropdown.Item>
                         <Dropdown.Item onClick={handleStartQuiz}>Quiz Yourself!</Dropdown.Item>
+                        <Dropdown.Item onClick={handleShowSend}>Share this Flashcard Set</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
                 <Modal show={showDownload} onHide={handleCloseDownload} backdrop="static">
@@ -291,7 +305,23 @@ function ViewFlashcard() {
                         </Link>
                     </Modal.Footer>
                 </Modal>
-                
+                <Modal show={showSend} onHide = {handleCloseSend} backdrop="static">
+                    <Modal.Header closeButton>
+                        <Modal.Title>Share this Flashcard Set</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Who do you want to send this set to?
+                    </Modal.Body>
+                    <Form onSubmit={handleSubmitSend}>
+                        <Form.Group>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type = "name" placeholder="Username" onChange={handleChangeSendName}/>
+                        </Form.Group>
+                        <br/>
+                        <Button variant = "primary" type="submit">Send Flashcard Set</Button>
+                    </Form>
+
+                </Modal>
                 {statePrivate &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
                             <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={e => setPrivate(e.currentTarget.value)}>
