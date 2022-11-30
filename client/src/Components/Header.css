@@ -2,11 +2,10 @@
     text-align: center;
 
 }
+
 .general-box-createflash {
     max-width: max-content;
-}
-.general-box-createflash {
-    max-width: max-content;
+    text-align: center;
 }
 .modal {
     justify-content: center;
