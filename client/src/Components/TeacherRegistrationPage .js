@@ -30,7 +30,7 @@ function checkvalidpassword(str) {
       return false;
     }
   }  
-function RegistrationPage() {
+function TeacherRegistrationPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
@@ -42,7 +42,7 @@ function RegistrationPage() {
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
-        navigate("/register");
+        navigate("/educatorregister");
         //Call to backend to check validity
 
     };
@@ -55,10 +55,12 @@ function RegistrationPage() {
             password: passwordRef.current.value,
             email: emailRef.current.value
         }
+        console.log(registrationInfo);
         if(checkvalidpassword(registrationInfo.password)&&checkvalidusername(registrationInfo.username) ){
             console.log(registrationInfo);
-            let res = await axios.post("http://localhost:3001/createaccount", {
-                registrationInfo: registrationInfo,
+            let res = await axios.post("http://localhost:3001/createteacher", {
+                userName: registrationInfo.username,
+                password: registrationInfo.password
                 });
             if(res.data===true){
                 navigate("/");
@@ -97,4 +99,4 @@ function RegistrationPage() {
     );
 }
 
-export default RegistrationPage;
+export default TeacherRegistrationPage;
