@@ -1191,13 +1191,7 @@ recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const setname = req.body.name;
   const belongclassCode = req.body.classCode;
   const newset = new Flashcardset(setname);
-  if (req.body.public == true || req.body.public == "true") {
-    newset.private = true;
-    console.log(req.body.public);
-  } else {
-    newset.private = false;
-    console.log(req.body.public);
-  }
+  newset.private = true;
   //console.log(newset.private);
   newset.belongfolder = belongclassCode;
   const set = await Flashcarddata.CreateSet(client, newset);
