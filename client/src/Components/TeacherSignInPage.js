@@ -33,7 +33,7 @@ const errors = {
       
     return pass;
 }
-function SignInPage() {
+function TeacherSignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [remember, setRememberMe] = useState(false);
@@ -60,7 +60,7 @@ function SignInPage() {
     const handleSignUp = (event) => {
         //prevents page reload
         event.preventDefault();
-        navigate("/register");
+        navigate("/educatorregister");
         //Call to backend to check validity
 
     };
@@ -100,8 +100,9 @@ function SignInPage() {
         console.log(logginInfo);
         //Call to backend to check validity
         //if good link to homepage with the persons info
-       let res = await axios.post("http://localhost:3001/signin", {
-          logginfo: logginInfo,
+       let res = await axios.post("http://localhost:3001/teacherSignIn", {
+          userName: logginInfo.username,
+          password: logginInfo.password
         }); 
         let data = res.data;
         if(data!==false){
@@ -165,8 +166,8 @@ function SignInPage() {
         libstorage = loadspace.data;
         navigate("/HomePage");
     }
-    const handleTeacherPage = () => {
-        navigate('/educatorsignin');
+    const handleStudentPage = () => {
+        navigate('/');
     }
     const onGoogleFailure = (res) => {
         console.log(res);
@@ -174,12 +175,12 @@ function SignInPage() {
     return (
         <div className = "login-form">
             <div style={{textAlign: 'right'}}>
-                <Button variant="link" style={{color:'gold'}} onClick={handleTeacherPage}>SignUp/SignIn as Educator<br></br></Button>
+                <Button variant="link" style={{color:'gold'}} onClick={handleStudentPage}>SignUp/SignIn as Student<br></br></Button>
             </div>
             <form onSubmit = {handleSignIn}>
                 <img alt = "Logo" className = "photo" src= {mylogo}/>
                 <h1 style={{textAlign: "center", color: "gold"}}>Welcome to BoilerCards</h1>
-                <h2 style={{textAlign: "center", color: "gold"}}>Student Sign In</h2>
+                <h2 style={{textAlign: "center", color: "gold"}}>Educator Sign In</h2>
                 <div className = "input-container">
                     <label style={{textAlign: "left"}}>Username</label>
                     <input type="text" name="username" placeholder="Enter Username" ref={usernameRef} required />
@@ -238,4 +239,4 @@ function SignInPage() {
     );
 }
 
-export default SignInPage;
+export default TeacherSignInPage;
