@@ -363,13 +363,29 @@ function insertionSort(arr, n) {
 }
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
-
-  const folder = await Flashcarddata.GetFolderasync(
+  var folder = await Flashcarddata.GetFolderasync(
     client,
     ObjectId(folderid.toString())
   );
+  folder.freq += 1;
+  await Flashcarddata.UpdateFolder(
+    client,
+    ObjectId(folderid.toString()),
+    folder
+  );
+  console.log(folder.freq);
+  folder = await Flashcarddata.GetFolderasync(
+    client,
+    ObjectId(folderid.toString())
+  );
+  const user = await userdata.GetAsyncbyid(client, ObjectId(folder.owner));
+  const foldermap = new Map(Object.entries(user.folder));
+  foldermap.set(folder._id, folder);
+  user.folder = Object.fromEntries(foldermap);
+  await userdata.UpdateUser(client, ObjectId(folder.owner), user);
   res.json(folder);
 });
+
 recordRoutes.route("/loadspace").post(async function (req, res) {
   const userid = req.body.uid;
   const user = await userdata.GetAsyncbyid(client, ObjectId(userid));
@@ -987,7 +1003,14 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
   const userInfo = await userdata.GetAsyncbyid(client, ObjectId(userID));
   const userName = userInfo.username;
   var score = req.body.score;
+  var time = req.body.time;
   score = NumberInt(score);
+  time = Number(time);
+  scoreResult = {
+    userName: userName,
+    score: score,
+    time: time,
+  };
   console.log(score.value);
   const setID = req.body.setID;
   const result = await Flashcarddata.GetFlashcardsetasync(
@@ -998,12 +1021,17 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
     const scoremap = new Map(Object.entries(result.score));
     //console.log(scoremap);
     if (scoremap.get(userName) == null) {
-      scoremap.set(userName, score);
+      scoremap.set(userName, scoreResult);
       console.log(scoremap);
     } else {
-      if (NumberInt(scoremap.get(userName)) < score) {
-        scoremap.delete(userName);
-        scoremap.set(userName, score);
+      if (NumberInt(scoremap.get(userName).score) < score) {
+        scoremap.set(userName, scoreResult);
+      }
+      if (
+        NumberInt(scoremap.get(userName).score) == score &&
+        NumberInt(scoremap.get(userName).time) > time
+      ) {
+        scoremap.set(userName, scoreResult);
       }
     }
     result.student = scoremap;
@@ -1013,8 +1041,28 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
     res.json(false);
   }
 });
-recordRoutes.route("/getMaxScore").post(async function (req, res) {
+function boardSort1(arr, n) {
+  let i, key, j;
+  for (i = 1; i < n; i++) {
+    key = arr[i];
+    j = i - 1;
+    while (j >= 0) {
+      if (arr[j].score < key.score) {
+        arr[j + 1] = arr[j];
+        j = j - 1;
+      } else if (arr[j].score == key.score && arr[j].time > key.time) {
+        arr[j + 1] = arr[j];
+        j = j - 1;
+      }
+    }
+
+    arr[j + 1] = key;
+  }
+  return arr;
+}
+recordRoutes.route("/getLeaderboard").post(async function (req, res) {
   const setID = req.body.setID;
+  const getLeaderboard = new Array();
   const result = await Flashcarddata.GetFlashcardsetasync(
     client,
     ObjectId(setID)
@@ -1023,17 +1071,48 @@ recordRoutes.route("/getMaxScore").post(async function (req, res) {
     var score = new Map(Object.entries(result.student));
     console.log(score);
     score = Array.from(score.values());
-    const maxScore = Math.max(...score);
-    console.log(maxScore);
-    res.json(maxScore);
+    const sortedarray = boardSort1(score, score.length);
+    console.log(sortedarray);
+    res.json(sortedarray);
   } else {
     res.json(false);
   }
 });
+
+recordRoutes.route("/leaveClass").post(async function (req, res) {
+  const userID = req.body.userID;
+  const user = await userdata.GetAsyncbyid(client, userID);
+  const classCode = req.body.classCode;
+  const Class = await userdata.GetClass(client, classCode);
+  const studentMap = new Map(Object.entries(Class.student));
+  studentMap.delete(user.username);
+  Class.student = Object.fromEntries(studentMap);
+  await userdata.UpdateClass(client, classCode, Class);
+  const classMap = new Map(Object.entries(user.class));
+  classMap.delete(Class._id);
+  user.class = Object.fromEntries(classMap);
+  await userdata.UpdateUser(client, classCode, user);
+  res.json(true);
+});
+recordRoutes.route("/deleteClass").post(async function (req, res) {
+  const classCode = req.body.classCode;
+  const Class = await userdata.GetClass(client, classCode);
+  const teacherName = Class.teacher;
+  const teacher = await userdata.GetTeacher(client, teacherName);
+  const classArray = teacher.class;
+  for (let i = 0; i < classArray.length; i++) {
+    if (classArray[i].classCode == classCode) {
+      classArray.splice(i, 1);
+    }
+  }
+  teacher.class = classArray;
+  await userdata.UpdateTeacher(client, teacherName, teacher);
+  await userdata.deleteClass(client, classCode);
+  res.json(true);
+});
 recordRoutes.route("/send").post(async function (req, res) {
   const setID = req.body.setID;
   const userName = req.body.userName;
-  console;
   const user = await userdata.GetAsync(client, userName);
   if (user != false) {
     var set = await Flashcarddata.GetFlashcardsetasync(client, ObjectId(setID));
@@ -1080,7 +1159,6 @@ recordRoutes.route("/getScoreList").post(async function (req, res) {
     client,
     ObjectId(setID)
   );
-
   var studentList = new Map(Object.entries(Class.student));
   var scoreMap = new Map(Object.entries(setInfo.student));
   console.log(studentList);
@@ -1091,7 +1169,7 @@ recordRoutes.route("/getScoreList").post(async function (req, res) {
     if (scoreMap.get(studentList[i]) == null) {
       finalarray.push({
         name: studentList[i],
-        score: 0,
+        score: null,
       });
     } else {
       finalarray.push({
