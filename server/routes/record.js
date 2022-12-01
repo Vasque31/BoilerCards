@@ -1082,7 +1082,7 @@ recordRoutes.route("/getLeaderboard").post(async function (req, res) {
 recordRoutes.route("/leaveClass").post(async function (req, res) {
   const userID = req.body.userID;
   const user = await userdata.GetAsyncbyid(client, userID);
-  const classCode = req.body.classCode;
+  const classCode = NumberInt(req.body.classCode);
   const Class = await userdata.GetClass(client, classCode);
   const studentMap = new Map(Object.entries(Class.student));
   studentMap.delete(user.username);
@@ -1100,7 +1100,7 @@ recordRoutes.route("/getTeacherSpace").post(async function (req, res) {
   res.json(teacher);
 });
 recordRoutes.route("/deleteClass").post(async function (req, res) {
-  const classCode = req.body.classCode;
+  const classCode = NumberInt(req.body.classCode);
   const Class = await userdata.GetClass(client, classCode);
   const teacherName = Class.teacher;
   const teacher = await userdata.GetTeacher(client, teacherName);
@@ -1189,7 +1189,7 @@ recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const list = req.body.inputList;
   //null statement check
   const setname = req.body.name;
-  const belongclassCode = req.body.classCode;
+  const belongclassCode = NumberInt(req.body.classCode);
   const newset = new Flashcardset(setname);
   newset.private = true;
   //console.log(newset.private);
@@ -1197,8 +1197,10 @@ recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const set = await Flashcarddata.CreateSet(client, newset);
   const belongClass = await userdata.GetClass(client, belongclassCode);
   const myObjectId = set.insertedId;
-  belongClass.flashcardset = newset;
-  await Flashcarddata.UpdateClass(client, belongclassCode, belongfolder);
+  const flashcardSetArray = belongClass.flashcardset;
+  flashcardSetArray.push(set);
+  belongClass.flashcardset = flashcardSetArray;
+  await userdata.UpdateClass(client, belongclassCode, belongClass);
   for (var i = 0; i < list.length; i++) {
     await createFlashcard(
       list[i].front,
