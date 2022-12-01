@@ -4,7 +4,7 @@ import "./Header.css"
 import Button from 'react-bootstrap/Button';
 import CloseButton from "react-bootstrap/esm/CloseButton";
 import { useNavigate } from 'react-router-dom';
-import Header from "./Header";
+import TeacherHeader from "./TeacherHeader";
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { libstorage } from "./signInPage";
@@ -20,6 +20,7 @@ function TeacherClass() {
    const [show, setShow] = useState(false);
    const [name, setName] = useState("");
    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
+   const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')))
    const handleaddmore = () => {
     setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
@@ -39,7 +40,7 @@ function TeacherClass() {
             classCode:"abc"
         }
         console.log(flashcardInfo);
-        let res = await axios.post("http://localhost:3001/createflashcardset", {
+        let res = await axios.post("http://localhost:3001/createTeacherSet", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
             classCode:flashcardInfo.classCode,
@@ -68,16 +69,16 @@ function TeacherClass() {
     }
     return (
         <div>
-            <Header/>
+            <TeacherHeader/>
             <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
             <div style={{textAlign: 'left', color: 'gold', fontSize: '2rem', paddingLeft: '20rem'}}>
                 <heading>Example Class Name</heading>
-                <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher Karen</div>
+                <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {getCookie('username')}</div>
             </div>
-            <div style={{paddingRight: '25rem', textAlign: 'right', color: 'gold'}}>
-                &nbsp;&nbsp; Class Code: asdfghjkl
+            <div style={{paddingRight: '32.2rem', textAlign: 'right', color: 'gold'}}>
+                &nbsp;&nbsp; Class Code: {getCookie('classCode')}
             </div>
 
             <div style={{paddingLeft: '25rem', paddingRight: '25rem',display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
