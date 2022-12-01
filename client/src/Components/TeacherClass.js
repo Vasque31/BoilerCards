@@ -90,7 +90,7 @@ function TeacherClass() {
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
             <div style={{textAlign: 'left', color: 'gold', fontSize: '2rem', paddingLeft: '20rem'}}>
-                <heading>Example Class Name</heading>
+                <heading>{library.className}</heading>
                 <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {getCookie('username')}</div>
             </div>
             <div style={{paddingRight: '32.2rem', textAlign: 'right', color: 'gold'}}>
@@ -109,11 +109,11 @@ function TeacherClass() {
                 <div className= "teacher-box">
                     {Object.values(library.flashcardset).map(item => {
                         return (
-                            <div>
+                            <div style={{paddingBottom: '0.5rem'}}>
                                 &nbsp; &nbsp;
                                 {/*<h1>{item._id}</h1>*/}
                                 <Button variant='warning' className= "library-buttons" value={item._id} onClick= {(e) => handleFlashcardSetClick(e.target.value)}>
-                                    {item.setName}
+                                    {item.setname}
                                 </Button>
                                 &nbsp; &nbsp;
                             </div>
