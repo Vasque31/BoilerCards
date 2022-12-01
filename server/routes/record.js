@@ -1195,10 +1195,10 @@ recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   //console.log(newset.private);
   newset.belongfolder = belongclassCode;
   const set = await Flashcarddata.CreateSet(client, newset);
-  const belongClass = await userdata.GetClass(client, classCode);
+  const belongClass = await userdata.GetClass(client, belongclassCode);
   const myObjectId = set.insertedId;
   belongClass.flashcardset = newset;
-  await Flashcarddata.UpdateClass(client, classCode, belongfolder);
+  await Flashcarddata.UpdateClass(client, belongclassCode, belongfolder);
   for (var i = 0; i < list.length; i++) {
     await createFlashcard(
       list[i].front,
