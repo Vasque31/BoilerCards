@@ -20,7 +20,11 @@ function TeacherClass() {
    const [show, setShow] = useState(false);
    const [name, setName] = useState("");
    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
-   const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')))
+   const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')));
+   const [dest, setDest] = useState(getCookie('classCode'));
+   const handleFlashcardSetClick = async(event) => {
+  
+   }
    const handleaddmore = () => {
     setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
@@ -37,21 +41,32 @@ function TeacherClass() {
         const flashcardInfo = {
             inputList:inputList,
             name:name,
-            classCode:"abc"
+            classCode:getCookie('classCode')
         }
         console.log(flashcardInfo);
         let res = await axios.post("http://localhost:3001/createTeacherSet", {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
             classCode:flashcardInfo.classCode,
+            public: true
         });
 
         if(res.data===true){
             //handleShowSaved();
         }
         handleClose();
-        //handlerefresh();
+        handlerefresh();
+
         console.log(flashcardInfo);
+    }
+    const handlerefresh = async () => {     
+        console.log(getCookie('classCode'));
+        let res = await axios.post("http://localhost:3001/class", {
+            classCode:getCookie('classCode')
+        });
+        console.log(res.data);
+        setLibrary(res.data);
+        localStorage.setItem('class', JSON.stringify(res.data));
     }
     const handleClose = () => {
         setShow(false);
@@ -67,6 +82,8 @@ function TeacherClass() {
         fileReader.readAsDataURL(e.target.files[0]);
         setinputList(list);
     }
+    {/*Student list handlers */}
+    const [showStudentList, setShowStudentList] = useState(false);
     return (
         <div>
             <TeacherHeader/>
@@ -83,7 +100,7 @@ function TeacherClass() {
 
             <div style={{paddingLeft: '25rem', paddingRight: '25rem',display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
                 <div>
-                    <Button variant='light'>Students</Button> 
+                    <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
                     <div style={{paddingTop: '0.25rem'}}>
                     <Button variant='dark' style={{color: 'gold'}} onClick={(e) => setShow(true)}>Create FlashCard Set</Button>
                     </div>
@@ -91,12 +108,24 @@ function TeacherClass() {
                 &nbsp;&nbsp;&nbsp;&nbsp;
                 
                 <div className= "teacher-box">
-                    
+                    {Object.values(library.flashcardset).map(item => {
+                        return (
+                            <div>
+                                &nbsp; &nbsp;
+                                {/*<h1>{item._id}</h1>*/}
+                                <Button variant='warning' className= "library-buttons" value={item._id} onClick= {(e) => handleFlashcardSetClick(e.target.value)}>
+                                    {item.setName}
+                                </Button>
+                                &nbsp; &nbsp;
+                            </div>
+                                
+                        );
+                    })}
                 </div>
             </div>
             <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
                 <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
-                    <Modal.Title>
+                    <Modal.Title> 
                         <h1 style ={{fontSize: "5rem", textAlign: "center"}}>BOILERCARDS</h1>
                         <h2 style ={{fontSize: "2rem", textAlign: "center"}}>Create Flashcard Set</h2>
                     </Modal.Title>
@@ -149,6 +178,22 @@ function TeacherClass() {
                     </Button>
                     <Button variant="primary" onClick={handleCreateFlashCardSet}>
                         Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/*Student List*/}
+
+            <Modal show={showStudentList} onHide={() => setShowStudentList(false)}>
+                <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Student List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
+                       
+                </Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => setShowStudentList(false)}> 
+                        Close
                     </Button>
                 </Modal.Footer>
             </Modal>

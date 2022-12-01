@@ -1094,11 +1094,6 @@ recordRoutes.route("/leaveClass").post(async function (req, res) {
   await userdata.UpdateUser(client, classCode, user);
   res.json(true);
 });
-recordRoutes.route("/getTeacherSpace").post(async function (req, res) {
-  const userName = req.body.userName;
-  const teacher = await userdata.GetTeacher(client, userName);
-  res.json(teacher);
-});
 recordRoutes.route("/deleteClass").post(async function (req, res) {
   const classCode = req.body.classCode;
   const Class = await userdata.GetClass(client, classCode);
