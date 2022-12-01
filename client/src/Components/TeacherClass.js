@@ -48,7 +48,6 @@ function TeacherClass() {
             inputList:flashcardInfo.inputList,
             name:flashcardInfo.name,
             classCode:flashcardInfo.classCode,
-            public: true
         });
 
         if(res.data===true){
@@ -189,7 +188,22 @@ function TeacherClass() {
                     <Modal.Title>Student List</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
-                       
+                    {Object.values(library.student).map(item => {
+                        return (
+                            <div>
+                                &nbsp; &nbsp;
+                                {/*<h1>{item._id}</h1>*/}
+                                <Button variant='warning' className= "library-buttons">
+                                    {item.username}
+                                </Button>
+                                <Button variant='danger' value={item._id} className= "library-buttons">
+                                    remove
+                                </Button>
+                                &nbsp; &nbsp;
+                            </div>
+                                
+                        );
+                    })}
                 </Modal.Body>
                 <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => setShowStudentList(false)}> 
