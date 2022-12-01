@@ -27,6 +27,7 @@ import TeacherClass from './Components/TeacherClass';
 import TeacherRegistrationPage from './Components/TeacherRegistrationPage ';
 import TeacherSignInPage from './Components/TeacherSignInPage';
 import TeacherHomePage from './Components/TeacherHomePage';
+import Class from './Components/Class.js';
 
 function App() {
 
@@ -42,6 +43,7 @@ function App() {
         <Route path="/TeacherHomePage" element={<TeacherHomePage/>} />
         <Route path="/mylibrary" element={<MyLibrary/>} />
         <Route path="/teacherclass" element={<TeacherClass/>} />
+        <Route path="/class" element={<Class/>}/>
         <Route path="/settings" element={<Settings/>} />
         <Route path="/folder" element={<Folder/>} />
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
