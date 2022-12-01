@@ -56,7 +56,7 @@ function TeacherHomeClasses() {
             <div style={{display: 'flex', paddingBottom: '0.5rem'}}>
                 <h1 className="section-title">My Classes</h1>
                 &nbsp;&nbsp;
-                <Button variant='warning' onClick={(e) => setShow(true)}>Create Class</Button>
+                <Button variant='dark' onClick={(e) => setShow(true)}>Create Class</Button>
             </div>
             <div className= "home-boxes">
                 <table>
