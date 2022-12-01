@@ -389,7 +389,7 @@ recordRoutes.route("/folder").post(async function (req, res) {
 recordRoutes.route("/loadspace").post(async function (req, res) {
   const userid = req.body.uid;
   const user = await userdata.GetAsyncbyid(client, ObjectId(userid));
-  res.json(user.folder);
+  res.json(user);
 });
 recordRoutes.route("/search").post(async function (req, res) {
   const setname = req.body.setname;
@@ -1178,6 +1178,11 @@ recordRoutes.route("/getScoreList").post(async function (req, res) {
     }
   }
   res.json(finalarray);
+});
+recordRoutes.route("/getTeacherSpace").post(async function (req, res) {
+  const userName = req.body.userName;
+  const teacher = await userdata.GetTeacher(client, userName);
+  res.json(teacher);
 });
 recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const list = req.body.inputList;
