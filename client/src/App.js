@@ -26,6 +26,7 @@ import Leaderboard from './Components/Leaderboard.js';
 import TeacherClass from './Components/TeacherClass';
 import TeacherRegistrationPage from './Components/TeacherRegistrationPage ';
 import TeacherSignInPage from './Components/TeacherSignInPage';
+import TeacherHomePage from './Components/TeacherHomePage';
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
         <Route path="/educatorregister" element={<TeacherRegistrationPage/>} />
         <Route path="/educatorsignin" element={<TeacherSignInPage/>} />
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
+        <Route path="/TeacherHomePage" element={<TeacherHomePage/>} />
         <Route path="/mylibrary" element={<MyLibrary/>} />
         <Route path="/teacherclass" element={<TeacherClass/>} />
         <Route path="/settings" element={<Settings/>} />

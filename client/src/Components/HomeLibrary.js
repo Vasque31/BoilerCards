@@ -18,7 +18,7 @@ function HomeLibrary() {
                 uid:getCookie('userid'),
             });
             console.log(res.data);
-            setLibrary(res.data);
+            setLibrary(res.data); 
             localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();

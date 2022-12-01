@@ -947,7 +947,6 @@ recordRoutes.route("/teacherSignIn").post(async function (req, res) {
 });
 const { Class } = require("../db/Flashcard/Model/Class.js");
 const { resolveObjectURL } = require("buffer");
-const { FormProvider } = require("rc-field-form");
 recordRoutes.route("/createClass").post(async function (req, res) {
   const teacher = req.body.userName;
   const className = req.body.className;
@@ -1093,11 +1092,6 @@ recordRoutes.route("/leaveClass").post(async function (req, res) {
   user.class = Object.fromEntries(classMap);
   await userdata.UpdateUser(client, classCode, user);
   res.json(true);
-});
-recordRoutes.route("/getTeacherSpace").post(async function (req, res) {
-  const userName = req.body.userName;
-  const teacher = await userdata.GetTeacher(client, userName);
-  res.json(teacher);
 });
 recordRoutes.route("/deleteClass").post(async function (req, res) {
   const classCode = NumberInt(req.body.classCode);
