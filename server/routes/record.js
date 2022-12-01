@@ -692,6 +692,7 @@ recordRoutes.route("/report").post(async function (req, res) {
   );
   reportset.private = true;
   reportset.flagged = true;
+  await Flashcarddata.reportSet(client, reportset);
   await Flashcarddata.UpdateSet(client, ObjectId(reportsetid), reportset);
   res.json(true);
 });
@@ -882,9 +883,10 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
   const username = req.body.username;
   console.log("username:" + username);
   const code = req.body.code;
+  const newPass = req.body.newPass;
   console.log(code);
   const user = await userdata.GetAsync(client, username);
-  const password = user.password;
+  //const password = user.password;
   const codemap = new Map(
     Object.entries(
       await userdata.Getverificationcode(
@@ -895,7 +897,7 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
   );
   const realcode = codemap.get(user._id.toString());
   if (code == realcode) {
-    const transporter = nodemailer.createTransport({
+    /* const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: "boilercard1@gmail.com",
@@ -914,7 +916,9 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
       } else {
         console.log("Email sent: " + info.response);
       }
-    });
+    });*/
+    user.password = newPass;
+    await userdata.UpdateAsync(client, user._id, user);
     res.json(true);
   } else {
     res.json(false);
