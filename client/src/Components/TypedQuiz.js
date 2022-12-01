@@ -4,9 +4,13 @@ import { cardsQuiz } from "./ViewFlashcard";
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import {CloseButton} from 'react';
+import { getCookie } from 'react-use-cookie';
+import axios from 'axios';
+
+
 
 import * as React from 'react';
-import "./QuizGame.css";
+import "./TypedQuiz.css";
 
 
 var score = 0;
@@ -20,6 +24,7 @@ var timerToStart = true;
 var timerToStop = false;
 var globalTime = 0; // hundreth's of a second
 var globalScopeClock = null;
+var earlyExit = false;
 
 function TypedQuiz()  {
 
@@ -28,6 +33,7 @@ function TypedQuiz()  {
     const navigate = useNavigate();
     const [showContinueorExit, setShowContinueorExit] = useState(false);
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
+    const [showAbortQuiz, setShowAbortQuiz] = useState(false);
     const [answer, setAnswer] = useState("");
     const [time, setTime] = useState(0); // hundreth's of a second
 
@@ -84,7 +90,29 @@ function TypedQuiz()  {
         setShowQuestionFeedback(true);
     }
 
-    const handleShowExitQuiz = () => {
+    const handleShowAbortQuiz = () => {
+        setShowAbortQuiz(true);
+    }
+
+    const handleHideAbortQuiz = () => {
+        setShowAbortQuiz(false);
+    }
+
+    const handleAbortQuiz = () => {
+        earlyExit = true;
+        handleExitQuiz();
+    }
+
+    //called on quiz completion
+    const handleShowExitQuiz = async () => {
+        clearInterval(globalScopeClock); 
+        let res = await axios.post("http://localhost:3001/storeScore", {
+            userID: getCookie('userid'),
+            setID: cardsQuiz[0].belongset,
+            score: score,
+            timer: globalTime,
+        });
+
         setShowContinueorExit(true);
     }
 
@@ -92,24 +120,27 @@ function TypedQuiz()  {
         setShowContinueorExit(false);
     }
 
-    const handleExitQuiz = () => {
-        /*let res = await axios.post("http://localhost:3001/bestscore",{
-            uid: getCookie('u_id'),
-            setid: cardsQuiz[0].belongset
-            score: score,
-        });*/
-        //returns {BestScore: value, NewBestScore: true/false}
+    const handleExitQuiz = async () => {
         console.log("correct: " + previousCorrectPrompts);
         console.log("incorrect: " + previousIncorrectPrompts); 
-    
+        if (earlyExit) {
+            clearInterval(globalScopeClock); 
+            let res = await axios.post("http://localhost:3001/storeScore", {
+            userID: getCookie('userid'),
+            setID: cardsQuiz[0].belongset,
+            score: score,
+            time: -1,
+        });
+        //time = -1 means incomplete quiz
+        }
             //reset values
         previousCorrectPrompts = [];
         previousIncorrectPrompts = [];
         score = 0;
         globalTime = 0;
-        clearInterval(globalScopeClock); 
         setShowContinueorExit(false);
         timerToStart = true;
+        earlyExit = false;
         navigate(-1);
 
     }
@@ -129,8 +160,7 @@ function TypedQuiz()  {
             }
             //console.log("length of exclusion" + );
             if (previousCorrectPrompts.concat(previousIncorrectPrompts).length >= cardsQuiz.length) {
-                setShowContinueorExit(true);
-                handleExitQuiz();
+                handleShowExitQuiz();
             }
         
         currPrompt = selectedPromptIndex;
@@ -141,12 +171,13 @@ function TypedQuiz()  {
 
     return(
         <div>
-            <Button onClick={handleShowExitQuiz}> Exit Quiz </Button>
-
             
             <h1 style={{textAlign: "right", color: "gold"}}> Timer: </h1>
             <h1 style={{textAlign: "right", color: "gold"}}>  {(time - (time % 100))/100}.{(time % 100)/10}sec </h1>
-
+            
+            
+            <Button className='abort' onClick={handleShowAbortQuiz}> Exit Quiz </Button>
+            
             
             <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
             <br></br>
@@ -154,12 +185,32 @@ function TypedQuiz()  {
             <br></br>
             <h1 style={{textAlign: "center", color: "gold"}}> Answer:</h1>
             <br></br>
-            <textarea type="text" name="answer" onChange={e => setAnswer(e.target.value)}></textarea>
-            <Button onClick={handleTypedAnswer}>Submit Answer</Button>
+            <textarea className="input-field" type="text" name="answer" onChange={e => setAnswer(e.target.value)}></textarea>
+            <br></br>
+            <br></br>
+            <Button className="input-field" onClick={handleTypedAnswer}>Submit Answer</Button>
 
+            {/** Finished Quiz **/}
             <Modal show={showContinueorExit} onHide={() => handleHideExit}>
                 <Modal.Header>
-                    <Modal.Title> Exit Quiz? </Modal.Title>
+                    <Modal.Title> Quiz Complete </Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                    <h1>{correctness}</h1>       
+                    <br></br>
+                    <h1>Score: {score}</h1>
+                    <br></br>
+                    <h1>Time: {(time - (time % 100))/100}.{(time % 100)/10}sec</h1>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleExitQuiz()}> Exit Quiz </Button>
+                </Modal.Footer>
+            </Modal>
+            
+            {/** Early Quit Quiz **/}  
+            <Modal show={showAbortQuiz} onHide={() => handleHideAbortQuiz}>
+                <Modal.Header>
+                    <Modal.Title> Exit Quiz Prematurely? </Modal.Title>
                 </Modal.Header>
                 <Modal.Body> 
                     <h1>{correctness}</h1>       
@@ -167,11 +218,12 @@ function TypedQuiz()  {
                     <h1>Score: {score}</h1>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => handleHideExit()}> Continue </Button>
-                    <Button onClick={() => handleExitQuiz()}> Exit Quiz </Button>
+                    <Button onClick={() => handleHideAbortQuiz()}> Continue </Button>
+                    <Button onClick={() => handleAbortQuiz()}> Exit Quiz </Button>
                 </Modal.Footer>
             </Modal>
 
+            {/** Question Feedback **/}        
             <Modal show={showQuestionFeedback} onHide={() => handleNextQuestion()}>
                 <Modal.Header>
                     <Modal.Title> Question Feedback </Modal.Title>

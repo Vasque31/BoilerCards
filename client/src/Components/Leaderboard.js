@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import { useState } from "react";
 import { cardsQuiz } from "./ViewFlashcard";
+import axios from 'axios';
+
+import "./Leaderboard.css";
 
 
 
@@ -15,6 +18,19 @@ function Leaderboard() {
     const navigate = useNavigate();
 
 
+    const getdata = async () => {
+        console.log("pre getLeaderboard");
+        let res = await axios.post("http://localhost:3001/getLeaderboard", {
+            setID: cardsQuiz[0].belongset,
+        });        
+        console.log("post getLeaderboard");
+        console.log("resulting data" + res.data);
+        const returningArray = res.data;
+        return returningArray; //array of objects w/ userName, score, time
+    }
+
+    var leaderboard = getdata();
+    console.log(leaderboard);
     /*****************************************************
      *      Handlers                                     *
      *                                                   *
@@ -24,6 +40,7 @@ function Leaderboard() {
 
         navigate(-1);
     };
+
     const handleShowDetails = () => {
 
     }
@@ -38,14 +55,33 @@ function Leaderboard() {
      *                                                   *
      ****************************************************/
     
-
-
+    //latest sort precedence
+    console.log("pre sort");
+    insertionSort(leaderboard, leaderboard.length, compCompletionTime()); //low times sooner
+    insertionSort(leaderboard, leaderboard.length, compScore()); //high scores sooner
+    console.log("post sort");
 
 
     return (
         <div>
-            <Button onClick={handleCloseLeaderboard}>Exit</Button>
-            
+            <Button className='abort' onClick={handleCloseLeaderboard}>Exit</Button>
+            <br></br>
+            <div>{leaderboard.map((entry, index) => {
+                //Check quiz completion
+                if (entry.time != -1) {
+                    return(
+                        <div>
+                            <p>{index + 1}.</p>
+                            <h1>User: {entry.username}</h1> <br></br>
+                                <h2>   Score: {entry.score}</h2> <br></br>
+                                <h3>   Time: {entry.time}</h3> <br></br>
+    
+                        </div>
+                    );
+                }
+
+            })}</div>
+                   
         </div>
     )
 
@@ -84,13 +120,14 @@ function insertionSort(arr, n, compFunc)
 }
 
  //compare score of 2 elements
-function compScore() {
-
-
+function compScore(obj1, obj2) {
+    if (obj1.score > obj2.score) return -1; //high scores early
+    return 1; //do not switch otherwise
 }
 
-function compCompletionTime() {
-
+function compCompletionTime(obj1, obj2) {
+    if (obj1.time < obj2.time) return -1; //low times early
+    return 1; //do not switch otherwise
 }
 
 

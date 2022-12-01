@@ -1,5 +1,6 @@
 .abort {
     width: 200px;
     position: absolute;
-    left: 450px;
+    left: 200px;
+    top: 100px;
 }
