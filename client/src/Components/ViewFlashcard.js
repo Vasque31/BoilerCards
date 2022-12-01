@@ -148,6 +148,7 @@ function ViewFlashcard() {
         setSendUsername(event.target.value);
     }
     const handleSubmitSend = async(event) => {
+        event.preventDefault();
         let res = await axios.post("http://localhost:3001/send", {
             setID: update.flashcardset._id,
             userName: sendUsername
