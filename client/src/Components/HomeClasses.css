@@ -2,11 +2,20 @@
     background-color: rgb(72, 72, 68);
     border-style: solid;
     border-color: gold;
-    padding-left: 1rem;
-    padding-right: 60px;
-    text-align: top;
+    text-align: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-
+}
+.classes {
+    background-color: rgb(72, 72, 68);
+    border-style: solid;
+    border-color: gold;
+    text-align: center;
+    padding-top: 1rem;
+    padding-left: 5rem;
+    padding-bottom: 1rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .box-classes {
     padding-left: 20rem;

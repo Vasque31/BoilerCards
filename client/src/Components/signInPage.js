@@ -107,12 +107,16 @@ function SignInPage() {
         if(data!==false){
             // eslint-disable-next-line react-hooks/rules-of-hooks
             setCookie('userid', data, { path: '/' });
+            setCookie('username', usernameRef.current.value, { path: '/' });
             console.log(getCookie('userid'));
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:data,
             });
             
             libstorage = res.data;
+            console.log(libstorage);
+            localStorage.setItem('libdata', JSON.stringify(res.data));
+            
             if (remember === true) {
                 setCookie('remember', true, { path: '/'});
             }

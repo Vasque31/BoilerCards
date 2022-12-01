@@ -26,6 +26,9 @@ import Leaderboard from './Components/Leaderboard.js';
 import TeacherClass from './Components/TeacherClass';
 import TeacherRegistrationPage from './Components/TeacherRegistrationPage ';
 import TeacherSignInPage from './Components/TeacherSignInPage';
+import TeacherHomePage from './Components/TeacherHomePage';
+import Class from './Components/Class.js';
+import RestrictedViewFlashcard from './Components/RestrictedViewFlashcard';
 
 function App() {
 
@@ -38,14 +41,17 @@ function App() {
         <Route path="/educatorregister" element={<TeacherRegistrationPage/>} />
         <Route path="/educatorsignin" element={<TeacherSignInPage/>} />
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
+        <Route path="/TeacherHomePage" element={<TeacherHomePage/>} />
         <Route path="/mylibrary" element={<MyLibrary/>} />
         <Route path="/teacherclass" element={<TeacherClass/>} />
+        <Route path="/class" element={<Class/>}/>
         <Route path="/settings" element={<Settings/>} />
         <Route path="/folder" element={<Folder/>} />
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>
         <Route path="/changecredentials" element={<ChangeCredentials/>} />
         <Route path="/flashcard" element={<ViewFlashCard/>} />
         <Route path="/editflashcard" element={<EditFlashcard/>} />
+        <Route path="/restrictedflashcard" element={<RestrictedViewFlashcard/>} />
         <Route path="/saveicon" element={<SavedIcon/>} />
         <Route path="/downloadset" element={<DownloadFlashcard/>} />
         <Route path="/note" element={<ImageNote/>} />

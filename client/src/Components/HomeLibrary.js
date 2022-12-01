@@ -10,7 +10,7 @@ export var folder;
 function HomeLibrary() {
     const navigate = useNavigate();
     const [cookie, setCookie, removeCookie] = useCookies([]);
-    const [library, setLibrary] = useState([]);
+    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')));
     
     useEffect(()=> {
         const getLibrary = async () => {
@@ -18,7 +18,7 @@ function HomeLibrary() {
                 uid:getCookie('userid'),
             });
             console.log(res.data);
-            setLibrary(res.data);
+            setLibrary(res.data); 
             localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
@@ -52,7 +52,7 @@ function HomeLibrary() {
         </div>
         <div className= "library-box">
             <table>
-            {Object.values(library).slice(0,8).map(item => {
+            {Object.values(library.folder).slice(0,8).map(item => {
                 return (
                     <row>
                         &nbsp; &nbsp;

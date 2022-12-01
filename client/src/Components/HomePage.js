@@ -13,7 +13,6 @@ function HomePage() {
         <div>
         
             <Header/>
-            <Achievements/>
             <HomeClasses/>
             <HomeLibrary/>
             
