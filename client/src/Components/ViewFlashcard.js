@@ -56,15 +56,9 @@ function ViewFlashcard() {
     }
 
     const handleStartQuiz = () => {
-        var ready = false;
-        cardsQuiz = []
-        Object.values(update.flashcardset.flashcard).map(item => {
-            cardsQuiz.push({front: item.front, back: item.back,});
-        })
-        console.log(cardsQuiz);
         console.log("verify flashcards still exist");
-        console.log(update);
-        if (cardsQuiz != null && cardsQuiz.length >= 4) {
+        console.log(Object.values(update.flashcardarray).length);
+        if (update != null && Object.values(update.flashcardarray).length >= 4) {
             navigate("/quizselection");
         } else {
             alert("not enough cards for quiz: Need at least 4");
@@ -148,6 +142,7 @@ function ViewFlashcard() {
         setSendUsername(event.target.value);
     }
     const handleSubmitSend = async(event) => {
+        event.preventDefault();
         let res = await axios.post("http://localhost:3001/send", {
             setID: update.flashcardset._id,
             userName: sendUsername

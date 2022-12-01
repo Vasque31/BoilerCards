@@ -24,7 +24,7 @@ export var flashcardid = null;
 var toDeleteFlashcard = {
     front: "defaultname flashcard"
 };
-function ViewFlashcard() {
+function RestrictedViewFlashcard() {
     const fileReader = new FileReader();
     const [showEdit, setShowEdit] = useState(false);
     const [showSend, setShowSend] = useState(false);
@@ -147,6 +147,7 @@ function ViewFlashcard() {
         setSendUsername(event.target.value);
     }
     const handleSubmitSend = async(event) => {
+        event.preventDefault();
         let res = await axios.post("http://localhost:3001/send", {
             setID: update.flashcardset._id,
             userName: sendUsername
@@ -503,4 +504,4 @@ function ViewFlashcard() {
 
 }
 
-export default ViewFlashcard;
+export default RestrictedViewFlashcard;

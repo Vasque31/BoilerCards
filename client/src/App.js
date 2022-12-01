@@ -28,6 +28,7 @@ import TeacherRegistrationPage from './Components/TeacherRegistrationPage ';
 import TeacherSignInPage from './Components/TeacherSignInPage';
 import TeacherHomePage from './Components/TeacherHomePage';
 import Class from './Components/Class.js';
+import RestrictedViewFlashcard from './Components/RestrictedViewFlashcard';
 
 function App() {
 
@@ -50,6 +51,7 @@ function App() {
         <Route path="/changecredentials" element={<ChangeCredentials/>} />
         <Route path="/flashcard" element={<ViewFlashCard/>} />
         <Route path="/editflashcard" element={<EditFlashcard/>} />
+        <Route path="/restrictedflashcard" element={<RestrictedViewFlashcard/>} />
         <Route path="/saveicon" element={<SavedIcon/>} />
         <Route path="/downloadset" element={<DownloadFlashcard/>} />
         <Route path="/note" element={<ImageNote/>} />
