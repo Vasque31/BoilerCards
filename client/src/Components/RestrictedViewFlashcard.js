@@ -108,7 +108,6 @@ function ViewFlashcard() {
         setShow(false)
     };
     const handleShow = () => setShow(true);
-    const [statePrivate, setPrivate] = useState(update.flashcardset.private);
     const handleaddmore = () => {
         setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
     }
@@ -199,16 +198,6 @@ function ViewFlashcard() {
             handlerefresh(update.flashcardset._id);
         }
         setinputList([{front:'', back:'', drate:'3', img: ''}]);
-    }
-    const handleSaveFlashcardStatus = async (e) => {
-        const updatedflashcardstatus = {
-            shared:statePrivate,
-            id:update.flashcardset._id
-        }
-        console.log(updatedflashcardstatus.shared)
-        await axios.post("http://localhost:3001/setpublic", {
-            status:updatedflashcardstatus,
-        })
     }
     let temp = [];
     for (let i = 0; i < Object.values(update.flashcardarray).length; i++) {
@@ -332,25 +321,6 @@ function ViewFlashcard() {
                     </Form>
 
                 </Modal>
-                {statePrivate &&
-                <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={e => setPrivate(e.currentTarget.value)}>
-                                Private
-                            </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={false} onChange={e => setPrivate(e.currentTarget.value)}>
-                                Public
-                            </ToggleButton>
-                </ToggleButtonGroup> }
-                {!statePrivate &&
-                <ToggleButtonGroup type="radio" name="options" defaultValue={false}>
-                            <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={(e) => setPrivate(e.currentTarget.value)}>
-                                Private
-                            </ToggleButton>
-                            <ToggleButton id="public-button" variant="outline-success" value={false} onChange={(e) => setPrivate(e.currentTarget.value)}>
-                                Public
-                            </ToggleButton>
-                </ToggleButtonGroup> }
-                <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>
                 <Dropdown as={ButtonGroup} style={{float: "left"}}>
                     <Button variant="secondary">Sort By:</Button>
                     <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
