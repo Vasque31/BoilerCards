@@ -146,9 +146,20 @@ function ViewFlashcard() {
     }
     const handleChangeSendName = (event) => {
         setSendUsername(event.target.value);
+        console.log(update.flashcardset._id);
     }
-    const handleSubmitSend = () => {
-        console.log(sendUsername);
+    const handleSubmitSend = async(event) => {
+        let res = await axios.post("http://localhost:3001/send", {
+            setID: update.flashcardset._id,
+            userName: sendUsername
+            
+        });
+        if (res === true) {
+            handleShowSaved();
+        } else {
+            alert("Invalid username!");
+        }
+
     }
     const handlerefresh = async (id) => {      
         let res = await axios.post("http://localhost:3001/flsahcardset", {
