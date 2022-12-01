@@ -50,7 +50,7 @@ function TeacherSignInPage() {
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
-            navigate("/HomePage");
+            navigate("/TeacherHomePage");
         }
         const initClient = () => {
             gapi.client.init({clientId: "787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com", scope: ''});
@@ -109,15 +109,17 @@ function TeacherSignInPage() {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             setCookie('userid', data, { path: '/' });
             console.log(getCookie('userid'));
-            let res = await axios.post("http://localhost:3001/loadspace", {
-                uid:data,
+            let res = await axios.post("http://localhost:3001/getTeacherSpace", {
+                userName:logginInfo.username,
             });
-            
+            setCookie('username', logginInfo.username, { path: '/' });
             libstorage = res.data;
+            console.log(libstorage);
+            localStorage.setItem('libdata', JSON.stringify(res.data));
             if (remember === true) {
                 setCookie('remember', true, { path: '/'});
             }
-            navigate("/HomePage");
+            navigate("/TeacherHomePage");
 
         }      
         else{
@@ -128,44 +130,7 @@ function TeacherSignInPage() {
     const responseFacebook = (response) => {
         console.log(response.email);
     }
-    const onGoogleSuccess = async (res) => {
-        const password = generateP();
-        const username = res.profileObj.email;
-        const email = res.profileObj.email;
-        const registrationInfo = {
-            username:username,
-            email:email,
-            password:password
-        };
-        const checkEmail = await axios.post("http://localhost:3001/checkEmail",{
-            email:email
-        })
-        if(checkEmail.data===false){
-            await axios.post("http://localhost:3001/createaccount", {
-                registrationInfo:registrationInfo,
-        });
-        }else{
-            console.log("already exist");
-        }
-        const logginInfo = {
-            username: email,
-        };
-        //Call to backend to check validity
-        //if good link to homepage with the persons info
-        let signin = await axios.post("http://localhost:3001/googleSignin", {
-          logginfo: logginInfo,
-        });   
-        console.log(signin);
-        let data = signin.data;
-        setCookie('userid', data, { path: '/' });
-        setCookie('remember', true, { path: '/'});
-        console.log(getCookie('userid'));
-        let loadspace = await axios.post("http://localhost:3001/loadspace", {
-            uid:data,
-        });
-        libstorage = loadspace.data;
-        navigate("/HomePage");
-    }
+   
     const handleStudentPage = () => {
         navigate('/');
     }
@@ -198,14 +163,6 @@ function TeacherSignInPage() {
                 <Button variant="link" onClick={handleResetShow}>Forgot Your Password?<br></br></Button>
                 
             </form>
-            
-            <GoogleLogin
-                clientId="787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com"
-                buttonText="Sign in with Google"
-                onSuccess={onGoogleSuccess}
-                onFailure={onGoogleFailure}
-                />
-
         <div>
             <Modal 
                 show={resetShow}
