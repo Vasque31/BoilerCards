@@ -115,6 +115,7 @@ function SignInPage() {
             
             libstorage = res.data;
             console.log(libstorage);
+            localStorage.setItem('libdata', JSON.stringify(res.data));
             
             if (remember === true) {
                 setCookie('remember', true, { path: '/'});
