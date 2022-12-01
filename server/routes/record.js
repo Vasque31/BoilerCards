@@ -1187,6 +1187,7 @@ recordRoutes.route("/getTeacherSpace").post(async function (req, res) {
 recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   const list = req.body.inputList;
   //null statement check
+  console.log(list);
   const setname = req.body.name;
   const belongclassCode = NumberInt(req.body.classCode);
   const newset = new Flashcardset(setname);
@@ -1194,10 +1195,15 @@ recordRoutes.route("/createTeacherSet").post(async function (req, res) {
   //console.log(newset.private);
   newset.belongfolder = belongclassCode;
   const set = await Flashcarddata.CreateSet(client, newset);
+  const result = await Flashcarddata.GetFlashcardsetasync(
+    client,
+    set.insertedId
+  );
   const belongClass = await userdata.GetClass(client, belongclassCode);
   const myObjectId = set.insertedId;
   const flashcardSetArray = belongClass.flashcardset;
-  flashcardSetArray.push(set);
+  console.log(flashcardSetArray);
+  flashcardSetArray.push(result);
   belongClass.flashcardset = flashcardSetArray;
   await userdata.UpdateClass(client, belongclassCode, belongClass);
   for (var i = 0; i < list.length; i++) {
