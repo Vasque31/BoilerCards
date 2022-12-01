@@ -215,5 +215,13 @@ class userDBService {
     );
     console.log(`${result.modifiedCount} document(s) was/were updated.`);
   }
+  async deleteClass(client, id) {
+    const result = await client
+      .db("User")
+      .collection("Class")
+      .deleteOne({ classCode: id });
+    console.log(`${result.deletedCount} document(s) was/were deleted.`);
+  }
 }
+
 exports.userDBService = userDBService;

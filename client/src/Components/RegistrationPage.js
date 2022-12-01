@@ -30,7 +30,7 @@ function checkvalidpassword(str) {
       return false;
     }
   }  
-function SignInPage() {
+function RegistrationPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const navigate = useNavigate();
@@ -97,4 +97,4 @@ function SignInPage() {
     );
 }
 
-export default SignInPage;
+export default RegistrationPage;

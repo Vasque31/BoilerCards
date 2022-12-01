@@ -23,6 +23,9 @@ import Search from './Components/Search';
 import QuizSelect from './Components/QuizSelect.js';
 import TypedQuiz from './Components/TypedQuiz.js';
 import Leaderboard from './Components/Leaderboard.js';
+import TeacherClass from './Components/TeacherClass';
+import TeacherRegistrationPage from './Components/TeacherRegistrationPage ';
+import TeacherSignInPage from './Components/TeacherSignInPage';
 
 function App() {
 
@@ -32,8 +35,11 @@ function App() {
         <Route path="/" element={<SignInPage/>} />
         <Route path="/search" element={<Search/>} />
         <Route path="/register" element={<RegistrationPage/>} />
+        <Route path="/educatorregister" element={<TeacherRegistrationPage/>} />
+        <Route path="/educatorsignin" element={<TeacherSignInPage/>} />
         <Route path="/HomePage" element={<HomePage/>} /> {/*path="/HomePage/:id"*/}
         <Route path="/mylibrary" element={<MyLibrary/>} />
+        <Route path="/teacherclass" element={<TeacherClass/>} />
         <Route path="/settings" element={<Settings/>} />
         <Route path="/folder" element={<Folder/>} />
         <Route path="/createflashcardset" element={<CreateFlashCard/>}/>

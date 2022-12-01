@@ -165,15 +165,21 @@ function SignInPage() {
         libstorage = loadspace.data;
         navigate("/HomePage");
     }
+    const handleTeacherPage = () => {
+        navigate('/educatorsignin');
+    }
     const onGoogleFailure = (res) => {
         console.log(res);
     }
     return (
         <div className = "login-form">
+            <div style={{textAlign: 'right'}}>
+                <Button variant="link" style={{color:'gold'}} onClick={handleTeacherPage}>SignUp/SignIn as Educator<br></br></Button>
+            </div>
             <form onSubmit = {handleSignIn}>
                 <img alt = "Logo" className = "photo" src= {mylogo}/>
                 <h1 style={{textAlign: "center", color: "gold"}}>Welcome to BoilerCards</h1>
-                <h2 style={{textAlign: "center", color: "gold"}}>Sign In</h2>
+                <h2 style={{textAlign: "center", color: "gold"}}>Student Sign In</h2>
                 <div className = "input-container">
                     <label style={{textAlign: "left"}}>Username</label>
                     <input type="text" name="username" placeholder="Enter Username" ref={usernameRef} required />
