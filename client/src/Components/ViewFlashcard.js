@@ -149,7 +149,7 @@ function ViewFlashcard() {
             userName: sendUsername
             
         });
-        if (res === true) {
+        if (res.data === true) {
             handleShowSaved();
         } else {
             alert("Invalid username!");
