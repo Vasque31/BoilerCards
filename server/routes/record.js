@@ -1063,6 +1063,7 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
   var time = req.body.time;
   score = NumberInt(score).value;
   time = NumberInt(time).value;
+  console.log(score);
   console.log(time);
   scoreResult = {
     userName: userName,
@@ -1075,9 +1076,9 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
     client,
     ObjectId(setID)
   );
+  console.log(result);
   if (result != false) {
     const scoremap = new Map(Object.entries(result.student));
-
     console.log(scoremap);
 
     if (scoremap.get(userName) == null) {
@@ -1088,7 +1089,6 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
         scoremap.set(userName, scoreResult);
       }
       console.log(NumberInt(scoremap.get(userName).score).value);
-      console.log(score.value);
       if (
         NumberInt(scoremap.get(userName).score).value == score.value &&
         NumberInt(scoremap.get(userName).time).value > time.value
@@ -1209,7 +1209,6 @@ recordRoutes.route("/deleteClass").post(async function (req, res) {
   }
   teacher.class = classArray;
   await userdata.UpdateTeacher(client, teacherName, teacher);
-
   await userdata.deleteClass(client, classCode);
 
   res.json(true);
@@ -1229,40 +1228,41 @@ recordRoutes.route("/send").post(async function (req, res) {
     if (folder != false) {
       console.log("nice");
       set.belongfolder = folder._id;
+      const oldMap = set.flashcard;
+      set.flashcard = Object.fromEntries(new Map());
+      console.log("this is new set");
+      console.log(set);
       const result = await Flashcarddata.CreateSet(client, set);
+      var resultId = result.insertedId;
       var flashcardSetMap = new Map(Object.entries(folder.flashcardset));
       const newset = await Flashcarddata.GetFlashcardsetasync(
         client,
         result.insertedId
       );
-      console.log(newset);
+      const newMap = new Map(Object.entries(newset.flashcard));
+      console.log(oldMap);
+      const flashcardarray = Array.from(Object.values(oldMap));
+      console.log("this is flashcard array" + flashcardarray);
+      for (var i = 0; i < flashcardarray.length; i++) {
+        const newCard = flashcardarray[i];
+        newCard.belongset = resultId;
+        delete newCard._id;
+        let result = await Flashcarddata.CreateFlashcard(client, newCard);
+        // console.log(result);
+        let card = await Flashcarddata.GetFlashcardasync(
+          client,
+          result.insertedId
+        );
+        newMap.set(result.insertedId, card);
+      }
+      newset.flashcard = Object.fromEntries(newMap);
+      console.log(newMap);
+      await Flashcarddata.UpdateSet(client, newset._id, newset);
       flashcardSetMap.set(newset._id, newset);
       flashcardSetMap = Object.fromEntries(flashcardSetMap);
-      console.log(flashcardSetMap);
+      //console.log(flashcardSetMap);
       folder.flashcardset = flashcardSetMap;
       await Flashcarddata.UpdateFolder(client, folder._id, folder);
-    } else {
-      console.log("not nice");
-      const newFolder = new Folder("copyFolder", user._id);
-      var folderResult = await Flashcarddata.Createfolder(client, newFolder);
-      folderResult = await Flashcarddata.GetFolderasync(
-        client,
-        folderResult.insertedId
-      );
-      set.belongfolder = folderResult._id;
-      const result = await Flashcarddata.CreateSet(client, set);
-      var flashcardSetMap = new Map(Object.entries(folderResult.flashcardset));
-      flashcardSetMap.set(result._id, result);
-      flashcardSetMap = Object.fromEntries(flashcardSetMap);
-      folderResult.flashcardset = flashcardSetMap;
-      console.log();
-      await Flashcarddata.UpdateFolder(client, folderResult._id, folderResult);
-      var folderMap = new Map(Object.entries(user.folder));
-      folderMap.set(folderResult._id, folderResult);
-      folderMap = Object.fromEntries(folderMap);
-      user.folder = folderMap;
-      user.defaultfolder = folderResult._id;
-      await userdata.UpdateUser(client, user._id, user);
     }
     res.json(true);
   } else {
