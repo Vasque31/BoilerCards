@@ -788,10 +788,14 @@ recordRoutes.route("/subjectarray").get(async function (req, res) {
     client,
     ObjectId("637287af2c8cf8c067cd2e59")
   );
-  const map = new Map(Object.entries(array.Map));
-  const finalarray = Array.from(map.values());
-  console.log("subject array is" + finalarray);
-  res.json(finalarray);
+  if (array.Map == null) {
+    res.json([]);
+  } else {
+    const map = new Map(Object.entries(array.Map));
+    const finalarray = Array.from(map.values());
+    console.log("subject array is" + finalarray);
+    res.json(finalarray);
+  }
 });
 recordRoutes.route("/searchsubject").post(async function (req, res) {
   const subject = req.body.subject;
