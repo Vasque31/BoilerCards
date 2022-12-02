@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
@@ -14,6 +14,17 @@ function TeacherHomeClasses() {
     const [cookie, setCookie] = useCookies([]);
     const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')))
     const navigate = useNavigate();
+    useEffect(() => {
+        const getLibrary = async () => {
+          let res = await axios.post("http://localhost:3001/getTeacherSpace", {
+            userName: getCookie('username'),
+          });
+          console.log(res.data);
+          setLibrary(res.data);
+          localStorage.setItem("libdata", JSON.stringify(res.data));
+        };
+        getLibrary();
+      }, []);
     const handleCreateClass = async () => {
         let res = await axios.post("http://localhost:3001/createClass",{
             userName:getCookie('username'),
