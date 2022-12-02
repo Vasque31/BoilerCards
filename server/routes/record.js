@@ -942,6 +942,7 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
   );
   const realcode = codemap.get(user._id.toString());
   if (code == realcode) {
+    console.log("code is matched");
     /* const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
