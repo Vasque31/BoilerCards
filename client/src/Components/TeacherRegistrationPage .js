@@ -53,7 +53,6 @@ function TeacherRegistrationPage() {
         const registrationInfo = {
             username: usernameRef.current.value,
             password: passwordRef.current.value,
-            email: emailRef.current.value
         }
         console.log(registrationInfo);
         if(checkvalidpassword(registrationInfo.password)&&checkvalidusername(registrationInfo.username) ){

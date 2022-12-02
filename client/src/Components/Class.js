@@ -67,6 +67,14 @@ function Class() {
     }
     {/*Student list handlers */}
     const [showStudentList, setShowStudentList] = useState(false);
+    const handleRemoveStudent = async(id) => {
+        let res = await axios.post("http://localhost:3001/leaveClass", {
+            userID: getCookie('userid'),
+            classCode: getCookie('classCode')
+        });
+        handlerefresh();
+        setShowStudentList(false);
+    }
     return (
         <div>
             <Header/>
@@ -78,11 +86,11 @@ function Class() {
                 <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {library.teacher}</div>
             </div>
 
-            <div style={{paddingLeft: '25rem', paddingRight: '25rem', paddingTop: '1.5rem', display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            <div style={{paddingLeft: '22rem', paddingRight: '25rem', paddingTop: '1.5rem', display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
                 <div>
                     <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
                     <div style={{paddingTop: '0.25rem'}}>
-                    &nbsp; &nbsp;
+                    <Button variant='danger' onClick={(e) => handleRemoveStudent}>Leave Class</Button>
                     </div>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;

@@ -32,8 +32,8 @@ function HomeLibrary() {
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:getCookie('userid'),
             });
-            
-            setLibrary(res.data); 
+            localStorage.setItem('libdata', JSON.stringify(res.data));
+            setLibrary(JSON.parse(localStorage.getItem('libdata'))); 
             
             
             let folders = Object.values(library.folder);
@@ -42,7 +42,6 @@ function HomeLibrary() {
             library.folder = insertionSort(folders, n);
             console.log(library.folder);
             setFolders(library.folder);
-            localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
     },[]);

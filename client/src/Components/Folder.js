@@ -47,7 +47,7 @@ function Folder() {
     const [selectall, setSelectAll] = useState(false);
     const [selected, setSelected] = useState([]);
 
-    const [copyDestFolderList, setCopyDestFolderList] = useState(new Map()); //map
+    const [copyDestFolderList, setCopyDestFolderList] = useState(JSON.parse(localStorage.getItem('libdata'))); //map
     const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
 
     const handleShowSaved = () => { setShowSaved(true);}
@@ -601,7 +601,7 @@ function Folder() {
                                 <div>
                                     <select name="selectList" id="selectList" onChange={(e) => setCopyDestFolderSelect(e.currentTarget.value)}>
                                                 <option value="">---Choose---</option>
-                                                {Object.values(copyDestFolderList).map(item => {
+                                                {Object.values(copyDestFolderList.folder).map(item => {
                                                     return (
                                                         <option value={item._id}>{item.foldername}</option>    
                                                     );

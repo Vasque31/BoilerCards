@@ -77,7 +77,10 @@ function TeacherClass() {
         setShow(false);
         setinputList([{front:'', back:'', drate:'3', img:''}]);
     }
-    const handleShow = () => setShow(true); 
+    const handleShow = () => {
+        handlerefresh();
+        setShow(true);
+    } 
     const handleimage = (e, i) => {
         const {name} = e.target;
         const list = [...inputList];
@@ -89,6 +92,14 @@ function TeacherClass() {
     }
     {/*Student list handlers */}
     const [showStudentList, setShowStudentList] = useState(false);
+    const handleRemoveStudent = async(id) => {
+        let res = await axios.post("http://localhost:3001/leaveClass", {
+            userID: id,
+            classCode: getCookie('classCode')
+        });
+        handlerefresh();
+        setShowStudentList(false);
+    }
     return (
         <div>
             <TeacherHeader/>
@@ -202,7 +213,7 @@ function TeacherClass() {
                                 <Button variant='warning' className= "library-buttons">
                                     {item}
                                 </Button>
-                                <Button variant='danger' value={item._id} className= "library-buttons">
+                                <Button variant='danger' value={item._id} onClick={(e) => handleRemoveStudent(item._id)}className= "library-buttons">
                                     remove
                                 </Button>
                                 &nbsp; &nbsp;
