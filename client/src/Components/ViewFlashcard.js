@@ -20,6 +20,7 @@ import { getCookie } from "react-use-cookie";
 export var image = "";
 
 export var cardsQuiz = [{front: "a", back: "b",}];
+export var thisSetID = null;
 
 export var flashcardid = null;
 var toDeleteFlashcard = {
@@ -29,7 +30,7 @@ function ViewFlashcard() {
     const fileReader = new FileReader();
     const [showEdit, setShowEdit] = useState(false);
     const [showSend, setShowSend] = useState(false);
-    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
+    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards'))); //flashcardsetinfo structure
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
@@ -39,6 +40,9 @@ function ViewFlashcard() {
     const [newDiff, setNewDiff] = useState();
     const [sendUsername, setSendUsername] = useState("");
     const [showDownload, setShowDownload] = useState(false);
+
+    thisSetID = update.flashcardset._id; //used to store quiz results, access set's id
+
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseDownload = () => setShowDownload(false);
@@ -57,6 +61,9 @@ function ViewFlashcard() {
     }
 
     const handleStartQuiz = () => {
+        cardsQuiz = [];
+        cardsQuiz = Object.values(update.flashcardarray); //access cards for quiz (as an array)
+        console.log("cards for quiz" + cardsQuiz);
         console.log("verify flashcards still exist");
         console.log(Object.values(update.flashcardarray).length);
         if (update != null && Object.values(update.flashcardarray).length >= 4) {
