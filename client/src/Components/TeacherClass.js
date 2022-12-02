@@ -114,6 +114,16 @@ function TeacherClass() {
             alert("Student has been kicked");
         }
     }
+    const handleDeleteClass = async () => {
+        console.log(name)
+        let res = await axios.post("http://localhost:3001/deleteClass", {
+            classCode:getCookie('classCode')
+        });
+        navigate('/TeacherHomePage');
+        if (res.data === true) {
+            alert("Class Deleted");
+        }
+    }
     return (
         <div>
             <TeacherHeader/>
@@ -125,14 +135,15 @@ function TeacherClass() {
                 <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {getCookie('username')}</div>
                 
             </div>
-            <div>
-                
-            </div>
+
             <div style={{paddingLeft: '22rem', paddingRight: '25rem', paddingTop: '1.5rem',display: 'flex', justifyContent: 'flex'}}>
                 <div>
                     <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
                     <div style={{paddingTop: '0.25rem'}}>
                     <Button variant='dark' style={{color: 'gold'}} onClick={(e) => setShow(true)}>Create FlashCard Set</Button>
+                    </div>
+                    <div >
+                        <Button variant='danger' onClick={() => handleDeleteClass()}>Delete Class</Button>
                     </div>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;
