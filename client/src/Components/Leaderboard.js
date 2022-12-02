@@ -2,8 +2,6 @@
 import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import React, { useState, useEffect } from "react";
-import { cardsQuiz } from "./ViewFlashcard";
-import { thisSetID } from './ViewFlashcard';
 
 import axios from 'axios';
 

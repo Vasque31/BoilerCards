@@ -1,6 +1,5 @@
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
-import { cardsQuiz } from "./ViewFlashcard";
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import {CloseButton} from 'react';
@@ -26,6 +25,8 @@ var globalTime = 0; // hundreth's of a second
 var globalScopeClock = null;
 var earlyExit = false;
 
+var quizLength = -1;
+
 function TypedQuiz()  {
 
     var mode = "All prompts once"
@@ -36,6 +37,9 @@ function TypedQuiz()  {
     const [showAbortQuiz, setShowAbortQuiz] = useState(false);
     const [answer, setAnswer] = useState("");
     const [time, setTime] = useState(0); // hundreth's of a second
+    const [flashcardsetinfo, setFlashcardsetinfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
+    const [cardsQuiz, setCardsQuiz] = useState(Object.values(flashcardsetinfo.flashcardarray));
+    quizLength = cardsQuiz.length
 
     React.useEffect(() => {
         var clockInterval;
@@ -259,8 +263,8 @@ function randomCard(excludedIndices) {
     if (excludedIndices == null) {
         //console.log("no exclusion")
         var index = -1;
-        index = Math.random() * cardsQuiz.length;
-        if (index == cardsQuiz.length) index = cardsQuiz.length - 1;
+        index = Math.random() * quizLength;
+        if (index == quizLength) index = quizLength - 1;
         index = Math.floor(index);
         return index;
     }
@@ -271,8 +275,8 @@ function randomCard(excludedIndices) {
         var attempts = 100;
         var i = 0;
         for (i=0; i < attempts; i++) {
-            index = Math.random() * cardsQuiz.length;
-            if (index == cardsQuiz.length) index = cardsQuiz.length - 1;
+            index = Math.random() * quizLength;
+            if (index == quizLength) index = quizLength - 1;
             index = Math.floor(index);
             if (includes(excludedIndices, index) == false) {
                 console.log("returning index:" + index);

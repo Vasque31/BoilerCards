@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import {CloseButton} from 'react';
-
+//import {cardsQuiz} from "./ViewFlashcard.js"
 
 import * as React from 'react';
 import "./QuizGame.css";
@@ -25,6 +25,7 @@ var globalScopeClock = null;
 
 var globalTime = 0; // 1/100th seconds
 var earlyExit = false;
+//var cardsQuiz = {front: 'a', back: 'b'};
 
 var quizLength = -1;
 //Assume new round onHide for now
@@ -42,13 +43,18 @@ function QuizGame() {
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
     const [showAbortQuiz, setShowAbortQuiz] = useState(false);
     const [time, setTime] = useState(0); // 1/100th seconds
-    const [flashcardsetinfo, setFlashcardsetInfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
-    const [cardsQuiz, setCardsQuiz] = useState(flashcardsetinfo.flashcardarray);
+    const [flashcardsetinfo, setFlashcardsetinfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
+    const [cardsQuiz, setCardsQuiz] = useState(Object.values(flashcardsetinfo.flashcardarray));
+    console.log("quiz src, load local storage");
+    console.log(cardsQuiz);
+    //cardsQuiz = cardsQuizSrc
     var mode = "All prompts once";
+    quizLength = cardsQuiz.length;    
 
     React.useEffect(() => {
-        quizLength = cardsQuiz.length;
+        
         var clockInterval;
+
         if (timerToStart) {
             globalTime = 0;
             timerToStart = false;
@@ -223,6 +229,9 @@ function QuizGame() {
 
             {/** Buttons for answer choices **/}        
             {currQuestion.map((item) => { 
+                console.log(item);
+                console.log(cardsQuiz[item.Index].front);
+                console.log(cardsQuiz[item.Index].back);
                 if (item.Correct){
                     //Correct answer
                     return(
