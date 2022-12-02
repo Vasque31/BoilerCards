@@ -154,6 +154,7 @@ function Class() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
     </div>
     );
 }
