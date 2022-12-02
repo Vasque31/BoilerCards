@@ -22,6 +22,17 @@ function Class() {
    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')));
    const [dest, setDest] = useState(getCookie('classCode'));
+   useEffect(() => {
+    const getLibrary = async () => {
+      let res = await axios.post("http://localhost:3001/class", {
+        classCode: getCookie('classCode'),
+      });
+      console.log(res.data);
+      setLibrary(res.data);
+      localStorage.setItem("class", JSON.stringify(res.data));
+    };
+    getLibrary();
+  }, []);
    const handleFlashcardSetClick = async(id) => {
     console.log(id);
     let res = await axios.post("http://localhost:3001/flsahcardset", {
@@ -77,6 +88,7 @@ function Class() {
             navigate('/HomePage');
             alert("You have left the class");
         }
+        
     }
     return (
         <div>

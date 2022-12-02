@@ -27,6 +27,17 @@ function TeacherClass() {
    const [dest, setDest] = useState(getCookie('classCode'));
    const [showSaved, setShowSaved] = useState(false);
 
+   useEffect(() => {
+    const getLibrary = async () => {
+      let res = await axios.post("http://localhost:3001/class", {
+        classCode: getCookie('classCode'),
+      });
+      console.log(res.data);
+      setLibrary(res.data);
+      localStorage.setItem("class", JSON.stringify(res.data));
+    };
+    getLibrary();
+  }, []);
      /** handlers **/
 
     const handleSeeStudentGrade = (uName) => {

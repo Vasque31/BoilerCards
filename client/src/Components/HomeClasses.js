@@ -14,7 +14,17 @@ function HomeClasses() {
     const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')))
     const [show, setShow] = useState(false);
     const [code, setCode] = useState('')
-
+    useEffect(() => {
+        const getLibrary = async () => {
+          let res = await axios.post("http://localhost:3001/loadspace", {
+            uid: getCookie('userid'),
+          });
+          console.log(res.data);
+          setLibrary(res.data);
+          localStorage.setItem("libdata", JSON.stringify(res.data));
+        };
+        getLibrary();
+      }, []);
     const handleClassClick = async(id) => {
         setCookie('classCode', id, { path: '/' });
         let res = await axios.post("http://localhost:3001/class", {
