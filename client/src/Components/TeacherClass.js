@@ -103,6 +103,17 @@ function TeacherClass() {
     }
     {/*Student list handlers */}
     const [showStudentList, setShowStudentList] = useState(false);
+    const handleRemoveStudent = async(name) => {
+        console.log(name)
+        let res = await axios.post("http://localhost:3001/removeByName", {
+            userName: name,
+            classCode:getCookie('classCode')
+        });
+        handlerefresh();
+        if (res.data === true) {
+            alert("Student has been kicked");
+        }
+    }
     return (
         <div>
             <TeacherHeader/>
@@ -216,7 +227,7 @@ function TeacherClass() {
                                 <Button variant='warning' className= "library-buttons">
                                     {item}
                                 </Button>
-                                <Button variant='danger' value={item._id} className= "library-buttons">
+                                <Button variant='danger' value={item._id} onClick={() => handleRemoveStudent(item)} className= "library-buttons">
                                     remove
                                 </Button>
                                 &nbsp; &nbsp;

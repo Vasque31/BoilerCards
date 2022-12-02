@@ -97,7 +97,7 @@ function HomeLibrary() {
         </Button>
       </div>
       <div className="library-box">
-        <Dropdown as={ButtonGroup} style={{ float: "left" }}>
+        <Dropdown as={ButtonGroup} style={{ float: "left"}}>
           <Button variant="secondary">Sort By</Button>
           <Dropdown.Toggle
             split

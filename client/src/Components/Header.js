@@ -266,8 +266,8 @@ function Header() {
                       backdrop="static"
                       dialogClassName="general-box-createfolder"
                     >
-                      <Modal.Header closeButton>
-                        <Modal.Title>
+                      <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+                        <Modal.Title >
                           <h1
                             style={{
                               fontSize: "3rem",
@@ -288,7 +288,7 @@ function Header() {
                           </h2>
                         </Modal.Title>
                       </Modal.Header>
-                      <Modal.Body>
+                      <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
                         <label
                           style={{
                             paddingRight: "1rem",
@@ -320,7 +320,7 @@ function Header() {
                           required
                         />
                       </Modal.Body>
-                      <Modal.Footer>
+                      <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                         <Button variant="secondary" onClick={handleCloseFolder}>
                           Close
                         </Button>
@@ -350,14 +350,13 @@ function Header() {
                       onHide={handleClose}
                       dialogClassName="general-box-createflash"
                     >
-                      <Modal.Header closeButton>
+                      <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
                         <Modal.Title>
                           <h1
                             style={{
                               fontSize: "5rem",
                               color: "gold",
                               textAlign: "center",
-                              background: "black",
                             }}
                           >
                             BOILERCARDS
@@ -367,15 +366,14 @@ function Header() {
                               fontSize: "2rem",
                               color: "gold",
                               textAlign: "center",
-                              background: "black",
                             }}
                           >
                             Create Flashcard Set
                           </h2>
                         </Modal.Title>
                       </Modal.Header>
-                      <Modal.Body>
-                        <label style={{ background: "black", color: "gold" }}>
+                      <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+                        <label style={{color: "gold" }}>
                           Destination Folder
                         </label>
                         &nbsp; &nbsp;
@@ -398,7 +396,6 @@ function Header() {
                           style={{
                             paddingRight: "1rem",
                             color: "gold",
-                            background: "black",
                             fontSize: "1rem",
                           }}
                         >
@@ -411,7 +408,7 @@ function Header() {
                           required
                         />
                         <h1></h1>
-                        <label style={{ background: "black", color: "gold" }}>
+                        <label style={{color: "gold" }}>
                           Private/Public
                         </label>
                         <select
@@ -427,12 +424,12 @@ function Header() {
                             <Form>
                               <Form.Group style={{ color: "gold" }}>
                                 <h1
-                                  style={{ background: "black", color: "gold" }}
+                                  style={{color: "gold" }}
                                 >
                                   #{i + 1}
                                 </h1>
                                 <Form.Label
-                                  style={{ background: "black", color: "gold" }}
+                                  style={{color: "gold" }}
                                 >
                                   Front of Card
                                 </Form.Label>
@@ -448,7 +445,7 @@ function Header() {
 
                               <Form.Group style={{ color: "gold" }}>
                                 <Form.Label
-                                  style={{ background: "black", color: "gold" }}
+                                  style={{color: "gold" }}
                                 >
                                   Back of Card
                                 </Form.Label>
@@ -469,7 +466,7 @@ function Header() {
                               />
                               <Form.Group style={{ color: "gold" }}>
                                 <Form.Label
-                                  style={{ background: "black", color: "gold" }}
+                                  style={{color: "gold" }}
                                 >
                                   Difficulty Rating
                                 </Form.Label>
@@ -500,7 +497,7 @@ function Header() {
                           </Button>
                         </div>
                       </Modal.Body>
-                      <Modal.Footer>
+                      <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                         <Button variant="secondary" onClick={handleClose}>
                           Close
                         </Button>
