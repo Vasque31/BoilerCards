@@ -89,9 +89,9 @@ function Class() {
                 <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {library.teacher}</div>
             </div>
 
-            <div style={{paddingLeft: '25rem', paddingRight: '25rem', paddingTop: '1.5rem', display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-                    <div>
-                        <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
+            <div style={{paddingLeft: '22rem', paddingRight: '25rem', paddingTop: '1.5rem', display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+                <div>
+                    <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
                     <div style={{paddingTop: '0.25rem'}}>
                         <Button variant='danger' onClick={() => handleLeaveClass()}>Leave Class</Button> 
                     </div>
