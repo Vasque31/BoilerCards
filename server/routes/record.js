@@ -641,49 +641,55 @@ recordRoutes.route("/removeNote").post(async function (req, res) {
 recordRoutes.route("/verification").post(async function (req, res) {
   console.log(req.body.username);
   const user = await userdata.GetAsync(client, req.body.username);
-  var val = Math.floor(1000 + Math.random() * 9000);
-  console.log(user);
-  var map = new Map(
-    Object.entries(
-      await userdata.Getverificationcode(
-        client,
-        ObjectId("637031a05d2937e578edddf2")
-      )
-    )
-  );
-  map.set(user._id, val);
-  const obj = Object.fromEntries(map);
-  console.log(obj);
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "boilercard1@gmail.com",
-      pass: "hwgprezcxqzkxexk",
-    },
-  });
-  const mailOptions = {
-    from: "boilercard1@gmail.com",
-    to: user.email,
-    subject: "Verification code",
-    text:
-      "Your code for recover password is: " +
-      val +
-      ", Do not send it to anyone.",
-  };
-
-  transporter.sendMail(mailOptions, async function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      await userdata.Updateverification(
-        client,
-        ObjectId("637031a05d2937e578edddf2"),
-        obj
-      );
-      console.log("Email sent: " + info.response);
-    }
-  });
-  res.json(true);
+  if (user == false) {
+    res.json(false);
+    return;
+  } else {
+    var val = Math.floor(1000 + Math.random() * 9000);
+    console.log(user);
+    const resultMap = await userdata.Getverificationcode(
+      client,
+      ObjectId("6389b53236819a563147991f")
+    );
+    /*
+  if (resultMap == false) {
+    userdata.Addverification(client, new Map());
+  }*/
+    var map = new Map(Object.entries(resultMap));
+    map.set(user._id, val);
+    console.log(map);
+    const obj = Object.fromEntries(map);
+    console.log(obj);
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "boilercard1@gmail.com",
+        pass: "hwgprezcxqzkxexk",
+      },
+    });
+    const mailOptions = {
+      from: "boilercard1@gmail.com",
+      to: user.email,
+      subject: "Verification code",
+      text:
+        "Your code for recover password is: " +
+        val +
+        ", Do not send it to anyone.",
+    };
+    transporter.sendMail(mailOptions, async function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        await userdata.Updateverification(
+          client,
+          ObjectId("6389b53236819a563147991f"),
+          obj
+        );
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res.json(true);
+  }
 });
 recordRoutes.route("/report").post(async function (req, res) {
   var reportsetid = req.body.setid;
@@ -936,11 +942,13 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
     Object.entries(
       await userdata.Getverificationcode(
         client,
-        ObjectId("637031a05d2937e578edddf2")
+        ObjectId("6389b53236819a563147991f")
       )
     )
   );
+  console.log(codemap);
   const realcode = codemap.get(user._id.toString());
+  console.log("this is" + realcode);
   if (code == realcode) {
     console.log("code is matched");
     /* const transporter = nodemailer.createTransport({
