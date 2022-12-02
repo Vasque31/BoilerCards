@@ -1168,6 +1168,18 @@ recordRoutes.route("/leaveClass").post(async function (req, res) {
 recordRoutes.route("/deleteClass").post(async function (req, res) {
   const classCode = NumberInt(req.body.classCode);
   const Class = await userdata.GetClass(client, classCode);
+  const studentArray = Object.values(Class.student);
+  for (var i = 0; i < studentArray.length; i++) {
+    const user = await userdata.GetAsync(client, studentArray[i]);
+    //console.log(user);
+    const classMap = new Map(Object.entries(user.class));
+    //console.log(user);
+    classMap.delete(Class._id.toString());
+    //console.log(classMap);
+    user.class = Object.fromEntries(classMap);
+    console.log(user.class);
+    await userdata.UpdateUser(client, user._id, user);
+  }
   const teacherName = Class.teacher;
   const teacher = await userdata.GetTeacher(client, teacherName);
   const classArray = teacher.class;
@@ -1178,7 +1190,9 @@ recordRoutes.route("/deleteClass").post(async function (req, res) {
   }
   teacher.class = classArray;
   await userdata.UpdateTeacher(client, teacherName, teacher);
+
   await userdata.deleteClass(client, classCode);
+
   res.json(true);
 });
 recordRoutes.route("/send").post(async function (req, res) {
