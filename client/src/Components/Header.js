@@ -45,7 +45,6 @@ function Header() {
   const [library, setLibrary] = useState(
     JSON.parse(localStorage.getItem("libdata"))
   );
-
   useEffect(() => {
     const getLibrary = async () => {
       let res = await axios.post("http://localhost:3001/loadspace", {

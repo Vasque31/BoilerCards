@@ -1062,12 +1062,15 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
   );
   if (result != false) {
     const scoremap = new Map(Object.entries(result.student));
+
     console.log(scoremap);
+
     if (scoremap.get(userName) == null) {
       scoremap.set(userName, scoreResult);
       console.log(scoremap);
     } else {
       if (NumberInt(scoremap.get(userName).score).value < score.value) {
+
         scoremap.set(userName, scoreResult);
       }
       console.log(NumberInt(scoremap.get(userName).score).value);

@@ -6,7 +6,6 @@
 }
 
 .score-listing {
-  display: flex;
   width: 200px;
   height: 100px;
   position: relative;
