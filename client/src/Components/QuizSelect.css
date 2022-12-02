@@ -1,0 +1,39 @@
+.quiz-div {
+    position: absolute;
+    left: 200px;
+    top: 150px;
+    height: 300px;
+    width: 700px;
+    background-color: black;
+    color: gold;
+}
+
+.back {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
+
+.info-text {
+    position: relative;
+    top: 0px;
+    left: 120px;
+    color: gold;
+}
+
+.select-button {
+    position: relative;
+    left: 50px;
+}
+
+.type-button {
+    position: relative;
+    left: 150px;
+}
+
+.leaderboard-button {
+    position: relative;
+    right: 190px;
+    top: 80px;
+}
+

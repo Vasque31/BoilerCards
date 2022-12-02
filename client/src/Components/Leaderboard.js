@@ -89,6 +89,10 @@ function Leaderboard() {
     //insertionSort(leaderboard, leaderboard.length, compScore()); //high scores sooner
     //console.log("post sort");
 
+    function timeToDisplay(time) {
+        if (time == -1) return (<div>Incomplete</div>);
+        return(<div>{(time - (time % 100))/100}.{(time % 100)/10}sec</div>);
+    }
 
     return (
         <div>
@@ -103,7 +107,7 @@ function Leaderboard() {
                         <div className="score-listing">
                             <p className="user-header">{index + 1}.  User: {entry.userName}</p>
                                 <h2 className="user-scoreinfo">   Score: {entry.score}</h2> 
-                                <h3 className="user-scoreinfo">   Time: {(entry.time - (entry.time % 100))/100}.{(entry.time % 100)/10}sec</h3> <br></br>
+                                <h3 className="user-scoreinfo">   Time: {timeToDisplay(entry.time)}</h3> <br></br>
                         </div>
                         
                     );
@@ -124,7 +128,7 @@ function Leaderboard() {
                 <p className="user-header">  Your Score:</p> <br></br>
                 <p className="user-header">  User: {myscore.userName}</p>
                                 <h2 className="user-scoreinfo">   Score: {myscore.score}</h2> 
-                                <h3 className="user-scoreinfo">   Time: {(myscore.time - (myscore.time % 100))/100}.{(myscore.time % 100)/10}sec</h3> <br></br>
+                                <h3 className="user-scoreinfo">   Time: {timeToDisplay(myscore.time)}</h3> <br></br>
                 </div>
             </div>
             

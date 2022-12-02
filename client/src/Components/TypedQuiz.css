@@ -1,7 +1,13 @@
+.input-container-quiz {
+    position: fixed;
+    left: 100px;
+    top: 200px
+}
+
 .input-field {
     width: 600px;
     position: relative;
-    left: 450px;
+    
 }
 
 .abort {

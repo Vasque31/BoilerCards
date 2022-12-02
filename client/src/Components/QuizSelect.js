@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/esm/Button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./QuizSelect.css";
 
 function QuizSelect() {
 
@@ -36,22 +37,25 @@ function QuizSelect() {
 
     return(
         <div>
-            <Button  onClick={handleReturnToSet}>
+            <Button className="back" onClick={handleReturnToSet}>
                 Back to set
             </Button>
             <br></br>
-            <p>Select quiz type</p>
+            <div className="quiz-div">
+                <p className="info-text">Select quiz type</p>
+                <br></br>
+                <Button className="select-button" show={showSelection} onClick={handleTypeQuiz}>
+                    Type Answer
+                </Button>
+                <Button className="type-button" show={showSelection} onClick={handleChoiceQuiz}>
+                    Select Answer
+                </Button>
+                <Button className="leaderboard-button" show={showSelection} onClick={handleLeaderboard}>
+                    Leaderboard
+                </Button>
+            </div>
             <br></br>
-            <Button show={showSelection} onClick={handleTypeQuiz}>
-                Type Answer
-            </Button>
-            <Button show={showSelection} onClick={handleChoiceQuiz}>
-                Select Answer
-            </Button>
-            <br></br>
-            <Button show={showSelection} onClick={handleLeaderboard}>
-                Leaderboard
-            </Button>
+            
         </div>
     );
 
