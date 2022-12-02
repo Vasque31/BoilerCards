@@ -42,7 +42,7 @@ function MyLibrary() {
         <heading className="section-title">My Library</heading>
         <div className= "library-box">
             <table>
-            {Object.values(library).map(item => {
+            {Object.values(library.folder).map(item => {
                 return (
                     <row>
                         &nbsp; &nbsp;

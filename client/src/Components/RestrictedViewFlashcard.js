@@ -288,7 +288,6 @@ function RestrictedViewFlashcard() {
                 <Dropdown style={{float: "right"}}>
                     <Dropdown.Toggle variant="info">Options</Dropdown.Toggle>
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={handleShow}>Add more Flashcards</Dropdown.Item>
                         <Dropdown.Item onClick={handleShowDownload}>Download this Set</Dropdown.Item>
                         <Dropdown.Item onClick={handleStartQuiz}>Quiz Yourself!</Dropdown.Item>
                         <Dropdown.Item onClick={handleShowSend}>Share this Flashcard Set</Dropdown.Item>
@@ -341,59 +340,6 @@ function RestrictedViewFlashcard() {
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-                <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        <h1 style = {{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
-                        <h2 style = {{fontSize: "2rem", color:"gold", textAlign: "center"}}>Add New Flashcards</h2>
-                    </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                    {
-                        inputList.map((x,i) => {
-                            return(
-                                <Form>
-                                    <Form.Group style={{color: "gold"}}>
-                                        <h1>#{i+1}</h1>
-                                        <Form.Label>Front of Card</Form.Label>
-                                        <Form.Control type="text" name = "front" placeholder="Front of FlashCard" onChange={e =>handleinputchange(e,i)}/>
-                                    </Form.Group>
-                                   
-                                    <Form.Group style={{color: "gold"}}>
-                                        <Form.Label>Back of Card</Form.Label>
-                                        <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => handleinputchange(e,i)} />
-                                        <input type='file' name='img' accept="image/png" onChange={(e) => handleimage(e,i)}/>
-                                    </Form.Group>
-                                    <Form.Group style={{color: "gold"}}>
-                                        <Form.Label>Difficulty Rating</Form.Label>
-                                        <select name ="drate" id="Difficulty-Rating" onChange={(e) => handleinputchange(e,i)}>
-                                            <option value={1}>1</option>
-                                            <option value={2}>2</option>
-                                            <option selected value={3}>3</option>
-                                            <option value={4}>4</option>
-                                            <option value={5}>5</option>
-                                        </select>
-                                    </Form.Group>
-                                </Form>
-                            )
-                        })
-                    }
-                        <div style={{paddingTop: "1rem"}}>
-                            <Button varient="primary" type = "button" onClick={handleaddmore}>
-                                Add Flashcard
-                            </Button>
-                        </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleSave}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-             
-            </Modal>
                 <Table striped bordered hover style= {{color:"gold", paddingRight:"1.5rem", paddingLeft:"1.5rem"}}>
                     <thead>
                         <tr>
