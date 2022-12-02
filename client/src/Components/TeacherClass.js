@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { libstorage } from "./signInPage";
 import { useCookies } from 'react-cookie';
-import { getCookie } from 'react-use-cookie';
+import { getCookie, setCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 import axios from "axios";
 
@@ -27,8 +27,15 @@ function TeacherClass() {
    const [dest, setDest] = useState(getCookie('classCode'));
    const [showSaved, setShowSaved] = useState(false);
 
-
      /** handlers **/
+
+    const handleSeeStudentGrade = (uName) => {
+        console.log("selecting student")
+        console.log(uName);
+        setCookie("selectedStudent", uName);
+        console.log(getCookie('selectedStudent'));
+        navigate("/studentgrade");
+    }
 
      const handleShowSaved = () => { setShowSaved(true);}
      const handleCloseSaved = () => { 
@@ -231,11 +238,13 @@ function TeacherClass() {
                 </Modal.Header>
                 <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
                     {Object.values(library.student).map(item => {
+                        console.log("Map students");
+                        console.log(item);
                         return (
                             <div>
                                 &nbsp; &nbsp;
                                 {/*<h1>{item._id}</h1>*/}
-                                <Button variant='warning' className= "library-buttons">
+                                <Button variant='warning' className= "library-buttons" onClick={() => handleSeeStudentGrade(item)}>
                                     {item}
                                 </Button>
                                 <Button variant='danger' value={item._id} onClick={() => handleRemoveStudent(item)} className= "library-buttons">

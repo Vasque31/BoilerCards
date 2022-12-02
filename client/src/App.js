@@ -29,6 +29,8 @@ import TeacherSignInPage from './Components/TeacherSignInPage';
 import TeacherHomePage from './Components/TeacherHomePage';
 import Class from './Components/Class.js';
 import RestrictedViewFlashcard from './Components/RestrictedViewFlashcard';
+import StudentGrade from './Components/StudentGrade.js';
+import ProgressPage from './Components/ProgressPage.js';
 
 function App() {
 
@@ -59,6 +61,8 @@ function App() {
         <Route path="/quizselection" element={<QuizSelect/>}/>
         <Route path="/typedquiz" element={<TypedQuiz/>}/>
         <Route path="/leaderboard" element={<Leaderboard/>}/>
+        <Route path="/studentgrade" element={<StudentGrade/>}/>
+        <Route path="/studentprogress" element={<ProgressPage/>}/>
       </Routes>
     </div>
   );
