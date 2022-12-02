@@ -181,7 +181,7 @@ function TeacherHeader() {
                     <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link>
-                            <Link to="/HomePage">
+                            <Link to="/TeacherHomePage">
                                 <Button variant="Light">
                                     Home
                                 </Button>

@@ -49,8 +49,11 @@ function SignInPage() {
     const [resetCodeNum, setResetCodeNum] = useState(0);
     useEffect(()=> {
         console.log(getCookie('remember'));
-        if(getCookie('remember') === "true") {
+        if(getCookie('remember') === "true" && getCookie('teacher') === "false") {
+
             navigate("/HomePage");
+        } else if (getCookie('remember') === "true" && getCookie('teacher') === "true") {
+            navigate('/TeacherHomePage');
         }
         const initClient = () => {
             gapi.client.init({clientId: "787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com", scope: ''});
@@ -108,6 +111,7 @@ function SignInPage() {
             // eslint-disable-next-line react-hooks/rules-of-hooks
             setCookie('userid', data, { path: '/' });
             setCookie('username', usernameRef.current.value, { path: '/' });
+            setCookie('teacher', false, { path: '/' });
             console.log(getCookie('userid'));
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:data,
