@@ -711,6 +711,27 @@ recordRoutes.route("/addlabel").post(async function (req, res) {
     labelmap.map = new Map(Object.entries(labelmap.map));
   }
   var oldmap = labelmap.map.get(oldlabel);
+  console.log(labelmap);
+  if (oldmap == null) {
+    const newMap = new Map();
+    newMap.set(ObjectId(folder._id), ObjectId(folder._id));
+    labelmap.map.set(label, Object.fromEntries(newMap));
+    console.log(labelmap.map);
+    await Flashcarddata.UpdateLabel(
+      client,
+      ObjectId("637287af2c8cf8c067cd2e58"),
+      labelmap
+    );
+    labelmap = await Flashcarddata.GetLabel(
+      client,
+      ObjectId("637287af2c8cf8c067cd2e58")
+    );
+    labelmap = await Flashcarddata.GetLabel(
+      client,
+      ObjectId("637287af2c8cf8c067cd2e58")
+    );
+    oldmap = labelmap.map.get(oldlabel);
+  }
   oldmap = new Map(Object.entries(oldmap));
   oldmap.delete(folder._id.toString());
   labelmap.map.set(oldlabel, oldmap);
