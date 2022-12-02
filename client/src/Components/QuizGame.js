@@ -1,7 +1,5 @@
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
-import { cardsQuiz } from "./ViewFlashcard";
-import { thisSetID } from './ViewFlashcard';
 import { useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import {CloseButton} from 'react';
@@ -27,6 +25,8 @@ var globalScopeClock = null;
 
 var globalTime = 0; // 1/100th seconds
 var earlyExit = false;
+
+var quizLength = -1;
 //Assume new round onHide for now
 
 function QuizGame() {
@@ -42,9 +42,12 @@ function QuizGame() {
     const [showQuestionFeedback, setShowQuestionFeedback] = useState(false);
     const [showAbortQuiz, setShowAbortQuiz] = useState(false);
     const [time, setTime] = useState(0); // 1/100th seconds
+    const [flashcardsetinfo, setFlashcardsetInfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
+    const [cardsQuiz, setCardsQuiz] = useState(flashcardsetinfo.flashcardarray);
     var mode = "All prompts once";
 
     React.useEffect(() => {
+        quizLength = cardsQuiz.length;
         var clockInterval;
         if (timerToStart) {
             globalTime = 0;
@@ -100,11 +103,11 @@ function QuizGame() {
     //handle end of quiz
     const handleShowExitQuiz = async () => {
         clearInterval(globalScopeClock); //clear the current quiz's clock
-        console.log("setId " + cardsQuiz[0].belongset)
+        //console.log("setId " + cardsQuiz[0].belongset)
         const setID = cardsQuiz[0].belongset;
         let res = await axios.post("http://localhost:3001/storeScore", {
             userID: getCookie('userid'),
-            setID: thisSetID,
+            setID: flashcardsetinfo.flashcardset._id,
             score: score,
             time: time,
         });
@@ -128,7 +131,7 @@ function QuizGame() {
             clearInterval(globalScopeClock);
             let res = await axios.post("http://localhost:3001/storeScore", {
             userID: getCookie('userid'),
-            setID: thisSetID,
+            setID: flashcardsetinfo.flashcardset._id,
             score: score,
             time: -1,
         });
@@ -320,8 +323,8 @@ function randomCard(excludedIndices) {
     if (excludedIndices == null) {
         console.log("no exclusion")
         var index = -1;
-        index = Math.random() * cardsQuiz.length;
-        if (index == cardsQuiz.length) index = cardsQuiz.length - 1;
+        index = Math.random() * quizLength;
+        if (index == quizLength) index = quizLength - 1;
         index = Math.floor(index);
         return index;
     }
@@ -332,8 +335,8 @@ function randomCard(excludedIndices) {
         var attempts = 100;
         var i = 0;
         for (i=0; i < attempts; i++) {
-            index = Math.random() * cardsQuiz.length;
-            if (index == cardsQuiz.length) index = cardsQuiz.length - 1;
+            index = Math.random() * quizLength;
+            if (index == quizLength) index = quizLength - 1;
             index = Math.floor(index);
             if (includes(excludedIndices, index) == false) {
                 console.log("returning index:" + index);

@@ -1,6 +1,7 @@
+
 import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cardsQuiz } from "./ViewFlashcard";
 import { thisSetID } from './ViewFlashcard';
 
@@ -19,21 +20,28 @@ function Leaderboard() {
      ****************************************************/
     const navigate = useNavigate();
     const [flashcardsetinfo, setFlashcardsetInfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
+    const [leaderboard, setLeaderboard] = useState([]);
 
-    const getdata = async () => {
-        console.log("pre getLeaderboard");
-        let res = await axios.post("http://localhost:3001/getLeaderboard", {
-            setID: flashcardsetinfo.flashcardset._id,
-        });        
-        console.log("post getLeaderboard");
-        //console.log("resulting data" + res.data);
-        var returningArray = res.data;
-        console.log(returningArray);
-        return returningArray; //array of objects w/ userName, score, time
-    }
-
-    var leaderboard = getdata();
+    useEffect(()=> {
+        async function getdata() {
+            console.log("pre getLeaderboard");
+            let res = await axios.post("http://localhost:3001/getLeaderboard", {
+                setID: flashcardsetinfo.flashcardset._id,
+            });        
+            console.log("post getLeaderboard");
+            //console.log("resulting data" + res.data);
+            var returningArray = res.data;
+            setLeaderboard(returningArray);
+            console.log(returningArray);
+        }
+        getdata();
+    },[]);
+    
+    
+    
+    //var leaderboard = getdata();
     console.log(leaderboard);
+    //console.log(getdata().PromiseResult);
     /*****************************************************
      *      Handlers                                     *
      *                                                   *
@@ -59,10 +67,10 @@ function Leaderboard() {
      ****************************************************/
     
     //latest sort precedence
-    console.log("pre sort");
-    insertionSort(leaderboard, leaderboard.length, compCompletionTime()); //low times sooner
-    insertionSort(leaderboard, leaderboard.length, compScore()); //high scores sooner
-    console.log("post sort");
+    //console.log("pre sort");
+    //insertionSort(leaderboard, leaderboard.length, compCompletionTime()); //low times sooner
+    //insertionSort(leaderboard, leaderboard.length, compScore()); //high scores sooner
+    //console.log("post sort");
 
 
     return (
@@ -107,7 +115,8 @@ function Leaderboard() {
  //comp function compares 2 elements, switch if return < 0 (first arg < second arg by convention)
 function insertionSort(arr, n, compFunc) 
 { 
-    if (n == 1) return arr;
+    console.log("n: " + n);
+    if (n <= 1) return arr;
     let i, key, j; 
     for (i = 1; i < n; i++) //element to "insert"
     { 
@@ -125,11 +134,13 @@ function insertionSort(arr, n, compFunc)
 
  //compare score of 2 elements
 function compScore(obj1, obj2) {
+    console.log("check score");
     if (obj1.score > obj2.score) return -1; //high scores early
     return 1; //do not switch otherwise
 }
 
 function compCompletionTime(obj1, obj2) {
+    console.log("check time");
     if (obj1.time < obj2.time) return -1; //low times early
     return 1; //do not switch otherwise
 }
