@@ -386,8 +386,10 @@ recordRoutes.route("/folder").post(async function (req, res) {
 });
 
 recordRoutes.route("/loadspace").post(async function (req, res) {
+  //console.log("loadspace");
   const userid = req.body.uid;
   const user = await userdata.GetAsyncbyid(client, ObjectId(userid));
+  console.log(user);
   res.json(user);
 });
 
@@ -463,37 +465,41 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
     client,
     ObjectId("637287af2c8cf8c067cd2e58")
   );
-  var setmap = new Map(Object.entries(subjmap.map));
-  var foldermap = setmap;
-  foldermap = foldermap.get(folder.label);
-  foldermap = new Map(Object.entries(foldermap));
-  foldermap.delete(folder._id.toString());
-  setmap.set(folder.label, foldermap);
-  console.log("foldermap.lengthis " + foldermap.length);
-  if (foldermap.size == 0) {
-    setmap.delete(folder.label);
-    var changesubjectarray = await Flashcarddata.GetLabel(
-      client,
-      ObjectId("637287af2c8cf8c067cd2e59")
-    );
-    var changesubjectarraymap = new Map(Object.entries(changesubjectarray.Map));
-    console.log("change subject is " + changesubjectarraymap);
-    changesubjectarraymap.delete(folder.label);
-    changesubjectarraymap = Object.fromEntries(changesubjectarraymap);
-    changesubjectarray.Map = changesubjectarraymap;
+  if (folder.label != null) {
+    var setmap = new Map(Object.entries(subjmap.map));
+    var foldermap = setmap;
+    foldermap = foldermap.get(folder.label);
+    foldermap = new Map(Object.entries(foldermap));
+    foldermap.delete(folder._id.toString());
+    setmap.set(folder.label, foldermap);
+    console.log("foldermap.lengthis " + foldermap.length);
+    if (foldermap.size == 0) {
+      setmap.delete(folder.label);
+      var changesubjectarray = await Flashcarddata.GetLabel(
+        client,
+        ObjectId("637287af2c8cf8c067cd2e59")
+      );
+      var changesubjectarraymap = new Map(
+        Object.entries(changesubjectarray.Map)
+      );
+      console.log("change subject is " + changesubjectarraymap);
+      changesubjectarraymap.delete(folder.label);
+      changesubjectarraymap = Object.fromEntries(changesubjectarraymap);
+      changesubjectarray.Map = changesubjectarraymap;
+      await Flashcarddata.UpdateLabel(
+        client,
+        ObjectId("637287af2c8cf8c067cd2e59"),
+        changesubjectarray
+      );
+    }
+    setmap = Object.fromEntries(setmap);
+    subjmap.map = setmap;
     await Flashcarddata.UpdateLabel(
       client,
-      ObjectId("637287af2c8cf8c067cd2e59"),
-      changesubjectarray
+      ObjectId("637287af2c8cf8c067cd2e58"),
+      subjmap
     );
   }
-  setmap = Object.fromEntries(setmap);
-  subjmap.map = setmap;
-  await Flashcarddata.UpdateLabel(
-    client,
-    ObjectId("637287af2c8cf8c067cd2e58"),
-    subjmap
-  );
   const user = await userdata.GetAsyncbyid(client, ObjectId(folder.owner));
   const map = new Map(Object.entries(user.folder));
   map.delete(folder._id);
@@ -1039,32 +1045,35 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
   const userName = userInfo.username;
   var score = req.body.score;
   var time = req.body.time;
-  score = NumberInt(score);
-  time = Number(time);
+  score = NumberInt(score).value;
+  time = NumberInt(time).value;
+  console.log(time);
   scoreResult = {
     userName: userName,
     score: score,
     time: time,
   };
-  console.log(score.value);
+  //console.log(score.value);
   const setID = req.body.setID;
   const result = await Flashcarddata.GetFlashcardsetasync(
     client,
     ObjectId(setID)
   );
   if (result != false) {
-    const scoremap = new Map(Object.entries(result.score));
-    //console.log(scoremap);
+    const scoremap = new Map(Object.entries(result.student));
+    console.log(scoremap);
     if (scoremap.get(userName) == null) {
       scoremap.set(userName, scoreResult);
       console.log(scoremap);
     } else {
-      if (NumberInt(scoremap.get(userName).score) < score) {
+      if (NumberInt(scoremap.get(userName).score).value < score.value) {
         scoremap.set(userName, scoreResult);
       }
+      console.log(NumberInt(scoremap.get(userName).score).value);
+      console.log(score.value);
       if (
-        NumberInt(scoremap.get(userName).score) == score &&
-        NumberInt(scoremap.get(userName).time) > time
+        NumberInt(scoremap.get(userName).score).value == score.value &&
+        NumberInt(scoremap.get(userName).time).value > time.value
       ) {
         scoremap.set(userName, scoreResult);
       }
@@ -1076,12 +1085,17 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
     res.json(false);
   }
 });
+
 function boardSort1(arr, n) {
   let i, key, j;
   for (i = 1; i < n; i++) {
     key = arr[i];
     j = i - 1;
-    while (j >= 0) {
+    while (
+      j >= 0 &&
+      (arr[j].score < key.score ||
+        (arr[j].score == key.score && arr[j].time > key.time))
+    ) {
       if (arr[j].score < key.score) {
         arr[j + 1] = arr[j];
         j = j - 1;
@@ -1090,11 +1104,11 @@ function boardSort1(arr, n) {
         j = j - 1;
       }
     }
-
     arr[j + 1] = key;
   }
   return arr;
 }
+
 recordRoutes.route("/getLeaderboard").post(async function (req, res) {
   const setID = req.body.setID;
   const getLeaderboard = new Array();
@@ -1104,8 +1118,8 @@ recordRoutes.route("/getLeaderboard").post(async function (req, res) {
   );
   if (result != false) {
     var score = new Map(Object.entries(result.student));
-    console.log(score);
     score = Array.from(score.values());
+    //console.log(score);
     const sortedarray = boardSort1(score, score.length);
     console.log(sortedarray);
     res.json(sortedarray);
@@ -1149,6 +1163,7 @@ recordRoutes.route("/send").post(async function (req, res) {
   const setID = req.body.setID;
   const userName = req.body.userName;
   const user = await userdata.GetAsync(client, userName);
+  console.log(user);
   if (user != false) {
     var set = await Flashcarddata.GetFlashcardsetasync(client, ObjectId(setID));
     delete set._id;
@@ -1156,29 +1171,42 @@ recordRoutes.route("/send").post(async function (req, res) {
       client,
       ObjectId(user.defaultfolder)
     );
-    console.log("nice");
     if (folder != false) {
+      console.log("nice");
       set.belongfolder = folder._id;
       const result = await Flashcarddata.CreateSet(client, set);
       var flashcardSetMap = new Map(Object.entries(folder.flashcardset));
-      flashcardSetMap.set(result._id, result);
+      const newset = await Flashcarddata.GetFlashcardsetasync(
+        client,
+        result.insertedId
+      );
+      console.log(newset);
+      flashcardSetMap.set(newset._id, newset);
       flashcardSetMap = Object.fromEntries(flashcardSetMap);
+      console.log(flashcardSetMap);
       folder.flashcardset = flashcardSetMap;
       await Flashcarddata.UpdateFolder(client, folder._id, folder);
     } else {
+      console.log("not nice");
       const newFolder = new Folder("copyFolder", user._id);
-      const folderResult = await Flashcarddata.Createfolder(client, newFolder);
+      var folderResult = await Flashcarddata.Createfolder(client, newFolder);
+      folderResult = await Flashcarddata.GetFolderasync(
+        client,
+        folderResult.insertedId
+      );
       set.belongfolder = folderResult._id;
       const result = await Flashcarddata.CreateSet(client, set);
       var flashcardSetMap = new Map(Object.entries(folderResult.flashcardset));
       flashcardSetMap.set(result._id, result);
       flashcardSetMap = Object.fromEntries(flashcardSetMap);
       folderResult.flashcardset = flashcardSetMap;
-      await Flashcarddata.UpdateFolder(client, folderResult._id, folder);
+      console.log();
+      await Flashcarddata.UpdateFolder(client, folderResult._id, folderResult);
       var folderMap = new Map(Object.entries(user.folder));
       folderMap.set(folderResult._id, folderResult);
       folderMap = Object.fromEntries(folderMap);
       user.folder = folderMap;
+      user.defaultfolder = folderResult._id;
       await userdata.UpdateUser(client, user._id, user);
     }
     res.json(true);
