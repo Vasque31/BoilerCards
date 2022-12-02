@@ -843,9 +843,6 @@ recordRoutes.route("/searchsubject").post(async function (req, res) {
       var newresult = Array.from(map.values());
       //console.log(newresult);
       for (var j = 0; j < newresult.length; j++) {
-        if (flashcardset.private == true) {
-          continue;
-        }
         var flashcardset = await Flashcarddata.GetFlashcardsetasync(
           client,
           ObjectId(newresult[j]._id)

@@ -34,13 +34,13 @@ function ViewFlashcard() {
   );
   useEffect(() => {
     const getLibrary = async () => {
-        let res = await axios.post("http://localhost:3001/flsahcardset", {
-            setid:update.flashcardset._id 
-        });
-        localStorage.setItem('flashcards', JSON.stringify(res.data));
-        setUpdate(res.data);
-        res = await axios.post("http://localhost:3001/class", {
-        classCode: getCookie('classCode'),
+      let res = await axios.post("http://localhost:3001/flsahcardset", {
+        setid: update.flashcardset._id,
+      });
+      localStorage.setItem("flashcards", JSON.stringify(res.data));
+      setUpdate(res.data);
+      res = await axios.post("http://localhost:3001/class", {
+        classCode: getCookie("classCode"),
       });
       localStorage.setItem("class", JSON.stringify(res.data));
     };
@@ -161,6 +161,7 @@ function ViewFlashcard() {
   };
   const handleChangeSendName = (event) => {
     setSendUsername(event.target.value);
+    console.log(event.target.value);
   };
   const handleSubmitSend = async (event) => {
     event.preventDefault();
@@ -169,7 +170,8 @@ function ViewFlashcard() {
       userName: sendUsername,
     });
     if (res.data === true) {
-      handleShowSaved();
+      handleCloseSend();
+      alert("Sent!");
     } else {
       alert("Invalid username!");
     }
@@ -365,18 +367,17 @@ function ViewFlashcard() {
   };
   const [showStudentList, setShowStudentList] = useState(false);
   const handleSeeStudentGrade = async (uName) => {
-    console.log("selecting student")
+    console.log("selecting student");
     console.log(uName);
     setCookie("selectedStudent", uName);
     let res = await axios.post("http://localhost:3001/getScoreList", {
       setID: update.flashcardset._id,
-      classCode: getCookie('classCode')
-
+      classCode: getCookie("classCode"),
     });
     localStorage.setItem("studentList", JSON.stringify(res.data));
-    console.log(getCookie('selectedStudent'));
+    console.log(getCookie("selectedStudent"));
     navigate("/studentgrade");
-}
+  };
   return (
     <div style={{ display: "block", width: "100%" }}>
       <div
@@ -401,21 +402,24 @@ function ViewFlashcard() {
         <Dropdown style={{ float: "right" }}>
           <Dropdown.Toggle variant="info">Options</Dropdown.Toggle>
           <Dropdown.Menu>
-            {!update.flashcardset.flagged && 
-            <Dropdown.Item onClick={handleShow}>
-              Add more Flashcards
-            </Dropdown.Item>}
+            {!update.flashcardset.flagged && (
+              <Dropdown.Item onClick={handleShow}>
+                Add more Flashcards
+              </Dropdown.Item>
+            )}
             <Dropdown.Item onClick={handleShowDownload}>
               Download this Set
             </Dropdown.Item>
-            {getCookie('teacher') !== 'true' &&
-            <Dropdown.Item onClick={handleStartQuiz}>
-              Quiz Yourself!
-            </Dropdown.Item>}
-            {!update.flashcardset.flagged &&
-            <Dropdown.Item onClick={handleShowSend}>
-              Share this Flashcard Set
-            </Dropdown.Item>}
+            {getCookie("teacher") !== "true" && (
+              <Dropdown.Item onClick={handleStartQuiz}>
+                Quiz Yourself!
+              </Dropdown.Item>
+            )}
+            {!update.flashcardset.flagged && (
+              <Dropdown.Item onClick={handleShowSend}>
+                Share this Flashcard Set
+              </Dropdown.Item>
+            )}
           </Dropdown.Menu>
         </Dropdown>
         <Button
@@ -430,13 +434,13 @@ function ViewFlashcard() {
           onHide={handleCloseDownload}
           backdrop="static"
         >
-          <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+          <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
             <Modal.Title>Download this Flashcardset</Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+          <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
             Once you click Download, press ctrl+p to download locally
           </Modal.Body>
-          <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+          <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
             <Button varient="primary" onClick={handleCloseDownload}>
               Close
             </Button>
@@ -448,28 +452,31 @@ function ViewFlashcard() {
           </Modal.Footer>
         </Modal>
         <Modal show={showSend} onHide={handleCloseSend}>
-          <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+          <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
             <Modal.Title>Share this Flashcard Set</Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
-                Who do you want to send this set to?
-                <br></br>
-                <Form onSubmit={handleSubmitSend}>
-                    <Form.Group>
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control
-                            type="name"
-                            placeholder="Username"
-                            onChange={handleChangeSendName}
-                        />
-                    </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer style={{float:'right', backgroundColor:'black', color: 'gold'}}>
-            <Button variant="primary" onClick={(e) => handleSubmitSend}>
+          <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
+            Who do you want to send this set to?
+            <br></br>
+            <Form>
+              Submit
+              <Form.Group>
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="name"
+                  placeholder="Username"
+                  onChange={handleChangeSendName}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer
+            style={{ float: "right", backgroundColor: "black", color: "gold" }}
+          >
+            <Button variant="primary" onClick={(e) => handleSubmitSend(e)}>
               Send Flashcard Set
             </Button>
-            </Modal.Footer>
+          </Modal.Footer>
         </Modal>
         {getCookie("teacher") === "true" && (
           <ToggleButtonGroup type="radio" name="options" value={true}>
@@ -540,7 +547,11 @@ function ViewFlashcard() {
         {getCookie("teacher") !== "true" && !update.flashcardset.flagged && (
           <Button onClick={handleSaveFlashcardStatus}>Confirm</Button>
         )}
-        {getCookie('teacher') === "true" && <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button>}
+        {getCookie("teacher") === "true" && (
+          <Button variant="light" onClick={() => setShowStudentList(true)}>
+            Students
+          </Button>
+        )}
         <Dropdown as={ButtonGroup} style={{ float: "left" }}>
           <Button variant="secondary">Sort By:</Button>
           <Dropdown.Toggle
@@ -569,7 +580,7 @@ function ViewFlashcard() {
           onHide={handleClose}
           dialogClassName="general-box-createflash"
         >
-          <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+          <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
             <Modal.Title>
               <h1
                 style={{ fontSize: "5rem", color: "gold", textAlign: "center" }}
@@ -583,7 +594,7 @@ function ViewFlashcard() {
               </h2>
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+          <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
             {inputList.map((x, i) => {
               return (
                 <Form>
@@ -638,7 +649,7 @@ function ViewFlashcard() {
               </Button>
             </div>
           </Modal.Body>
-          <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+          <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
@@ -725,8 +736,12 @@ function ViewFlashcard() {
           </thead>
         </Table>
       </div>
-      <Modal show={showEdit} onHide={handleCloseEdit} dialogClassName="general-box-createflash">
-        <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+      <Modal
+        show={showEdit}
+        onHide={handleCloseEdit}
+        dialogClassName="general-box-createflash"
+      >
+        <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
           <Modal.Title>
             <h1
               style={{ fontSize: "5rem", color: "gold", textAlign: "center" }}
@@ -740,7 +755,7 @@ function ViewFlashcard() {
             </h2>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+        <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
           <Form>
             <Form.Group style={{ color: "gold" }}>
               <Form.Label>Front of Card</Form.Label>
@@ -779,7 +794,7 @@ function ViewFlashcard() {
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+        <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
           <Button variant="secondary" onClick={handleCloseEdit}>
             Close
           </Button>
@@ -792,14 +807,17 @@ function ViewFlashcard() {
         show={showFlashcardDeleteConfirm}
         onHide={() => handleCloseFlashDelCon()}
       >
-        <Modal.Header closeButton={() => handleCloseFlashDelCon()} style={{backgroundColor: 'black', color: 'gold'}}>
+        <Modal.Header
+          closeButton={() => handleCloseFlashDelCon()}
+          style={{ backgroundColor: "black", color: "gold" }}
+        >
           <Modal.Title>Delete Confirmation</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+        <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
           {" "}
           Are you sure you want to delete {toDeleteFlashcard.front}?
         </Modal.Body>
-        <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+        <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
           <Button onClick={() => handleDeleteFlashcard(toDeleteFlashcard)}>
             {" "}
             Delete{" "}
@@ -808,44 +826,50 @@ function ViewFlashcard() {
         </Modal.Footer>
       </Modal>
       <Modal show={showSaved} onHide={() => handleCloseSaved()}>
-        <Modal.Header closeButton={() => handleCloseSaved()} style={{backgroundColor: 'black', color: 'gold'}}>
+        <Modal.Header
+          closeButton={() => handleCloseSaved()}
+          style={{ backgroundColor: "black", color: "gold" }}
+        >
           <Modal.Title> Successful Operation</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+        <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
           <img className="photo" src={saveicon} />
         </Modal.Body>
-        <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+        <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
           <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
         </Modal.Footer>
       </Modal>
       <Modal show={showStudentList} onHide={() => setShowStudentList(false)}>
-                <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
-                    <Modal.Title>Student List</Modal.Title>
-                </Modal.Header>
-                {/* Student List */}
-                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
-                    {Object.values(JSON.parse(localStorage.getItem("class")).student).map(item => {
-                        console.log("Map students");
-                        console.log(item);
-                        return (
-                            <div style={{textAlign: 'center'}}>
-                                &nbsp; &nbsp;
-                                {/*<h1>{item._id}</h1>*/}
-                                <Button variant='warning' className= "library-buttons" onClick={() => handleSeeStudentGrade(item)}>
-                                    {item}
-                                </Button>
-                                &nbsp; &nbsp;
-                            </div>
-                                
-                        );
-                    })}
-                </Modal.Body>
-                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
-                    <Button onClick={() => setShowStudentList(false)}> 
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+        <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
+          <Modal.Title>Student List</Modal.Title>
+        </Modal.Header>
+        {/* Student List */}
+        <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
+          {Object.values(JSON.parse(localStorage.getItem("class")).student).map(
+            (item) => {
+              console.log("Map students");
+              console.log(item);
+              return (
+                <div style={{ textAlign: "center" }}>
+                  &nbsp; &nbsp;
+                  {/*<h1>{item._id}</h1>*/}
+                  <Button
+                    variant="warning"
+                    className="library-buttons"
+                    onClick={() => handleSeeStudentGrade(item)}
+                  >
+                    {item}
+                  </Button>
+                  &nbsp; &nbsp;
+                </div>
+              );
+            }
+          )}
+        </Modal.Body>
+        <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
+          <Button onClick={() => setShowStudentList(false)}>Close</Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
