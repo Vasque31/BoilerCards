@@ -96,14 +96,14 @@ function TeacherClass() {
                 <CloseButton variant= "white" onClick={() => navigate(-1)}/>
             </div>
             <div style={{textAlign: 'left', color: 'gold', fontSize: '2rem', paddingLeft: '20rem'}}>
-                <heading>{library.className}</heading>
+                <heading>{library.className} - Code:{getCookie('classCode')}</heading>
                 <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {getCookie('username')}</div>
+                
             </div>
-            <div style={{paddingRight: '32.2rem', textAlign: 'right', color: 'gold'}}>
-                &nbsp;&nbsp; Class Code: {getCookie('classCode')}
+            <div>
+                
             </div>
-
-            <div style={{paddingLeft: '25rem', paddingRight: '25rem',display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+            <div style={{paddingLeft: '22rem', paddingRight: '25rem', paddingTop: '1.5rem',display: 'flex', justifyContent: 'flex'}}>
                 <div>
                     <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
                     <div style={{paddingTop: '0.25rem'}}>
