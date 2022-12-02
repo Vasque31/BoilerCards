@@ -400,7 +400,6 @@ function RestrictedViewFlashcard() {
                             <th>Flashcard</th>
                             <th>Front</th>
                             <th>Back</th>
-                            <th>Edit or Delete</th>
                             <th>Difficulty Level</th>
                         </tr>
                         {cards.map((item, index) => {
@@ -422,12 +421,6 @@ function RestrictedViewFlashcard() {
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
-                                    <th>
-                                        <ButtonGroup aria-label="Edit/Delete">
-                                            <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
-                                            <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
-                                        </ButtonGroup>
-                                    </th>
                                     <th>{item.drate}</th>
                                 </tr>
                             );
@@ -436,55 +429,8 @@ function RestrictedViewFlashcard() {
 
                 </Table>
             </div>
-            <Modal show={showEdit} onHide = {handleCloseEdit}>
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        <h1 style = {{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
-                        <h2 style = {{fontSize: "2rem", color:"gold", textAlign: "center"}}>Edit Flashcards</h2>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group style={{color: "gold"}}>
-                            <Form.Label>Front of Card</Form.Label>
-                            <Form.Control type="text" name= "front" placeholder="Front of FlashCard" onChange={e => setNewfront(e.target.value)}/>
-                        </Form.Group>
-
-                        <Form.Group style={{color: "gold"}}>
-                            <Form.Label>Back of Card</Form.Label>
-                            <Form.Control type="text" name= "back" placeholder="Back of FlashCard" onChange={e => setNewback(e.target.value)}/>
-                        </Form.Group>
-                        <Form.Group style={{color: "gold"}}>
-                            <Form.Label>Difficulty Rating</Form.Label>
-                                <select name ="drate" id="Difficulty-Rating" onChange={(e) => setNewDiff(e.target.value)}>
-                                    <option value={1}>1</option>
-                                    <option value={2}>2</option>
-                                    <option selected value={3}>3</option>
-                                    <option value={4}>4</option>
-                                    <option value={5}>5</option>
-                                </select>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseEdit}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleSaveEdit}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showFlashcardDeleteConfirm} onHide={() => handleCloseFlashDelCon()}>
-                <Modal.Header closeButton={() => handleCloseFlashDelCon()}>
-                    <Modal.Title>Delete Confirmation</Modal.Title>
-                </Modal.Header>
-                <Modal.Body> Are you sure you want to delete {toDeleteFlashcard.front}?</Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={() => handleDeleteFlashcard(toDeleteFlashcard)}> Delete </Button>
-                    <Button onClick={() => handleCloseFlashDelCon()}> Cancel </Button>
-                    </Modal.Footer>
-            </Modal>
+            
+            
             <Modal show={showSaved} onHide={() => handleCloseSaved()}>
                 <Modal.Header closeButton={() => handleCloseSaved()}>
                     <Modal.Title> Successful Operation</Modal.Title>

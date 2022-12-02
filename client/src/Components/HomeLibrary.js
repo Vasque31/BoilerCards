@@ -7,6 +7,21 @@ import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 export var folder;
+
+function insertionSort(arr, n) {
+    let i, key, j;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+        while (j >= 0 && arr[j].freq < key.freq) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+    
+    return arr;
+}
 function HomeLibrary() {
     const navigate = useNavigate();
     const [cookie, setCookie, removeCookie] = useCookies([]);
@@ -17,8 +32,15 @@ function HomeLibrary() {
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:getCookie('userid'),
             });
-            console.log(res.data);
+            
             setLibrary(res.data); 
+            
+            
+            let folders = Object.values(library.folder);
+            let n = folders.length;
+            //console.log(folders);
+            library.folder = insertionSort(folders, n);
+            console.log(library.folder);
             localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
