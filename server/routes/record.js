@@ -884,6 +884,7 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
   console.log("username:" + username);
   const code = req.body.code;
   const newPass = req.body.newPass;
+  console.log(newPass);
   console.log(code);
   const user = await userdata.GetAsync(client, username);
   //const password = user.password;
@@ -918,7 +919,7 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
       }
     });*/
     user.password = newPass;
-    await userdata.UpdateAsync(client, user._id, user);
+    await userdata.UpdateUser(client, ObjectId(user._id), user);
     res.json(true);
   } else {
     res.json(false);
