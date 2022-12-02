@@ -49,8 +49,11 @@ function TeacherSignInPage() {
     const [resetCodeNum, setResetCodeNum] = useState(0);
     useEffect(()=> {
         console.log(getCookie('remember'));
-        if(getCookie('remember') === "true") {
-            navigate("/TeacherHomePage");
+        if(getCookie('remember') === "true" && getCookie('teacher') === "false") {
+
+            navigate("/HomePage");
+        } else if (getCookie('remember') === "true" && getCookie('teacher') === "true") {
+            navigate('/TeacherHomePage');
         }
         const initClient = () => {
             gapi.client.init({clientId: "787220324092-kbb7un09fomil67vjvmqabjvor5spdhb.apps.googleusercontent.com", scope: ''});
@@ -113,6 +116,7 @@ function TeacherSignInPage() {
                 userName:logginInfo.username,
             });
             setCookie('username', logginInfo.username, { path: '/' });
+            setCookie('teacher', true, { path: '/' });
             libstorage = res.data;
             console.log(libstorage);
             localStorage.setItem('libdata', JSON.stringify(res.data));
