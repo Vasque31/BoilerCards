@@ -693,6 +693,7 @@ recordRoutes.route("/report").post(async function (req, res) {
   );
   reportset.private = true;
   reportset.flagged = true;
+  delete reportset._id;
   await Flashcarddata.reportSet(client, reportset);
   await Flashcarddata.UpdateSet(client, ObjectId(reportsetid), reportset);
   res.json(true);
