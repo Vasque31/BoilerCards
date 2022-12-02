@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import axios from 'axios';
 
 import "./Leaderboard.css";
+import { getCookie } from "react-use-cookie";
 
 
 
@@ -17,8 +18,11 @@ function Leaderboard() {
      *                                                   *
      ****************************************************/
     const navigate = useNavigate();
+    var [myscore, setMyScore] = [{userName: "nobody", score: -50, time: -1}, (e) => {myscore = e;}];
     const [flashcardsetinfo, setFlashcardsetInfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
+    const [usernameCurrent, setUsernameCurrent] = useState(getCookie('username'));
     const [leaderboard, setLeaderboard] = useState([]);
+
 
     useEffect(()=> {
         async function getdata() {
@@ -58,12 +62,27 @@ function Leaderboard() {
 
 
 
-
     /*****************************************************
      *      Logic                                        *
      *                                                   *
      ****************************************************/
     
+    //return score element of given user(username)
+    function getMyScore(scoreArray, user) {
+        for (var i = 0; i < scoreArray.length; i++) {
+            console.log(i);
+            console.log(scoreArray[i]);
+            if (user == scoreArray[i].userName) {
+                console.log("to return my score");
+                console.log(scoreArray[i]);
+                setMyScore(scoreArray[i]);
+            }
+        }
+    }
+
+    getMyScore(leaderboard, usernameCurrent);
+    console.log("returned");
+    console.log(myscore);
     //latest sort precedence
     //console.log("pre sort");
     //insertionSort(leaderboard, leaderboard.length, compCompletionTime()); //low times sooner
@@ -73,21 +92,43 @@ function Leaderboard() {
 
     return (
         <div>
-            <Button className='abort' onClick={handleCloseLeaderboard}>Exit</Button>
             <br></br>
-            <div>{leaderboard.map((entry, index) => {
+            <div className="scores-board">
+            <div className="scores-container" class='flex-container'>
+                {leaderboard.map((entry, index) => {
                 //Check quiz completion
                 if (entry.time != -1) {
                     return(
+                        
                         <div className="score-listing">
-                            <p >{index + 1}.  User: {entry.userName}</p>
-                                <h2>   Score: {entry.score}</h2> 
-                                <h3>   Time: {(entry.time - (entry.time % 100))/100}.{(entry.time % 100)/10}sec</h3> <br></br>
+                            <p className="user-header">{index + 1}.  User: {entry.userName}</p>
+                                <h2 className="user-scoreinfo">   Score: {entry.score}</h2> 
+                                <h3 className="user-scoreinfo">   Time: {(entry.time - (entry.time % 100))/100}.{(entry.time % 100)/10}sec</h3> <br></br>
+                        </div>
+                        
+                    );
+                } else {
+                    return(
+                        <div className="score-listing">
+                            <p className="user-header"> {index + 1}. Incomplete</p>
                         </div>
                     );
                 }
 
-            })}</div>
+            })}
+            </div>
+            </div>
+             {/* Current User  */}
+            <div className="myscore-container">
+                <div className="score-listing">
+                <p className="user-header">  Your Score:</p> <br></br>
+                <p className="user-header">  User: {myscore.userName}</p>
+                                <h2 className="user-scoreinfo">   Score: {myscore.score}</h2> 
+                                <h3 className="user-scoreinfo">   Time: {(myscore.time - (myscore.time % 100))/100}.{(myscore.time % 100)/10}sec</h3> <br></br>
+                </div>
+            </div>
+            
+            <Button className='abort' onClick={handleCloseLeaderboard}>Exit</Button>
                    
         </div>
     )
