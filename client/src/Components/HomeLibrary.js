@@ -6,6 +6,8 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from "react-bootstrap/Dropdown";
 export var folder;
 
 function insertionSort(arr, n) {
@@ -36,14 +38,16 @@ function HomeLibrary() {
             setLibrary(JSON.parse(localStorage.getItem('libdata'))); 
             
             
+        }
+        const refresh = async () => {
             let folders = Object.values(library.folder);
             let n = folders.length;
-            //console.log(folders);
+            console.log(folders);
             library.folder = insertionSort(folders, n);
             console.log(library.folder);
-            setFolders(library.folder);
-        }
+            setFolders(Object.values(library.folder));
         getLibrary();
+        refresh();
     },[]);
 
     const handleSeeMore = (event) => {
@@ -63,6 +67,16 @@ function HomeLibrary() {
         localStorage.setItem('folder', JSON.stringify(res.data));
         navigate('/folder');
     };
+    const setSort = (e) => {
+        if (e === "creationdate") {
+            setFolders(Object.values(library.folder));
+        } else {
+            let folder = Object.values(library.folder);
+            let n = folder.length;
+            folder = insertionSort(folder, n);
+            setFolders(folder);
+        }
+    }
     {/*const listOfItems = {libstorage.map((item, index) =>
     <button className= "library-buttons" key={index} onClick={handleFolderClick(item._id)}><img className= "img-library" src= {require("../images/PurdueTrain.png")} alt="lib"/></button>
     )};*/}
@@ -73,6 +87,14 @@ function HomeLibrary() {
             <Button variant="link" size= "sm" className= "see-more" onClick={handleSeeMore}>See All</Button>
         </div>
         <div className= "library-box">
+            <Dropdown as = {ButtonGroup} style={{float:"left"}}>
+                <Button variant = "secondary">Sort By</Button>
+                <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
+                <Dropdown.Menu>
+                    <Dropdown.Item onClick={(e) => setSort("creationdate")}>Creation Date</Dropdown.Item>
+                    <Dropdown.Item onClick={(e) =>setSort("frequency")}>Frequency</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
             <table>
             {folders.slice(0,8).map(item => {
                 return (
