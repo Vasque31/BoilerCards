@@ -15,6 +15,7 @@ import saveicon from "../images/saveicon.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 import { Link } from "react-router-dom";
+import { getCookie } from "react-use-cookie";
 //export var flashcardid = null;
 export var image = "";
 
@@ -334,16 +335,21 @@ function ViewFlashcard() {
                     </Form>
 
                 </Modal>
-                {statePrivate &&
+                {getCookie('teacher') === 'true' && <ToggleButtonGroup type="radio" name="options" value={true}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true}>
+                                Private
+                            </ToggleButton>
+                </ToggleButtonGroup>}
+                {statePrivate && getCookie('teacher') !== 'true' &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
                             <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={e => setPrivate(e.currentTarget.value)}>
-                                Private
+                                Private{}
                             </ToggleButton>
                             <ToggleButton id="public-button" variant="outline-success" value={false} onChange={e => setPrivate(e.currentTarget.value)}>
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
-                {!statePrivate &&
+                {!statePrivate && getCookie('teacher') !== 'true' &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={false}>
                             <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
@@ -352,7 +358,7 @@ function ViewFlashcard() {
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
-                <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>
+                {(getCookie("teacher") !== "true") && <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>}
                 <Dropdown as={ButtonGroup} style={{float: "left"}}>
                     <Button variant="secondary">Sort By:</Button>
                     <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />
