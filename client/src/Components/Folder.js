@@ -166,6 +166,14 @@ function Folder() {
         let res = await axios.post("http://localhost:3001/deletefolder",{
             folder:folder,
         });
+        let res1 = await axios.post("http://localhost:3001/loadspace", {
+                uid:getCookie('userid'),
+            });
+            
+            
+            
+            
+            localStorage.setItem('libdata', JSON.stringify(res1.data));
         if (res.data == true) {
             handleShowSaved();
             navigate("/HomePage"); //folder deleted, leave it
@@ -392,7 +400,7 @@ function Folder() {
                     &nbsp;&nbsp;
                     <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                         <option value="">---Choose Destination---</option>
-                        {Object.values(library.folder).map(item => {
+                        {Object.values(library).map(item => {
                             return (
                                 <option value={item._id}>{item.foldername}</option>    
                             );
