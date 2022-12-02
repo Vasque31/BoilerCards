@@ -13,6 +13,7 @@ import Modal from 'react-bootstrap/Modal';
 import cookie from 'react-cookies'
 import { GoogleLogin } from 'react-google-login';
 import { gapi } from 'gapi-script';
+import saveicon from "../images/saveicon.png";
 //Use states for Sign In
 const errors = {
     uname: "Invalid Username",
@@ -59,6 +60,9 @@ function SignInPage() {
     const [resetCodeNum, setResetCodeNum] = useState(0);
     const [resetPWShow, setResetPWShow] = useState(false);
     const [resetPW, setResetPW] = useState("");
+    const [showSaved, setShowSaved] = useState(false);
+    const handleShowSaved = () => {	setShowSaved(true);	}
+    const handleCloseSaved = () => { setShowSaved(false);}
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true" && getCookie('teacher') === "false") {
@@ -202,6 +206,12 @@ function SignInPage() {
                 code:resetCodeNum,
                 newPass: resetPW
             });
+            if (res.data === true) {
+                handleResetPWClose();
+                handleShowSaved();
+            } else {
+                alert("Incorrect Code");
+            }
         } else {
             alert("Incorrect Password Format")
         }
@@ -290,6 +300,19 @@ function SignInPage() {
                         <Button variant = "primary" type = "submit">Reset Password</Button>
                     </Form>
                 </Modal.Body>
+            </Modal>
+        </div>
+        <div>
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
             </Modal>
         </div>
         </div>
