@@ -33,6 +33,16 @@ const errors = {
       
     return pass;
 }
+function checkvalidpassword(str) {
+    const passwordRegex = /^[A-Za-z0-9#?!@$%^&*-]{6,25}$/;
+    if (passwordRegex.test(str)) {
+      console.log("nicepassword!: " + str);
+      return true;
+    } else {
+      console.log("wrong format of password");
+      return false;
+    }
+  }  
 function SignInPage() {
     const [errorMessages, setErrorMessages] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -47,6 +57,8 @@ function SignInPage() {
     const [resetCode, setResetCode] = useState([{}]);
     const [resetUsername, setResetUsername] = useState("");
     const [resetCodeNum, setResetCodeNum] = useState(0);
+    const [resetPWShow, setResetPWShow] = useState(false);
+    const [resetPW, setResetPW] = useState("");
     useEffect(()=> {
         console.log(getCookie('remember'));
         if(getCookie('remember') === "true") {
@@ -70,7 +82,8 @@ function SignInPage() {
         let res = await axios.post("http://localhost:3001/verification", {
             username: resetUsername
         });
-        
+        handleResetClose();
+        handleResetPWShow();
     }
     const handleSubmitCode = async (event) => {
         event.preventDefault();
@@ -83,9 +96,6 @@ function SignInPage() {
     }
     const handleChangeName = (event) => {
         setResetUsername(event.target.value);
-    }
-    const handleCodeChange = (event) => {
-        setResetCodeNum(event.target.value);
     }
     const handleSignIn = async (event) => {
         //prevents page reload
@@ -128,9 +138,6 @@ function SignInPage() {
         }
        
       };
-    const responseFacebook = (response) => {
-        console.log(response.email);
-    }
     const onGoogleSuccess = async (res) => {
         const password = generateP();
         const username = res.profileObj.email;
@@ -175,6 +182,33 @@ function SignInPage() {
     const onGoogleFailure = (res) => {
         console.log(res);
     }
+    const handleResetPWClose = () => {
+        setResetPWShow(false);
+    }
+    const handleResetPWShow = () => {
+        setResetPWShow(true);
+    }
+    const handleSubmitResetPW = async(event) => {
+        event.preventDefault();
+        let valid = checkvalidpassword(resetPW);
+        let username = resetUsername;
+        if (valid) {
+            let res = await axios.post("http://localhost:3001/forgotpassword", {
+                username: username,
+                code:resetCodeNum,
+                newPass: resetPW
+            });
+        } else {
+            alert("Incorrect Password Format")
+        }
+        handleResetPWClose();
+    }
+    const handleChangeCode = (event) => {
+        setResetCodeNum(event.target.value);
+    }
+    const handlePWChange = (event) => {
+        setResetPW(event.target.value);
+    }
     return (
         <div className = "login-form">
             <div style={{textAlign: 'right'}}>
@@ -218,24 +252,40 @@ function SignInPage() {
                 <Modal.Header closeButton>
                     <Modal.Title>Recover Password</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Enter the email address you used to sign up for BoilerCards</Modal.Body>
+                <Modal.Body>Enter the username you used to sign up for BoilerCards</Modal.Body>
                 <Form onSubmit={handleSubmitReset}>
                     <Form.Group>
                         <Form.Label>Username<br/></Form.Label>
-                        <Form.Control type="name" placeholder="Name" onChange={handleChangeName}/>
+                        <Form.Control type="name" placeholder="Username" onChange={handleChangeName}/>
                     </Form.Group>
                     <Button variant="primary" type="submit">Send Email</Button>
                 </Form>
+                
+
+            </Modal>
+        </div>
+        <div>
+            <Modal
+                show={resetPWShow}
+                onHide={handleResetPWClose}
+                backdrop="static">
+                
+                <Modal.Header closeButton>
+                    <Modal.Title>Reset Password</Modal.Title>
+                </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleSubmitCode}>
+                    <Form onSubmit = {handleSubmitResetPW}>
                         <Form.Group>
-                            <Form.Label>Enter Verification Code from your Email</Form.Label>
-                            <Form.Control type = "number" placeholder="Code" onChange = {handleCodeChange}/>
+                            <Form.Label>Code<br/></Form.Label>
+                            <Form.Control type = "number" placeholder="0000" onChange = {handleChangeCode}/>
                         </Form.Group>
-                        <Button variant="primary" type = "submit">Submit</Button>
+                        <Form.Group>
+                            <Form.Label>New Password<br/></Form.Label>
+                            <Form.Control onChange = {handlePWChange}/>
+                        </Form.Group>
+                        <Button variant = "primary" type = "submit">Reset Password</Button>
                     </Form>
                 </Modal.Body>
-
             </Modal>
         </div>
         </div>

@@ -94,7 +94,6 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
   const oldusername = req.body.oldusername;
   const oldpassword = req.body.oldpassword;
   const result = await userdata.GetAsync(client, oldusername);
-
   if (result.password == oldpassword) {
     const newuserinfo = result;
     const newpassword = req.body.newpassword;
@@ -391,11 +390,7 @@ recordRoutes.route("/loadspace").post(async function (req, res) {
   const user = await userdata.GetAsyncbyid(client, ObjectId(userid));
   res.json(user);
 });
-recordRoutes.route("/search").post(async function (req, res) {
-  const setname = req.body.setname;
-  result = await Flashcarddata.searchSet(client, setname);
-  res.json(result);
-});
+
 recordRoutes.route("/logout").post(async function (req, res) {
   res.json(false);
 });
@@ -692,6 +687,7 @@ recordRoutes.route("/report").post(async function (req, res) {
   );
   reportset.private = true;
   reportset.flagged = true;
+  await Flashcarddata.reportSet(client, reportset);
   await Flashcarddata.UpdateSet(client, ObjectId(reportsetid), reportset);
   res.json(true);
 });
@@ -798,6 +794,9 @@ recordRoutes.route("/searchsubject").post(async function (req, res) {
       var newresult = Array.from(map.values());
       //console.log(newresult);
       for (var j = 0; j < newresult.length; j++) {
+        if (flashcardset.private == true) {
+          continue;
+        }
         var flashcardset = await Flashcarddata.GetFlashcardsetasync(
           client,
           ObjectId(newresult[j]._id)
@@ -824,11 +823,15 @@ recordRoutes.route("/searchkeywords").post(async function (req, res) {
   var folder;
   const initialsearch = await Flashcarddata.SearchSet(client, keyword);
   for (var j = 0; j < initialsearch.length; j++) {
+    if (initialsearch[j].private == true) {
+      continue;
+    }
+    console.log("this is " + initialsearch[j].belongfolder);
     folder = await Flashcarddata.GetFolderasync(
       client,
       ObjectId(initialsearch[j].belongfolder)
     );
-    console.log(folder);
+    // console.log(folder);
     if (folder == false) {
       continue;
     } else if (initialsearch[j].private == false) {
@@ -837,7 +840,11 @@ recordRoutes.route("/searchkeywords").post(async function (req, res) {
   }
   for (var i = 0; i < myArray.length; i++) {
     var set = await Flashcarddata.SearchSet(client, myArray[i]);
+
     for (var j = 0; j < set.length; j++) {
+      if (initialsearch[j].private == true) {
+        continue;
+      }
       folder = await Flashcarddata.GetFolderasync(
         client,
         ObjectId(set[j].belongfolder)
@@ -882,9 +889,11 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
   const username = req.body.username;
   console.log("username:" + username);
   const code = req.body.code;
+  const newPass = req.body.newPass;
+  console.log(newPass);
   console.log(code);
   const user = await userdata.GetAsync(client, username);
-  const password = user.password;
+  //const password = user.password;
   const codemap = new Map(
     Object.entries(
       await userdata.Getverificationcode(
@@ -895,7 +904,7 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
   );
   const realcode = codemap.get(user._id.toString());
   if (code == realcode) {
-    const transporter = nodemailer.createTransport({
+    /* const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: "boilercard1@gmail.com",
@@ -914,7 +923,9 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
       } else {
         console.log("Email sent: " + info.response);
       }
-    });
+    });*/
+    user.password = newPass;
+    await userdata.UpdateUser(client, ObjectId(user._id), user);
     res.json(true);
   } else {
     res.json(false);
