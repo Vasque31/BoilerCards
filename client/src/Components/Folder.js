@@ -166,6 +166,14 @@ function Folder() {
         let res = await axios.post("http://localhost:3001/deletefolder",{
             folder:folder,
         });
+        let res1 = await axios.post("http://localhost:3001/loadspace", {
+                uid:getCookie('userid'),
+            });
+            
+            
+            
+            
+            localStorage.setItem('libdata', JSON.stringify(res1.data));
         if (res.data == true) {
             handleShowSaved();
             navigate("/HomePage"); //folder deleted, leave it
