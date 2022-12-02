@@ -22,8 +22,14 @@ function TeacherClass() {
    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')));
    const [dest, setDest] = useState(getCookie('classCode'));
-   const handleFlashcardSetClick = async(event) => {
-  
+   const handleFlashcardSetClick = async(id) => {
+    console.log(id);
+    let res = await axios.post("http://localhost:3001/flsahcardset", {
+        setid:id 
+    });
+    localStorage.setItem('flashcards', JSON.stringify(res.data));
+    console.log(res.data);
+    navigate('/flashcard');
    }
    const handleaddmore = () => {
     setinputList([...inputList, {front:'', back:'', drate:'3', img: ''}]);
