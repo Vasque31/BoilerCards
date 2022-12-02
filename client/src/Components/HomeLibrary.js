@@ -7,18 +7,41 @@ import { useCookies } from 'react-cookie';
 import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 export var folder;
+
+function insertionSort(arr, n) {
+    let i, key, j;
+    for (i = 1; i < n; i++) {
+        key = arr[i];
+        j = i - 1;
+        while (j >= 0 && arr[j].freq < key.freq) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+    
+    return arr;
+}
 function HomeLibrary() {
     const navigate = useNavigate();
     const [cookie, setCookie, removeCookie] = useCookies([]);
     const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')));
-    
+    const [folders, setFolders] = useState([]);
     useEffect(()=> {
         const getLibrary = async () => {
             let res = await axios.post("http://localhost:3001/loadspace", {
                 uid:getCookie('userid'),
             });
-            console.log(res.data);
+            
             setLibrary(res.data); 
+            
+            
+            let folders = Object.values(library.folder);
+            let n = folders.length;
+            //console.log(folders);
+            library.folder = insertionSort(folders, n);
+            console.log(library.folder);
+            setFolders(library.folder);
             localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
@@ -52,7 +75,7 @@ function HomeLibrary() {
         </div>
         <div className= "library-box">
             <table>
-            {Object.values(library.folder).slice(0,8).map(item => {
+            {folders.slice(0,8).map(item => {
                 return (
                     <row>
                         &nbsp; &nbsp;
