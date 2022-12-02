@@ -364,10 +364,16 @@ function ViewFlashcard() {
     handlerefresh(update.flashcardset._id);
   };
   const [showStudentList, setShowStudentList] = useState(false);
-  const handleSeeStudentGrade = (uName) => {
+  const handleSeeStudentGrade = async (uName) => {
     console.log("selecting student")
     console.log(uName);
     setCookie("selectedStudent", uName);
+    let res = await axios.post("http://localhost:3001/getScoreList", {
+      setID: update.flashcardset._id,
+      classCode: getCookie('classCode')
+
+    });
+    localStorage.setItem("studentList", JSON.stringify(res.data));
     console.log(getCookie('selectedStudent'));
     navigate("/studentgrade");
 }
@@ -402,9 +408,10 @@ function ViewFlashcard() {
             <Dropdown.Item onClick={handleShowDownload}>
               Download this Set
             </Dropdown.Item>
+            {getCookie('teacher') !== 'true' &&
             <Dropdown.Item onClick={handleStartQuiz}>
               Quiz Yourself!
-            </Dropdown.Item>
+            </Dropdown.Item>}
             {!update.flashcardset.flagged &&
             <Dropdown.Item onClick={handleShowSend}>
               Share this Flashcard Set

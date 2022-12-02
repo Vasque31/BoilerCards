@@ -46,6 +46,15 @@ function StudentGrade() {
     <div>
       <div className="scores-board">
         <div className="scores-container" class="flex-container"></div>
+        <div style={{fontSize: '2rem'}}>
+        Username: {studentSelected}
+        </div>
+        <div style={{fontSize: '1.5rem'}}>
+        Score: {score}
+        </div>
+        <div style={{fontSize: '1.5rem'}}>
+        Time: {time}
+        </div>
       </div>
       <Button className="abort" onClick={handleReturn}>
         Exit
