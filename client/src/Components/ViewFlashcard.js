@@ -283,11 +283,13 @@ function ViewFlashcard() {
     const handleFlag = async() => {
         console.log(update.flashcardset._id)
         let res = await axios.post("http://localhost:3001/report", {
-            reportsetid: update.flashcardset._id
+            setid: update.flashcardset._id
         });
         if (res.data == true) {
             alert("This Set Has Been Reported!");
         }
+        update.flashcardset.private = true;
+        update.flashcardset.flagged = true;
         handlerefresh(update.flashcardset._id);
     }
 
@@ -446,7 +448,8 @@ function ViewFlashcard() {
                             <th>Flashcard</th>
                             <th>Front</th>
                             <th>Back</th>
-                            <th>Edit or Delete</th>
+                            {!update.flashcardset.flagged &&
+                            <th>Edit or Delete</th>}
                             <th>Difficulty Level</th>
                         </tr>
                         {cards.map((item, index) => {
@@ -468,12 +471,13 @@ function ViewFlashcard() {
                                     </th>
                                     <th>{item.front}</th>
                                     <th>{item.back}</th>
+                                    {!update.flashcardset.flagged &&
                                     <th>
                                         <ButtonGroup aria-label="Edit/Delete">
                                             <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleeditClick(e.target.value)}> Edit </Button>
                                             <Button variant="primary" value={item.flashcard_id} onClick={(e) => handleShowFlashcardDeleteConfirm(e.target.value)}> Delete </Button>
                                         </ButtonGroup>
-                                    </th>
+                                    </th>}
                                     <th>{item.drate}</th>
                                 </tr>
                             );
