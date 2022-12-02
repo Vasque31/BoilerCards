@@ -392,7 +392,7 @@ function Folder() {
                     &nbsp;&nbsp;
                     <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                         <option value="">---Choose Destination---</option>
-                        {Object.values(library.folder).map(item => {
+                        {Object.values(library).map(item => {
                             return (
                                 <option value={item._id}>{item.foldername}</option>    
                             );

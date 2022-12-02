@@ -77,8 +77,11 @@ function TeacherRegistrationPage() {
         <div className = "login-form">
             <form onSubmit = {handleCreateAccount}>
                 <img alt = "Logo" className = "photo" src= {mylogo}/>
-				<h1 style={{textAlign: "center", color: "gold"}}>Create BoilerCards</h1>
-                <h1 style={{textAlign: "center", color: "gold"}}>Educator Account</h1>
+				<h1 style={{textAlign: "center", color: "gold"}}>Create BoilerCards Account</h1>
+                <div className = "input-container">
+                    <label style = {{textAlign: "left"}}>Email</label>
+                    <input type="email" name = "email" placeholder="Enter Email" ref={emailRef} required />
+                </div>
                 <div className = "input-container">
                     <label style={{textAlign: "left"}}>Username</label>
                     <input type="text" name="username" placeholder="Enter Username" ref={usernameRef} required />

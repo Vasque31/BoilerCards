@@ -51,7 +51,6 @@ function Header() {
             res = await axios.get("http://localhost:3001/subjectarray", {
 
             });
-            console.log(res.data);
             localStorage.setItem('subjects', JSON.stringify(res.data));
             setSubjects(JSON.parse(localStorage.getItem('subjects')));
         }
@@ -290,7 +289,7 @@ function Header() {
                                             <label style={{background: "black", color: 'gold'}}>Destination Folder</label>&nbsp; &nbsp;
                                             <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                                                 <option value="">---Choose---</option>
-                                                {Object.values(library.folder).map(item => {
+                                                {Object.values(library).map(item => {
                                                     return (
                                                         <option value={item._id}>{item.foldername}</option>    
                                                     );
