@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
@@ -14,6 +14,7 @@ function HomeClasses() {
     const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')))
     const [show, setShow] = useState(false);
     const [code, setCode] = useState('')
+
     const handleClassClick = async(id) => {
         setCookie('classCode', id, { path: '/' });
         let res = await axios.post("http://localhost:3001/class", {

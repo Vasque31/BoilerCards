@@ -87,7 +87,7 @@ class userDBService {
   async Updateverification(client, nameOfListing, updatedListing) {
     const result = await client
       .db("User")
-      .collection("Verification")
+      .collection("Verification code")
       .updateOne({ _id: nameOfListing }, { $set: updatedListing });
     console.log(
       `${result.matchedCount} document(s) matched the query criteria.`
@@ -97,7 +97,7 @@ class userDBService {
   async Getverificationcode(client, nameOfListing) {
     const result = await client
       .db("User")
-      .collection("Verification")
+      .collection("Verification code")
       .findOne({ _id: nameOfListing });
     /*const json = JSON.stringify(result);
   const obj = JSON.parse(json);*/

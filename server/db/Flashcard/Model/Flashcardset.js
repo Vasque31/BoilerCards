@@ -5,7 +5,7 @@ class Flashcardset {
     this.belongfolder = null;
     this.private = true;
     this.flagged = false;
-    this.score = new Map();
+    this.student = new Map();
   }
 }
 exports.Flashcardset = Flashcardset;

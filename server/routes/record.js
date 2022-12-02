@@ -641,59 +641,72 @@ recordRoutes.route("/removeNote").post(async function (req, res) {
 recordRoutes.route("/verification").post(async function (req, res) {
   console.log(req.body.username);
   const user = await userdata.GetAsync(client, req.body.username);
-  var val = Math.floor(1000 + Math.random() * 9000);
-  console.log(user);
-  var map = new Map(
-    Object.entries(
-      await userdata.Getverificationcode(
-        client,
-        ObjectId("637031a05d2937e578edddf2")
-      )
-    )
-  );
-  map.set(user._id, val);
-  const obj = Object.fromEntries(map);
-  console.log(obj);
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "boilercard1@gmail.com",
-      pass: "hwgprezcxqzkxexk",
-    },
-  });
-  const mailOptions = {
-    from: "boilercard1@gmail.com",
-    to: user.email,
-    subject: "Verification code",
-    text:
-      "Your code for recover password is: " +
-      val +
-      ", Do not send it to anyone.",
-  };
-
-  transporter.sendMail(mailOptions, async function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      await userdata.Updateverification(
-        client,
-        ObjectId("637031a05d2937e578edddf2"),
-        obj
-      );
-      console.log("Email sent: " + info.response);
-    }
-  });
-  res.json(true);
+  if (user == false) {
+    res.json(false);
+    return;
+  } else {
+    var val = Math.floor(1000 + Math.random() * 9000);
+    console.log(user);
+    const resultMap = await userdata.Getverificationcode(
+      client,
+      ObjectId("6389b53236819a563147991f")
+    );
+    /*
+  if (resultMap == false) {
+    userdata.Addverification(client, new Map());
+  }*/
+    var map = new Map(Object.entries(resultMap));
+    map.set(user._id, val);
+    console.log(map);
+    const obj = Object.fromEntries(map);
+    console.log(obj);
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "boilercard1@gmail.com",
+        pass: "hwgprezcxqzkxexk",
+      },
+    });
+    const mailOptions = {
+      from: "boilercard1@gmail.com",
+      to: user.email,
+      subject: "Verification code",
+      text:
+        "Your code for recover password is: " +
+        val +
+        ", Do not send it to anyone.",
+    };
+    transporter.sendMail(mailOptions, async function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        await userdata.Updateverification(
+          client,
+          ObjectId("6389b53236819a563147991f"),
+          obj
+        );
+        console.log("Email sent: " + info.response);
+      }
+    });
+    res.json(true);
+  }
 });
 recordRoutes.route("/report").post(async function (req, res) {
   var reportsetid = req.body.setid;
+  console.log(reportsetid);
   var reportset = await Flashcarddata.GetFlashcardsetasync(
     client,
     ObjectId(reportsetid)
   );
   reportset.private = true;
   reportset.flagged = true;
-  await Flashcarddata.reportSet(client, reportset);
+  console.log("sakd");
+  const noSet = {
+    flagged: true,
+    reportset: reportset,
+  };
+  console.log(noSet);
+  await Flashcarddata.reportSet(client, noSet);
   await Flashcarddata.UpdateSet(client, ObjectId(reportsetid), reportset);
   res.json(true);
 });
@@ -929,12 +942,15 @@ recordRoutes.route("/forgotpassword").post(async function (req, res) {
     Object.entries(
       await userdata.Getverificationcode(
         client,
-        ObjectId("637031a05d2937e578edddf2")
+        ObjectId("6389b53236819a563147991f")
       )
     )
   );
+  console.log(codemap);
   const realcode = codemap.get(user._id.toString());
+  console.log("this is" + realcode);
   if (code == realcode) {
+    console.log("code is matched");
     /* const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -1047,6 +1063,7 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
   var time = req.body.time;
   score = NumberInt(score).value;
   time = NumberInt(time).value;
+  console.log(score);
   console.log(time);
   scoreResult = {
     userName: userName,
@@ -1059,9 +1076,9 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
     client,
     ObjectId(setID)
   );
+  console.log(result);
   if (result != false) {
     const scoremap = new Map(Object.entries(result.student));
-
     console.log(scoremap);
 
     if (scoremap.get(userName) == null) {
@@ -1069,11 +1086,9 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
       console.log(scoremap);
     } else {
       if (NumberInt(scoremap.get(userName).score).value < score.value) {
-
         scoremap.set(userName, scoreResult);
       }
       console.log(NumberInt(scoremap.get(userName).score).value);
-      console.log(score.value);
       if (
         NumberInt(scoremap.get(userName).score).value == score.value &&
         NumberInt(scoremap.get(userName).time).value > time.value
@@ -1133,22 +1148,57 @@ recordRoutes.route("/getLeaderboard").post(async function (req, res) {
 
 recordRoutes.route("/leaveClass").post(async function (req, res) {
   const userID = req.body.userID;
-  const user = await userdata.GetAsyncbyid(client, userID);
+  const user = await userdata.GetAsyncbyid(client, ObjectId(userID));
   const classCode = NumberInt(req.body.classCode);
   const Class = await userdata.GetClass(client, classCode);
+  console.log(Class);
   const studentMap = new Map(Object.entries(Class.student));
   studentMap.delete(user.username);
   Class.student = Object.fromEntries(studentMap);
   await userdata.UpdateClass(client, classCode, Class);
   const classMap = new Map(Object.entries(user.class));
-  classMap.delete(Class._id);
+  console.log(classMap);
+  classMap.delete(Class._id.toString());
+  console.log(classMap);
   user.class = Object.fromEntries(classMap);
-  await userdata.UpdateUser(client, classCode, user);
+  console.log(user);
+  await userdata.UpdateUser(client, ObjectId(userID), user);
+  res.json(true);
+});
+recordRoutes.route("/leaveClassbyName").post(async function (req, res) {
+  const userName = req.body.userName;
+  const user = await userdata.GetAsync(client, userName);
+  const classCode = NumberInt(req.body.classCode);
+  const Class = await userdata.GetClass(client, classCode);
+  console.log(Class);
+  const studentMap = new Map(Object.entries(Class.student));
+  studentMap.delete(user.username);
+  Class.student = Object.fromEntries(studentMap);
+  await userdata.UpdateClass(client, classCode, Class);
+  const classMap = new Map(Object.entries(user.class));
+  console.log(classMap);
+  classMap.delete(Class._id.toString());
+  console.log(classMap);
+  user.class = Object.fromEntries(classMap);
+  console.log(user);
+  await userdata.UpdateUser(client, userName, user);
   res.json(true);
 });
 recordRoutes.route("/deleteClass").post(async function (req, res) {
   const classCode = NumberInt(req.body.classCode);
   const Class = await userdata.GetClass(client, classCode);
+  const studentArray = Object.values(Class.student);
+  for (var i = 0; i < studentArray.length; i++) {
+    const user = await userdata.GetAsync(client, studentArray[i]);
+    //console.log(user);
+    const classMap = new Map(Object.entries(user.class));
+    //console.log(user);
+    classMap.delete(Class._id.toString());
+    //console.log(classMap);
+    user.class = Object.fromEntries(classMap);
+    console.log(user.class);
+    await userdata.UpdateUser(client, user._id, user);
+  }
   const teacherName = Class.teacher;
   const teacher = await userdata.GetTeacher(client, teacherName);
   const classArray = teacher.class;
@@ -1160,6 +1210,7 @@ recordRoutes.route("/deleteClass").post(async function (req, res) {
   teacher.class = classArray;
   await userdata.UpdateTeacher(client, teacherName, teacher);
   await userdata.deleteClass(client, classCode);
+
   res.json(true);
 });
 recordRoutes.route("/send").post(async function (req, res) {
@@ -1177,40 +1228,41 @@ recordRoutes.route("/send").post(async function (req, res) {
     if (folder != false) {
       console.log("nice");
       set.belongfolder = folder._id;
+      const oldMap = set.flashcard;
+      set.flashcard = Object.fromEntries(new Map());
+      console.log("this is new set");
+      console.log(set);
       const result = await Flashcarddata.CreateSet(client, set);
+      var resultId = result.insertedId;
       var flashcardSetMap = new Map(Object.entries(folder.flashcardset));
       const newset = await Flashcarddata.GetFlashcardsetasync(
         client,
         result.insertedId
       );
-      console.log(newset);
+      const newMap = new Map(Object.entries(newset.flashcard));
+      console.log(oldMap);
+      const flashcardarray = Array.from(Object.values(oldMap));
+      console.log("this is flashcard array" + flashcardarray);
+      for (var i = 0; i < flashcardarray.length; i++) {
+        const newCard = flashcardarray[i];
+        newCard.belongset = resultId;
+        delete newCard._id;
+        let result = await Flashcarddata.CreateFlashcard(client, newCard);
+        // console.log(result);
+        let card = await Flashcarddata.GetFlashcardasync(
+          client,
+          result.insertedId
+        );
+        newMap.set(result.insertedId, card);
+      }
+      newset.flashcard = Object.fromEntries(newMap);
+      console.log(newMap);
+      await Flashcarddata.UpdateSet(client, newset._id, newset);
       flashcardSetMap.set(newset._id, newset);
       flashcardSetMap = Object.fromEntries(flashcardSetMap);
-      console.log(flashcardSetMap);
+      //console.log(flashcardSetMap);
       folder.flashcardset = flashcardSetMap;
       await Flashcarddata.UpdateFolder(client, folder._id, folder);
-    } else {
-      console.log("not nice");
-      const newFolder = new Folder("copyFolder", user._id);
-      var folderResult = await Flashcarddata.Createfolder(client, newFolder);
-      folderResult = await Flashcarddata.GetFolderasync(
-        client,
-        folderResult.insertedId
-      );
-      set.belongfolder = folderResult._id;
-      const result = await Flashcarddata.CreateSet(client, set);
-      var flashcardSetMap = new Map(Object.entries(folderResult.flashcardset));
-      flashcardSetMap.set(result._id, result);
-      flashcardSetMap = Object.fromEntries(flashcardSetMap);
-      folderResult.flashcardset = flashcardSetMap;
-      console.log();
-      await Flashcarddata.UpdateFolder(client, folderResult._id, folderResult);
-      var folderMap = new Map(Object.entries(user.folder));
-      folderMap.set(folderResult._id, folderResult);
-      folderMap = Object.fromEntries(folderMap);
-      user.folder = folderMap;
-      user.defaultfolder = folderResult._id;
-      await userdata.UpdateUser(client, user._id, user);
     }
     res.json(true);
   } else {
