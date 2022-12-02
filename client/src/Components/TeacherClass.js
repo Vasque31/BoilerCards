@@ -142,6 +142,8 @@ function TeacherClass() {
             alert("Class Deleted");
         }
     }
+    const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
+    const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
     return (
         <div>
             <TeacherHeader/>
@@ -161,7 +163,7 @@ function TeacherClass() {
                     <Button variant='dark' style={{color: 'gold'}} onClick={(e) => setShow(true)}>Create FlashCard Set</Button>
                     </div>
                     <div >
-                        <Button variant='danger' onClick={() => handleDeleteClass()}>Delete Class</Button>
+                        <Button variant='danger' onClick={() => setShowFolderDeleteConfirm(true)}>Delete Class</Button>
                     </div>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -182,7 +184,7 @@ function TeacherClass() {
                     })}
                 </div>
             </div>
-            <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
+            <Modal show={show} onHide={handleClose} backdrop="static" dialogClassName="general-box-createflash">
                 <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title> 
                         <h1 style ={{fontSize: "5rem", textAlign: "center"}}>BOILERCARDS</h1>
@@ -275,14 +277,35 @@ function TeacherClass() {
             </Modal>
             {/** Saved Modal **/}
             <Modal show={showSaved} onHide={() => handleCloseSaved()}>
-                <Modal.Header closeButton={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()} style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title> Successful Operation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> 
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
                         <img className="photo" src= {saveicon}/>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* Delete Confirm Modal */}
+            <Modal show={showFolderDeleteConfirm} onHide={() => handleCloseFolderDeleteConfirm()}>
+                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete {library.className}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleDeleteClass()}> Delete </Button>
+                    <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showFolderDeleteConfirm} onHide={() => handleCloseFolderDeleteConfirm()}>
+                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Kick Student</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to Kick {library.className}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleDeleteClass()}> Delete </Button>
+                    <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>
     </div>

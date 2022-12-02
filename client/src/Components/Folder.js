@@ -612,20 +612,20 @@ function Folder() {
                     </Modal>
                   </div>
             <Modal show={showSetting} onHide={handleCloseSetting} dialogClassName="general-box-createflash">
-                <Modal.Header>
+                <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title>
                         <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
                         <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Rename Folder</h2>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
                     <Form>
                         <Form.Group style={{color: "gold"}}>
                             New Folder Name: <input onChange={e => handleFolderNameChange(e)}></input>
                         </Form.Group>
                     </Form>                    
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button variant="secondary" onClick={handleCloseSetting}>
                         Close
                     </Button>
@@ -635,23 +635,23 @@ function Folder() {
                 </Modal.Footer>
             </Modal>
             <Modal show={showFolderDeleteConfirm} onHide={() => handleCloseFolderDeleteConfirm()}>
-                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()}>
+                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()} style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Are you sure you want to delete {folder.foldername}?</Modal.Body>
-                <Modal.Footer>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete {folder.foldername}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => handleDeleteFolder(folder)}> Delete </Button>
                     <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showChangeLabel} onHide={handleCloseChangeLabel} dialogClassName="general-box-createflash">
-                <Modal.Header>
+                <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title>
                         <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center"}}>BOILERCARDS</h1>
                         <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center"}}>Change Label</h2>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
                     <Form>
                         
                         <Form.Group style={{color: "gold"}}>
@@ -659,7 +659,7 @@ function Folder() {
                         </Form.Group>
                     </Form>                    
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button variant="secondary" onClick={handleCloseChangeLabel}>
                         Close
                     </Button>
@@ -670,30 +670,30 @@ function Folder() {
             </Modal>
 
             <Modal show={showFlashcardsetDeleteConfirm} onHide={() => handleCloseFlashsetDelCon()}>
-                <Modal.Header closeButton={() => handleCloseFlashsetDelCon()}>
+                <Modal.Header closeButton={() => handleCloseFlashsetDelCon()} style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Are you sure you want to delete {selectedFlashcardsetToDelete.setname}?</Modal.Body>
-                <Modal.Footer>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete {selectedFlashcardsetToDelete.setname}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => handleDeleteFlashcardset(selectedFlashcardsetToDelete.flashcardset)}> Delete </Button>
                     <Button onClick={() => handleCloseFlashsetDelCon()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>    
             <Modal show={showFlashcardsetDeleteGroupConfirm} onHide={() => handleCloseFlashcardsetGroupDeleteConfirmation()}>
-                <Modal.Header closeButton={() => handleCloseFlashcardsetGroupDeleteConfirmation()}>
+                <Modal.Header closeButton={() => handleCloseFlashcardsetGroupDeleteConfirmation()} style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title>Delete Confirmation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Are you sure you want to delete the selected items?</Modal.Body>
-                <Modal.Footer>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete the selected items?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => handleGroupDelete()}> Delete </Button>
                     <Button onClick={() => handleCloseFlashcardsetGroupDeleteConfirmation()}> Cancel </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showFlashcardsetCopy} onHide={() => handleCloseFlashcardsetCopy()}>
-                <Modal.Header closeButton={() => handleCloseFlashcardsetCopy()}>
+                <Modal.Header closeButton={() => handleCloseFlashcardsetCopy()} style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title>Copy {selectedFlashcardsetToCopy.setname}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> Select where to copy {selectedFlashcardsetToCopy.setname}:
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Select where to copy {selectedFlashcardsetToCopy.setname}:
                                 <div>
                                     <select name="selectList" id="selectList" onChange={(e) => setCopyDestFolderSelect(e.currentTarget.value)}>
                                                 <option value="">---Choose---</option>
@@ -705,19 +705,19 @@ function Folder() {
                                     </select>
                                 </div>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => handleCloseFlashcardsetCopy()}> Cancel </Button>
                     <Button onClick={() => handleCopyFlashcardset()}> Copy </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showSaved} onHide={() => handleCloseSaved()}>
-                <Modal.Header closeButton={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()} style={{backgroundColor: 'black', color: 'gold'}}>
                     <Modal.Title> Successful Operation</Modal.Title>
                 </Modal.Header>
-                <Modal.Body> 
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
                         <img className="photo" src= {saveicon}/>
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
                     <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
                 </Modal.Footer>
             </Modal>
