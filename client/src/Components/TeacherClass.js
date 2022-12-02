@@ -45,13 +45,19 @@ function TeacherClass() {
   }, []);
   /** handlers **/
 
-  const handleSeeStudentGrade = (uName) => {
+  const handleSeeStudentGrade = async (uName) => {
     console.log("selecting student");
     console.log(uName);
     setCookie("selectedStudent", uName);
     console.log("cookie");
     console.log(getCookie("selectedStudent"));
-    //navigate("/studentgrade");
+    let res = await axios.post("http://localhost:3001/getScoreList", {
+      setID: JSON.parse(localStorage.getItem("flashcards")).flashcardset._id,
+      classCode: getCookie("classCode"),
+    });
+    localStorage.setItem("studentList", JSON.stringify(res.data));
+    //var studentList = res.data;
+    navigate("/studentgrade");
   };
 
   const handleShowSaved = () => {
@@ -342,11 +348,7 @@ function TeacherClass() {
               <div>
                 &nbsp; &nbsp;
                 {/*<h1>{item._id}</h1>*/}
-                <Button
-                  variant="warning"
-                  className="library-buttons"
-                  onClick={() => handleSeeStudentGrade(item)}
-                >
+                <Button variant="warning" className="library-buttons">
                   {item}
                 </Button>
                 <Button
