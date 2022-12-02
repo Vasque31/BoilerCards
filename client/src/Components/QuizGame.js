@@ -110,6 +110,7 @@ function QuizGame() {
     const handleShowExitQuiz = async () => {
         clearInterval(globalScopeClock); //clear the current quiz's clock
         //console.log("setId " + cardsQuiz[0].belongset)
+        console.log("time " + time);
         const setID = cardsQuiz[0].belongset;
         let res = await axios.post("http://localhost:3001/storeScore", {
             userID: getCookie('userid'),
@@ -136,11 +137,12 @@ function QuizGame() {
         if (earlyExit) {
             clearInterval(globalScopeClock);
             let res = await axios.post("http://localhost:3001/storeScore", {
-            userID: getCookie('userid'),
-            setID: flashcardsetinfo.flashcardset._id,
-            score: score,
-            time: -1,
-        });
+                userID: getCookie('userid'),
+                setID: flashcardsetinfo.flashcardset._id,
+                score: score,
+                time: -1,
+            });
+            earlyExit = false;
         //time = -1 means incomplete quiz
         }
 
@@ -220,9 +222,9 @@ function QuizGame() {
             <Button className='abort' onClick={handleShowAbortQuiz}> Exit Quiz </Button>
             
 
-            <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
+            <h1 className="pad" style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
             <br></br>
-            <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[currPrompt].front}</h1>
+            <h1 className="pad" style={{textAlign: "center", color: "gold"}}> {cardsQuiz[currPrompt].front}</h1>
             <br></br>
             <h1 style={{textAlign: "center", color: "gold"}}> Answer Choices:</h1>
             <br></br>

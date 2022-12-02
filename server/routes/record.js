@@ -1053,13 +1053,14 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
     ObjectId(setID)
   );
   if (result != false) {
-    const scoremap = new Map(Object.entries(result.score));
-    //console.log(scoremap);
+    const scoremap = new Map(Object.entries(result.student));
+    console.log(Array.from(scoremap));
     if (scoremap.get(userName) == null) {
       scoremap.set(userName, scoreResult);
       console.log(scoremap);
     } else {
       if (NumberInt(scoremap.get(userName).score) < score) {
+        console.log("High Score");
         scoremap.set(userName, scoreResult);
       }
       if (
@@ -1103,7 +1104,7 @@ recordRoutes.route("/getLeaderboard").post(async function (req, res) {
     ObjectId(setID)
   );
   if (result != false) {
-    var score = new Map(Object.entries(result.student));
+    var score = new Map(Object.entries(result.student)); //what is result.student???
     console.log(score);
     score = Array.from(score.values());
     const sortedarray = boardSort1(score, score.length);

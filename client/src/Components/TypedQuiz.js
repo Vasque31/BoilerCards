@@ -130,11 +130,12 @@ function TypedQuiz()  {
         if (earlyExit) {
             clearInterval(globalScopeClock); 
             let res = await axios.post("http://localhost:3001/storeScore", {
-            userID: getCookie('userid'),
-            setID: cardsQuiz[0].belongset,
-            score: score,
-            time: -1,
-        });
+                userID: getCookie('userid'),
+                setID: cardsQuiz[0].belongset,
+                score: score,
+                time: -1,
+            });
+            earlyExit = false;
         //time = -1 means incomplete quiz
         }
             //reset values

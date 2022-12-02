@@ -79,12 +79,10 @@ function Leaderboard() {
                 //Check quiz completion
                 if (entry.time != -1) {
                     return(
-                        <div>
-                            <p>{index + 1}.</p>
-                            <h1>User: {entry.username}</h1> <br></br>
-                                <h2>   Score: {entry.score}</h2> <br></br>
-                                <h3>   Time: {entry.time}</h3> <br></br>
-    
+                        <div className="score-listing">
+                            <p >{index + 1}.  User: {entry.userName}</p>
+                                <h2>   Score: {entry.score}</h2> 
+                                <h3>   Time: {(entry.time - (entry.time % 100))/100}.{(entry.time % 100)/10}sec</h3> <br></br>
                         </div>
                     );
                 }
@@ -95,19 +93,7 @@ function Leaderboard() {
     )
 
 }
-/*
-{Object.values().map((entry, index) => {
-                return(
-                    <div>
-                        <p>{index + 1}.</p>
-                        <h1>User: {entry.username}</h1> <br></br>
-                            <h2> Score: {entry.setid.score}</h2> <br></br>
-                            <h3> Time: {entry.setid.time}</h3> <br></br>
 
-                    </div>
-                );
-            })}
-            */
  //Adapted from difficulty sort on backend
  //changes arrays values' ordering in addition to returning an array
  //comp function compares 2 elements, switch if return < 0 (first arg < second arg by convention)

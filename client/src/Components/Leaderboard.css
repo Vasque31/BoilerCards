@@ -4,3 +4,12 @@
     left: 200px;
     top: 100px;
 }
+
+.score-listing {
+    width: 200px;
+    height: 100px;
+    position: relative;
+    padding-top: 15px;
+    padding-left: 15px;
+    color: gold;
+}
