@@ -110,7 +110,7 @@ function TypedQuiz()  {
             userID: getCookie('userid'),
             setID: cardsQuiz[0].belongset,
             score: score,
-            timer: globalTime,
+            time: globalTime,
         });
 
         setShowContinueorExit(true);

@@ -1,11 +1,11 @@
 .input-field {
     width: 600px;
-    position: absolute;
+    position: relative;
     left: 450px;
 }
 
 .abort {
     width: 200px;
-    position: absolute;
+    position: relative;
     left: 450px;
 }

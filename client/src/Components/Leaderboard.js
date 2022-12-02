@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import { useState } from "react";
 import { cardsQuiz } from "./ViewFlashcard";
+import { thisSetID } from './ViewFlashcard';
+
 import axios from 'axios';
 
 import "./Leaderboard.css";
@@ -16,16 +18,17 @@ function Leaderboard() {
      *                                                   *
      ****************************************************/
     const navigate = useNavigate();
-
+    const [flashcardsetinfo, setFlashcardsetInfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
 
     const getdata = async () => {
         console.log("pre getLeaderboard");
         let res = await axios.post("http://localhost:3001/getLeaderboard", {
-            setID: cardsQuiz[0].belongset,
+            setID: flashcardsetinfo.flashcardset._id,
         });        
         console.log("post getLeaderboard");
-        console.log("resulting data" + res.data);
-        const returningArray = res.data;
+        //console.log("resulting data" + res.data);
+        var returningArray = res.data;
+        console.log(returningArray);
         return returningArray; //array of objects w/ userName, score, time
     }
 
@@ -104,6 +107,7 @@ function Leaderboard() {
  //comp function compares 2 elements, switch if return < 0 (first arg < second arg by convention)
 function insertionSort(arr, n, compFunc) 
 { 
+    if (n == 1) return arr;
     let i, key, j; 
     for (i = 1; i < n; i++) //element to "insert"
     { 

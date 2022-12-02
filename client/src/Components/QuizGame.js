@@ -106,7 +106,7 @@ function QuizGame() {
             userID: getCookie('userid'),
             setID: thisSetID,
             score: score,
-            timer: time,
+            time: time,
         });
         if (res.data == true) {
 

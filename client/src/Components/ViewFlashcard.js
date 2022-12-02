@@ -60,6 +60,9 @@ function ViewFlashcard() {
     }
 
     const handleStartQuiz = () => {
+        cardsQuiz = [];
+        cardsQuiz = Object.values(update.flashcardarray); //access cards for quiz (as an array)
+        console.log("cards for quiz" + cardsQuiz);
         console.log("verify flashcards still exist");
         console.log(Object.values(update.flashcardarray).length);
         if (update != null && Object.values(update.flashcardarray).length >= 4) {

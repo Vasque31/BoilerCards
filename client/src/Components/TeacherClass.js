@@ -13,6 +13,9 @@ import { getCookie } from 'react-use-cookie';
 import cookie from 'react-cookies'
 import axios from "axios";
 
+import saveicon from "../images/saveicon.png";
+
+
 function TeacherClass() {
    {/*Create FlashCard Set Handlers*/}
    const fileReader = new FileReader();
@@ -22,6 +25,17 @@ function TeacherClass() {
    const [inputList, setinputList] = useState([{front:'', back:'', drate: '3', img:''}]);
    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')));
    const [dest, setDest] = useState(getCookie('classCode'));
+   const [showSaved, setShowSaved] = useState(false);
+
+
+     /** handlers **/
+
+     const handleShowSaved = () => { setShowSaved(true);}
+     const handleCloseSaved = () => { 
+         setShowSaved(false);
+         handlerefresh();
+     }  
+
    const handleFlashcardSetClick = async(id) => {
     console.log(id);
     let res = await axios.post("http://localhost:3001/flsahcardset", {
@@ -57,7 +71,7 @@ function TeacherClass() {
         });
 
         if(res.data===true){
-            //handleShowSaved();
+            handleShowSaved();
         }
         handleClose();
         handlerefresh();
@@ -215,6 +229,18 @@ function TeacherClass() {
                     <Button onClick={() => setShowStudentList(false)}> 
                         Close
                     </Button>
+                </Modal.Footer>
+            </Modal>
+            {/** Saved Modal **/}
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
                 </Modal.Footer>
             </Modal>
     </div>
