@@ -105,7 +105,7 @@ function TeacherClass() {
     const [showStudentList, setShowStudentList] = useState(false);
     const handleRemoveStudent = async(name) => {
         console.log(name)
-        let res = await axios.post("http://localhost:3001/removeByName", {
+        let res = await axios.post("http://localhost:3001/leaveClassbyName", {
             userName: name,
             classCode:getCookie('classCode')
         });

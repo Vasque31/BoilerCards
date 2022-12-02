@@ -306,10 +306,11 @@ function ViewFlashcard() {
                 <Dropdown style={{float: "right"}}>
                     <Dropdown.Toggle variant="info">Options</Dropdown.Toggle>
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={handleShow}>Add more Flashcards</Dropdown.Item>
+                        {!update.flashcardset.flagged && 
+                        <Dropdown.Item onClick={handleShow}>Add more Flashcards</Dropdown.Item>}
                         <Dropdown.Item onClick={handleShowDownload}>Download this Set</Dropdown.Item>
                         <Dropdown.Item onClick={handleStartQuiz}>Quiz Yourself!</Dropdown.Item>
-                        <Dropdown.Item onClick={handleShowSend}>Share this Flashcard Set</Dropdown.Item>
+                        {!update.flashcardset.flagged && <Dropdown.Item onClick={handleShowSend}>Share this Flashcard Set</Dropdown.Item>}
                     </Dropdown.Menu>
                 </Dropdown>
                 <Button style={{float: 'right'}} variant="danger" onClick={handleFlag}>Flag</Button>
