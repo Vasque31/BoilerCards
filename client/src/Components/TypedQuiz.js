@@ -183,18 +183,16 @@ function TypedQuiz()  {
             
             <Button className='abort' onClick={handleShowAbortQuiz}> Exit Quiz </Button>
             
-            
-            <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
-            <br></br>
-            <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[currPrompt].front}</h1>
-            <br></br>
-            <h1 style={{textAlign: "center", color: "gold"}}> Answer:</h1>
-            <br></br>
-            <textarea className="input-field" type="text" name="answer" onChange={e => setAnswer(e.target.value)}></textarea>
-            <br></br>
-            <br></br>
-            <Button className="input-field" onClick={handleTypedAnswer}>Submit Answer</Button>
-
+            <div className='input-container-quiz'>
+                <h1 style={{textAlign: "center", color: "gold"}}> Prompt: </h1>
+                <br></br>
+                <h1 style={{textAlign: "center", color: "gold"}}> {cardsQuiz[currPrompt].front}</h1>
+                <br></br>
+                <h1 style={{textAlign: "center", color: "gold"}}> Answer:</h1>
+                <br></br>
+                <textarea className="input-field" type="text" name="answer" onChange={e => setAnswer(e.target.value)}></textarea> <br></br>
+                <Button className="input-field" onClick={handleTypedAnswer}>Submit Answer</Button>
+            </div>
             {/** Finished Quiz **/}
             <Modal show={showContinueorExit} onHide={() => handleHideExit}>
                 <Modal.Header>
