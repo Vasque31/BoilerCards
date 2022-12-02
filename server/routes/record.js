@@ -687,14 +687,20 @@ recordRoutes.route("/verification").post(async function (req, res) {
 });
 recordRoutes.route("/report").post(async function (req, res) {
   var reportsetid = req.body.setid;
+  console.log(reportsetid);
   var reportset = await Flashcarddata.GetFlashcardsetasync(
     client,
     ObjectId(reportsetid)
   );
   reportset.private = true;
   reportset.flagged = true;
-  delete reportset._id;
-  await Flashcarddata.reportSet(client, reportset);
+  console.log("sakd");
+  const noSet = {
+    flagged: true,
+    reportset: reportset,
+  };
+  console.log(noSet);
+  await Flashcarddata.reportSet(client, noSet);
   await Flashcarddata.UpdateSet(client, ObjectId(reportsetid), reportset);
   res.json(true);
 });
@@ -1070,7 +1076,6 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
       console.log(scoremap);
     } else {
       if (NumberInt(scoremap.get(userName).score).value < score.value) {
-
         scoremap.set(userName, scoreResult);
       }
       console.log(NumberInt(scoremap.get(userName).score).value);
