@@ -444,6 +444,7 @@ function Header() {
                                 </div>
                               </Form.Group>
 
+<<<<<<< HEAD
                               <Form.Group style={{ color: "gold" }}>
                                 <Form.Label
                                   style={{ background: "black", color: "gold" }}
@@ -510,6 +511,58 @@ function Header() {
                   </div>
                 </NavDropdown.Item>
               </NavDropdown>
+=======
+                            <NavDropdown.Item>
+                                    <Button variant="Light" onClick={handleShow}>
+                                        Flashcard Set
+                                    </Button>
+                                     {/* Create FlashcardSet Modal */}
+                                    <div onKeyDown={e => e.stopPropagation()}
+                                        onClick={e => e.stopPropagation()}
+                                        onFocus={e => e.stopPropagation()}
+                                        onMouseOver={e => e.stopPropagation()} >
+                                    <Modal show={show} onHide={handleClose} dialogClassName="general-box-createflash">
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>
+                                            <h1 style ={{fontSize: "5rem", color:"gold", textAlign: "center", background: "black"}}>BOILERCARDS</h1>
+                                            <h2 style ={{fontSize: "2rem", color:"gold", textAlign: "center", background: "black"}}>Create Flashcard Set</h2>
+                                            </Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <label style={{background: "black", color: 'gold'}}>Destination Folder</label>&nbsp; &nbsp;
+                                            <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
+                                                <option value="">---Choose---</option>
+                                                {Object.values(library).map(item => {
+                                                    return (
+                                                        <option value={item._id}>{item.foldername}</option>    
+                                                    );
+                                                })}
+                                            </select>
+                                            <h1></h1>
+                                            <label style = {{paddingRight: "1rem", color: "gold",background: "black", fontSize: "1rem"}}>Name Of FlashCard Set</label>
+                                            <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
+                                            <h1></h1>
+                                                <label style={{background: "black", color: 'gold'}}>Private/Public</label>
+                                                <select name="pripub" id="privlist" onChange={(e) => setPrivate(e.currentTarget.value)}>
+                                                    <option value={true}>
+                                                        Private
+                                                    </option>
+                                                    <option value={false}>
+                                                        Public
+                                                    </option>
+                                                </select>
+                                            {
+                                            inputList.map((x,i) => { 
+                                                return(
+                                                <Form>
+                                                    <Form.Group style={{color: "gold"}}>
+                                                        <h1 style={{background: "black", color: 'gold'}}>#{i+1}</h1>
+                                                        <Form.Label style={{background: "black", color: 'gold'}}>Front of Card</Form.Label>
+                                                        <div>
+                                                        <textarea type="text" name= "front" placeholder="Front of FlashCard" onChange={e => handleinputchange(e,i)}/>
+                                                        </div>
+                                                    </Form.Group>
+>>>>>>> 2721bcf634703795c0a2f50bad06d46c758b2203
 
               {/* Profile DropDown */}
 
