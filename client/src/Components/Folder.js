@@ -426,8 +426,8 @@ function Folder() {
                     <Button variant="warning" onClick={handleShowChangeLabel}>
                         Change Label
                     </Button>
-                    &nbsp;&nbsp;
-                    <Button variant='danger' value={folder._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button>
+                    {folder.foldername !== "Home" && <>&nbsp;&nbsp;
+                    <Button variant='danger' value={folder._id} onClick={() => handleShowFolderDeleteConfirm()}>Delete Folder</Button></>}
                     &nbsp;&nbsp;
                     <Button variant='light' onClick={handleSettingClick}><div style={{color: 'black'}}>Close Settings</div></Button>
                     </div>}
