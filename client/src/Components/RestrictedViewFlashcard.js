@@ -274,7 +274,16 @@ function RestrictedViewFlashcard() {
         }
        
     }
-
+    const handleFlag = async() => {
+        console.log(update.flashcardset._id)
+        let res = await axios.post("http://localhost:3001/report", {
+            reportsetid: update.flashcardset._id
+        });
+        if (res.data == true) {
+            alert("This Set Has Been Reported!");
+        }
+        handlerefresh(update.flashcardset._id);
+    }
     return (
        
         <div style={{display: 'block', width: '100%'}}>
@@ -293,6 +302,7 @@ function RestrictedViewFlashcard() {
                         <Dropdown.Item onClick={handleShowSend}>Share this Flashcard Set</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
+                <Button style={{float: 'right'}} variant="danger" onClick={handleFlag}>Flag</Button>
                 <Modal show={showDownload} onHide={handleCloseDownload} backdrop="static">
                     <Modal.Header closeButton>
                         <Modal.Title>Download this Flashcardset</Modal.Title>

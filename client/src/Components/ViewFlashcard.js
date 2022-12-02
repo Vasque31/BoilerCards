@@ -20,7 +20,6 @@ import { getCookie } from "react-use-cookie";
 export var image = "";
 
 export var cardsQuiz = [{front: "a", back: "b",}];
-export var thisSetID = null;
 
 export var flashcardid = null;
 var toDeleteFlashcard = {
@@ -30,7 +29,7 @@ function ViewFlashcard() {
     const fileReader = new FileReader();
     const [showEdit, setShowEdit] = useState(false);
     const [showSend, setShowSend] = useState(false);
-    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards'))); //flashcardsetinfo structure
+    const [update, setUpdate] = useState(JSON.parse(localStorage.getItem('flashcards')));
     const [show, setShow] = useState(false);
     const [showFlashcardDeleteConfirm, setShowFlashcardDeleteConfirm] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
@@ -40,9 +39,6 @@ function ViewFlashcard() {
     const [newDiff, setNewDiff] = useState();
     const [sendUsername, setSendUsername] = useState("");
     const [showDownload, setShowDownload] = useState(false);
-
-    thisSetID = update.flashcardset._id; //used to store quiz results, access set's id
-
     const handleShowSaved = () => {	setShowSaved(true);	}
     const handleCloseSaved = () => { setShowSaved(false);}
     const handleCloseDownload = () => setShowDownload(false);
@@ -61,9 +57,6 @@ function ViewFlashcard() {
     }
 
     const handleStartQuiz = () => {
-        cardsQuiz = [];
-        cardsQuiz = Object.values(update.flashcardarray); //access cards for quiz (as an array)
-        console.log("cards for quiz" + cardsQuiz);
         console.log("verify flashcards still exist");
         console.log(Object.values(update.flashcardarray).length);
         if (update != null && Object.values(update.flashcardarray).length >= 4) {
@@ -156,7 +149,7 @@ function ViewFlashcard() {
             userName: sendUsername
             
         });
-        if (res.data === true) {
+        if (res === true) {
             handleShowSaved();
         } else {
             alert("Invalid username!");
@@ -287,6 +280,16 @@ function ViewFlashcard() {
         }
        
     }
+    const handleFlag = async() => {
+        console.log(update.flashcardset._id)
+        let res = await axios.post("http://localhost:3001/report", {
+            reportsetid: update.flashcardset._id
+        });
+        if (res.data == true) {
+            alert("This Set Has Been Reported!");
+        }
+        handlerefresh(update.flashcardset._id);
+    }
 
     return (
        
@@ -307,6 +310,7 @@ function ViewFlashcard() {
                         <Dropdown.Item onClick={handleShowSend}>Share this Flashcard Set</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
+                <Button style={{float: 'right'}} variant="danger" onClick={handleFlag}>Flag</Button>
                 <Modal show={showDownload} onHide={handleCloseDownload} backdrop="static">
                     <Modal.Header closeButton>
                         <Modal.Title>Download this Flashcardset</Modal.Title>
@@ -340,7 +344,12 @@ function ViewFlashcard() {
                                 Private
                             </ToggleButton>
                 </ToggleButtonGroup>}
-                {statePrivate && getCookie('teacher') !== 'true' &&
+                {getCookie('teacher') !== 'false' && update.flashcardset.flagged && <ToggleButtonGroup type="radio" name="options" value={true}>
+                            <ToggleButton id="private-button" variant="outline-danger" value={true}>
+                                Private
+                            </ToggleButton>
+                </ToggleButtonGroup>}
+                {statePrivate && getCookie('teacher') !== 'true' && !update.flashcardset.flagged &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={true}>
                             <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={e => setPrivate(e.currentTarget.value)}>
                                 Private{}
@@ -349,7 +358,7 @@ function ViewFlashcard() {
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
-                {!statePrivate && getCookie('teacher') !== 'true' &&
+                {!statePrivate && getCookie('teacher') !== 'true' && !update.flashcardset.flagged &&
                 <ToggleButtonGroup type="radio" name="options" defaultValue={false}>
                             <ToggleButton id="private-button" variant="outline-danger" value={true} onChange={(e) => setPrivate(e.currentTarget.value)}>
                                 Private
@@ -358,7 +367,7 @@ function ViewFlashcard() {
                                 Public
                             </ToggleButton>
                 </ToggleButtonGroup> }
-                {(getCookie("teacher") !== "true") && <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>}
+                {(getCookie("teacher") !== "true") && !update.flashcardset.flagged && <Button onClick={(handleSaveFlashcardStatus)}>Confirm</Button>}
                 <Dropdown as={ButtonGroup} style={{float: "left"}}>
                     <Button variant="secondary">Sort By:</Button>
                     <Dropdown.Toggle split variant="secondary" id = "dropdown-split-basic" />

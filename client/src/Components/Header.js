@@ -256,7 +256,10 @@ function Header() {
                   <Button variant="Light" onClick={handleShowFolder}>
                     Folder
                   </Button>
-                  <div>
+                  <div onKeyDown={e => e.stopPropagation()}
+                                        onClick={e => e.stopPropagation()}
+                                        onFocus={e => e.stopPropagation()}
+                                        onMouseOver={e => e.stopPropagation()} >
                     <Modal
                       show={showFolder}
                       onHide={handleCloseFolder}
