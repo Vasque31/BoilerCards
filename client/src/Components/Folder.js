@@ -51,6 +51,12 @@ function Folder() {
     const [copyDestFolderSelect, setCopyDestFolderSelect] = useState(""); //id 
 
     const handleShowSaved = () => { setShowSaved(true);}
+    useEffect(() => {
+        const getLibrary = async () => {
+          handlerefresh();
+        };
+        getLibrary();
+      }, []);
     const handleCloseSaved = () => { 
         setShowSaved(false);
         handlerefresh();

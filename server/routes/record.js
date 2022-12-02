@@ -1181,7 +1181,7 @@ recordRoutes.route("/leaveClassbyName").post(async function (req, res) {
   console.log(classMap);
   user.class = Object.fromEntries(classMap);
   console.log(user);
-  await userdata.UpdateUser(client, ObjectId(userID), user);
+  await userdata.UpdateUser(client, userName, user);
   res.json(true);
 });
 recordRoutes.route("/deleteClass").post(async function (req, res) {
