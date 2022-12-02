@@ -26,7 +26,7 @@ function HomeLibrary() {
     const navigate = useNavigate();
     const [cookie, setCookie, removeCookie] = useCookies([]);
     const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('libdata')));
-    
+    const [folders, setFolders] = useState([]);
     useEffect(()=> {
         const getLibrary = async () => {
             let res = await axios.post("http://localhost:3001/loadspace", {
@@ -41,6 +41,7 @@ function HomeLibrary() {
             //console.log(folders);
             library.folder = insertionSort(folders, n);
             console.log(library.folder);
+            setFolders(library.folder);
             localStorage.setItem('libdata', JSON.stringify(res.data));
         }
         getLibrary();
@@ -74,7 +75,7 @@ function HomeLibrary() {
         </div>
         <div className= "library-box">
             <table>
-            {Object.values(library.folder).slice(0,8).map(item => {
+            {folders.slice(0,8).map(item => {
                 return (
                     <row>
                         &nbsp; &nbsp;
