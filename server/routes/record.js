@@ -404,7 +404,12 @@ recordRoutes.route("/edit").post(async function (req, res) {
   );
   oldflashcard.front = req.body.newfront;
   oldflashcard.back = req.body.newback;
-  oldflashcard.difficulty = req.body.newDiff;
+  if (req.body.newDiff == null) {
+    oldflashcard.difficulty = 3;
+  } else {
+    oldflashcard.difficulty = req.body.newDiff;
+  }
+
   result = await Flashcarddata.UpdateFlashcard(
     client,
     ObjectId(flashcardid),
