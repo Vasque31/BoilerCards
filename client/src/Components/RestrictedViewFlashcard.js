@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ViewFlashcard.css";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
@@ -52,6 +52,17 @@ function RestrictedViewFlashcard() {
   const handleCloseFlashDelCon = () => {
     setShowFlashcardDeleteConfirm(false);
   };
+
+  useEffect(() => {
+    const getLibrary = async () => {
+        let res = await axios.post("http://localhost:3001/flsahcardset", {
+            setid:update.flashcardset._id 
+        });
+        localStorage.setItem('flashcards', JSON.stringify(res.data));
+        setUpdate(res.data);
+    };
+    getLibrary();
+  }, []);
   const handleShowFlashcardDeleteConfirm = async (flashcard_id) => {
     let res = await axios.post("http://localhost:3001/flsahcard", {
       flashcardid: flashcard_id,
@@ -148,6 +159,7 @@ function RestrictedViewFlashcard() {
   };
   const handleCloseSend = () => {
     setShowSend(false);
+    setSendUsername('');
   };
   const handleChangeSendName = (event) => {
     setSendUsername(event.target.value);
@@ -388,13 +400,16 @@ function RestrictedViewFlashcard() {
           onHide={handleCloseDownload}
           backdrop="static"
         >
-          <Modal.Header closeButton>
+          <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
             <Modal.Title>Download this Flashcardset</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
             Once you click Download, press ctrl+p to download locally
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+            <Button varient="primary" onClick={handleCloseDownload}>
+              Close
+            </Button>
             <Link to="/downloadset" target="_blank">
               <Button varient="primary" onClick={handleCloseDownload}>
                 Download
@@ -402,25 +417,29 @@ function RestrictedViewFlashcard() {
             </Link>
           </Modal.Footer>
         </Modal>
-        <Modal show={showSend} onHide={handleCloseSend} backdrop="static">
-          <Modal.Header closeButton>
+        <Modal show={showSend} onHide={handleCloseSend}>
+          <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
             <Modal.Title>Share this Flashcard Set</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Who do you want to send this set to?</Modal.Body>
-          <Form onSubmit={handleSubmitSend}>
-            <Form.Group>
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="name"
-                placeholder="Username"
-                onChange={handleChangeSendName}
-              />
-            </Form.Group>
-            <br />
-            <Button variant="primary" type="submit">
+          <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
+                Who do you want to send this set to?
+                <br></br>
+                <Form onSubmit={handleSubmitSend}>
+                    <Form.Group>
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                            type="name"
+                            placeholder="Username"
+                            onChange={handleChangeSendName}
+                        />
+                    </Form.Group>
+                </Form>
+            </Modal.Body>
+            <Modal.Footer style={{float:'right', backgroundColor:'black', color: 'gold'}}>
+            <Button variant="primary" onClick={(e) => handleSubmitSend}>
               Send Flashcard Set
             </Button>
-          </Form>
+            </Modal.Footer>
         </Modal>
         <Dropdown as={ButtonGroup} style={{ float: "left" }}>
           <Button variant="secondary">Sort By:</Button>
@@ -500,13 +519,13 @@ function RestrictedViewFlashcard() {
       </div>
 
       <Modal show={showSaved} onHide={() => handleCloseSaved()}>
-        <Modal.Header closeButton={() => handleCloseSaved()}>
+        <Modal.Header closeButton={() => handleCloseSaved()} style={{backgroundColor: 'black', color: 'gold'}}>
           <Modal.Title> Successful Operation</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}>
           <img className="photo" src={saveicon} />
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
           <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
         </Modal.Footer>
       </Modal>

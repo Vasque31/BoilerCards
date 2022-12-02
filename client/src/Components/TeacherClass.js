@@ -157,131 +157,70 @@ function TeacherClass() {
     if (res.data === true) {
       alert("Class Deleted");
     }
-  };
-  return (
-    <div>
-      <TeacherHeader />
-      <div
-        style={{ paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem" }}
-      >
-        <CloseButton variant="white" onClick={() => navigate(-1)} />
-      </div>
-      <div
-        style={{
-          textAlign: "left",
-          color: "gold",
-          fontSize: "2rem",
-          paddingLeft: "20rem",
-        }}
-      >
-        <heading>
-          {library.className} - Code:{getCookie("classCode")}
-        </heading>
-        <div
-          style={{
-            fontSize: "1rem",
-            paddingLeft: "3rem",
-            justifyContent: "flex",
-          }}
-        >
-          Created By: Teacher {getCookie("username")}
-        </div>
-      </div>
-
-      <div
-        style={{
-          paddingLeft: "22rem",
-          paddingRight: "25rem",
-          paddingTop: "1.5rem",
-          display: "flex",
-          justifyContent: "flex",
-        }}
-      >
+    const [showFolderDeleteConfirm, setShowFolderDeleteConfirm] = useState(false);
+    const handleCloseFolderDeleteConfirm = () => {setShowFolderDeleteConfirm(false);}
+    return (
         <div>
-          <Button variant="light" onClick={() => setShowStudentList(true)}>
-            Students
-          </Button>
-          <div style={{ paddingTop: "0.25rem" }}>
-            <Button
-              variant="dark"
-              style={{ color: "gold" }}
-              onClick={(e) => setShow(true)}
-            >
-              Create FlashCard Set
-            </Button>
-          </div>
-          <div>
-            <Button variant="danger" onClick={() => handleDeleteClass()}>
-              Delete Class
-            </Button>
-          </div>
-        </div>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <div className="teacher-box">
-          {Object.values(library.flashcardset).map((item) => {
-            return (
-              <div style={{ paddingBottom: "0.5rem" }}>
-                &nbsp; &nbsp;
-                {/*<h1>{item._id}</h1>*/}
-                <Button
-                  variant="warning"
-                  className="library-buttons"
-                  value={item._id}
-                  onClick={(e) => handleFlashcardSetClick(e.target.value)}
-                >
-                  {item.setname}
-                </Button>
-                &nbsp; &nbsp;
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        dialogClassName="general-box-createflash"
-      >
-        <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
-          <Modal.Title>
-            <h1 style={{ fontSize: "5rem", textAlign: "center" }}>
-              BOILERCARDS
-            </h1>
-            <h2 style={{ fontSize: "2rem", textAlign: "center" }}>
-              Create Flashcard Set
-            </h2>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
-          <h1></h1>
-          <label style={{ paddingRight: "1rem", fontSize: "1rem" }}>
-            Name Of FlashCard Set
-          </label>
-          <input
-            type="text"
-            name="flashcardSetName"
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <h1></h1>
-          {inputList.map((x, i) => {
-            return (
-              <Form style={{ color: "gold" }}>
-                <Form.Group>
-                  <h1 style={{ textAlign: "left", paddingLeft: "5rem" }}>
-                    #{i + 1}
-                  </h1>
-                  <Form.Label>Front of Card</Form.Label>
-                  <div>
-                    <textarea
-                      type="text"
-                      name="front"
-                      placeholder="Front of FlashCard"
-                      onChange={(e) => handleinputchange(e, i)}
-                    />
-                  </div>
-                </Form.Group>
+            <TeacherHeader/>
+            <div style={{paddingTop: "1rem", paddingLeft: "9rem", fontSize: " 2rem"}}>
+                <CloseButton variant= "white" onClick={() => navigate(-1)}/>
+            </div>
+            <div style={{textAlign: 'left', color: 'gold', fontSize: '2rem', paddingLeft: '20rem'}}>
+                <heading>{library.className} - Code:{getCookie('classCode')}</heading>
+                <div style ={{fontSize:'1rem', paddingLeft: '3rem', justifyContent: 'flex'}}>Created By: Teacher {getCookie('username')}</div>
+                
+            </div>
 
+            <div style={{paddingLeft: '22rem', paddingRight: '25rem', paddingTop: '1.5rem',display: 'flex', justifyContent: 'flex'}}>
+                <div>
+                    <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
+                    <div style={{paddingTop: '0.25rem'}}>
+                    <Button variant='dark' style={{color: 'gold'}} onClick={(e) => setShow(true)}>Create FlashCard Set</Button>
+                    </div>
+                    <div >
+                        <Button variant='danger' onClick={() => setShowFolderDeleteConfirm(true)}>Delete Class</Button>
+                    </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                
+                <div className= "teacher-box">
+                    {Object.values(library.flashcardset).map(item => {
+                        return (
+                            <div style={{paddingBottom: '0.5rem'}}>
+                                &nbsp; &nbsp;
+                                {/*<h1>{item._id}</h1>*/}
+                                <Button variant='warning' className= "library-buttons" value={item._id} onClick= {(e) => handleFlashcardSetClick(e.target.value)}>
+                                    {item.setname}
+                                </Button>
+                                &nbsp; &nbsp;
+                            </div>
+                                
+                        );
+                    })}
+                </div>
+            </div>
+            <Modal show={show} onHide={handleClose} backdrop="static" dialogClassName="general-box-createflash">
+                <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title> 
+                        <h1 style ={{fontSize: "5rem", textAlign: "center"}}>BOILERCARDS</h1>
+                        <h2 style ={{fontSize: "2rem", textAlign: "center"}}>Create Flashcard Set</h2>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey',color: "gold"}}>
+                    <h1></h1>
+                    <label style = {{paddingRight: "1rem", fontSize: "1rem"}}>Name Of FlashCard Set</label>
+                    <input type="text" name="flashcardSetName" onChange={(e) => setName(e.target.value)} required />
+                    <h1></h1>
+                {inputList.map((x,i) => { 
+                    return(
+                        <Form style={{color: 'gold'}}>
+                            <Form.Group>
+                                <h1 style={{textAlign: 'left', paddingLeft: '5rem'}}>#{i+1}</h1>
+                                <Form.Label>Front of Card</Form.Label>
+                                <div>
+                                    <textarea type="text" name= "front" placeholder="Front of FlashCard" onChange={e => handleinputchange(e,i)}/>
+                                </div>
+                            </Form.Group>
                 <Form.Group style={{ color: "gold" }}>
                   <Form.Label>Back of Card</Form.Label>
                   <div>
@@ -335,51 +274,69 @@ function TeacherClass() {
       </Modal>
 
       {/*Student List*/}
-
-      <Modal show={showStudentList} onHide={() => setShowStudentList(false)}>
-        <Modal.Header style={{ backgroundColor: "black", color: "gold" }}>
-          <Modal.Title>Student List</Modal.Title>
-        </Modal.Header>
-        <Modal.Body style={{ backgroundColor: "dimgrey", color: "gold" }}>
-          {Object.values(library.student).map((item) => {
-            console.log("Map students");
-            console.log(item);
-            return (
-              <div>
-                &nbsp; &nbsp;
-                {/*<h1>{item._id}</h1>*/}
-                <Button variant="warning" className="library-buttons">
-                  {item}
-                </Button>
-                <Button
-                  variant="danger"
-                  value={item._id}
-                  onClick={() => handleRemoveStudent(item)}
-                  className="library-buttons"
-                >
-                  remove
-                </Button>
-                &nbsp; &nbsp;
-              </div>
-            );
-          })}
-        </Modal.Body>
-        <Modal.Footer style={{ backgroundColor: "black", color: "gold" }}>
-          <Button onClick={() => setShowStudentList(false)}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-      {/** Saved Modal **/}
-      <Modal show={showSaved} onHide={() => handleCloseSaved()}>
-        <Modal.Header closeButton={() => handleCloseSaved()}>
-          <Modal.Title> Successful Operation</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img className="photo" src={saveicon} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
-        </Modal.Footer>
-      </Modal>
+            <Modal show={showStudentList} onHide={() => setShowStudentList(false)}>
+                <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Student List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
+                    {Object.values(library.student).map(item => {
+                        console.log("Map students");
+                        console.log(item);
+                        return (
+                            <div>
+                                &nbsp; &nbsp;
+                                {/*<h1>{item._id}</h1>*/}
+                                <Button variant='warning' className= "library-buttons" onClick={() => handleSeeStudentGrade(item)}>
+                                    {item}
+                                </Button>
+                                <Button variant='danger' value={item._id} onClick={() => handleRemoveStudent(item)} className= "library-buttons">
+                                    remove
+                                </Button>
+                                &nbsp; &nbsp;
+                            </div>
+                                
+                        );
+                    })}
+                </Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => setShowStudentList(false)}> 
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/** Saved Modal **/}
+            <Modal show={showSaved} onHide={() => handleCloseSaved()}>
+                <Modal.Header closeButton={() => handleCloseSaved()} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title> Successful Operation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> 
+                        <img className="photo" src= {saveicon}/>
+                </Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* Delete Confirm Modal */}
+            <Modal show={showFolderDeleteConfirm} onHide={() => handleCloseFolderDeleteConfirm()}>
+                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete {library.className}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleDeleteClass()}> Delete </Button>
+                    <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showFolderDeleteConfirm} onHide={() => handleCloseFolderDeleteConfirm()}>
+                <Modal.Header closeButton={() => handleCloseFolderDeleteConfirm()} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Kick Student</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to Kick {library.className}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleDeleteClass()}> Delete </Button>
+                    <Button onClick={() => handleCloseFolderDeleteConfirm()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>
     </div>
   );
 }
