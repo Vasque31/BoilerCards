@@ -194,6 +194,11 @@ function Folder() {
         console.log(res.data);
         setFolder(res.data);
         localStorage.setItem('folder', JSON.stringify(res.data));
+        res = await axios.post("http://localhost:3001/loadspace", {
+            uid:getCookie('userid')
+        });
+        setLibrary(res.data)
+        localStorage.setItem('libdata', JSON.stringify(res.data));
     }
     //passes in the set to be deleted
     const handleDeleteFlashcardset = async (object) => {
@@ -406,7 +411,7 @@ function Folder() {
                     &nbsp;&nbsp;
                     <select name="selectList" id="selectList" onChange={(e) => setDestFolder(e.currentTarget.value)}>
                         <option value="">---Choose Destination---</option>
-                        {Object.values(library).map(item => {
+                        {Object.values(library.folder).map(item => {
                             return (
                                 <option value={item._id}>{item.foldername}</option>    
                             );
