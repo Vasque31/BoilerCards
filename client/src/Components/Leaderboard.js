@@ -8,131 +8,138 @@ import "./Leaderboard.css";
 import { getCookie } from "react-use-cookie";
 
 function Leaderboard() {
+  /*****************************************************
+   *      Constants/ Get data                          *
+   *                                                   *
+   ****************************************************/
+  const navigate = useNavigate();
+  var [myscore, setMyScore] = [
+    { userName: "nobody", score: -50, time: -1 },
+    (e) => {
+      myscore = e;
+    },
+  ];
+  const [flashcardsetinfo, setFlashcardsetInfo] = useState(
+    JSON.parse(localStorage.getItem("flashcards"))
+  );
+  const [usernameCurrent, setUsernameCurrent] = useState(getCookie("username"));
+  const [leaderboard, setLeaderboard] = useState([]);
 
-    /*****************************************************
-     *      Constants/ Get data                          *
-     *                                                   *
-     ****************************************************/
-    const navigate = useNavigate();
-    var [myscore, setMyScore] = [{userName: "nobody", score: -50, time: -1}, (e) => {myscore = e;}];
-    const [flashcardsetinfo, setFlashcardsetInfo] = useState(JSON.parse(localStorage.getItem('flashcards')));
-    const [usernameCurrent, setUsernameCurrent] = useState(getCookie('username'));
-    const [leaderboard, setLeaderboard] = useState([]);
-
-
-    useEffect(()=> {
-        async function getdata() {
-            console.log("pre getLeaderboard");
-            let res = await axios.post("http://localhost:3001/getLeaderboard", {
-                setID: flashcardsetinfo.flashcardset._id,
-            });        
-            console.log("post getLeaderboard");
-            //console.log("resulting data" + res.data);
-            var returningArray = res.data;
-            setLeaderboard(returningArray);
-            console.log(returningArray);
-        }
-        getdata();
-    },[]);
-    
-    
-    
-    //var leaderboard = getdata();
-    console.log(leaderboard);
-    //console.log(getdata().PromiseResult);
-    /*****************************************************
-     *      Handlers                                     *
-     *                                                   *
-     ****************************************************/
-
-    const handleCloseLeaderboard = () => {
-
-        navigate(-1);
-    };
-
-    const handleShowDetails = () => {
-
+  useEffect(() => {
+    async function getdata() {
+      console.log("pre getLeaderboard");
+      let res = await axios.post("http://localhost:3001/getLeaderboard", {
+        setID: flashcardsetinfo.flashcardset._id,
+      });
+      console.log("post getLeaderboard");
+      //console.log("resulting data" + res.data);
+      var returningArray = res.data;
+      setLeaderboard(returningArray);
+      console.log(returningArray);
     }
+    getdata();
+  }, []);
 
+  //var leaderboard = getdata();
+  console.log(leaderboard);
+  //console.log(getdata().PromiseResult);
+  /*****************************************************
+   *      Handlers                                     *
+   *                                                   *
+   ****************************************************/
 
+  const handleCloseLeaderboard = () => {
+    navigate(-1);
+  };
 
+  const handleShowDetails = () => {};
 
+  /*****************************************************
+   *      Logic                                        *
+   *                                                   *
+   ****************************************************/
 
-    /*****************************************************
-     *      Logic                                        *
-     *                                                   *
-     ****************************************************/
-    
-    //return score element of given user(username)
-    function getMyScore(scoreArray, user) {
-        for (var i = 0; i < scoreArray.length; i++) {
-            console.log(i);
-            console.log(scoreArray[i]);
-            if (user == scoreArray[i].userName) {
-                console.log("to return my score");
-                console.log(scoreArray[i]);
-                setMyScore(scoreArray[i]);
-            }
-        }
+  //return score element of given user(username)
+  function getMyScore(scoreArray, user) {
+    for (var i = 0; i < scoreArray.length; i++) {
+      console.log(i);
+      console.log(scoreArray[i]);
+      if (user == scoreArray[i].userName) {
+        console.log("to return my score");
+        console.log(scoreArray[i]);
+        setMyScore(scoreArray[i]);
+      }
     }
+  }
 
-    getMyScore(leaderboard, usernameCurrent);
-    console.log("returned");
-    console.log(myscore);
-    //latest sort precedence
-    //console.log("pre sort");
-    //insertionSort(leaderboard, leaderboard.length, compCompletionTime()); //low times sooner
-    //insertionSort(leaderboard, leaderboard.length, compScore()); //high scores sooner
-    //console.log("post sort");
+  getMyScore(leaderboard, usernameCurrent);
+  console.log("returned");
+  console.log(myscore);
+  //latest sort precedence
+  //console.log("pre sort");
+  //insertionSort(leaderboard, leaderboard.length, compCompletionTime()); //low times sooner
+  //insertionSort(leaderboard, leaderboard.length, compScore()); //high scores sooner
+  //console.log("post sort");
 
-    function timeToDisplay(time) {
-        if (time == -1) return (<div>Incomplete</div>);
-        return(<div>{(time - (time % 100))/100}.{(time % 100)/10}sec</div>);
-    }
-
+  function timeToDisplay(time) {
+    if (time == -1) return <div>Incomplete</div>;
     return (
-        <div>
-            <br></br>
-            <div className="scores-board">
-            <div className="scores-container" class='flex-container'>
-                {leaderboard.map((entry, index) => {
-                //Check quiz completion
-                if (entry.time != -1) {
-                    return(
-                        
-                        <div className="score-listing">
-                            <p className="user-header">{index + 1}.  User: {entry.userName}</p>
-                                <h2 className="user-scoreinfo">   Score: {entry.score}</h2> 
-                                <h3 className="user-scoreinfo">   Time: {timeToDisplay(entry.time)}</h3> <br></br>
-                        </div>
-                        
-                    );
-                } else {
-                    return(
-                        <div className="score-listing">
-                            <p className="user-header"> {index + 1}. Incomplete</p>
-                        </div>
-                    );
-                }
+      <div>
+        {(time - (time % 100)) / 100}.{(time % 100) / 10}sec
+      </div>
+    );
+  }
 
-            })}
-            </div>
-            </div>
-             {/* Current User  */}
-            <div className="myscore-container">
+  return (
+    <div>
+      <br></br>
+      <div className="scores-board">
+        <div className="scores-container" class="flex-container">
+          {leaderboard.map((entry, index) => {
+            //Check quiz completion
+            if (entry.time != -1) {
+              return (
                 <div className="score-listing">
-                <p className="user-header">  Your Score:</p> <br></br>
-                <p className="user-header">  User: {myscore.userName}</p>
-                                <h2 className="user-scoreinfo">   Score: {myscore.score}</h2> 
-                                <h3 className="user-scoreinfo">   Time: {timeToDisplay(myscore.time)}</h3> <br></br>
+                  <p className="user-header">
+                    {index + 1}. User: {entry.userName}
+                  </p>
+                  <h2 className="user-scoreinfo"> Score: {entry.score}</h2>
+                  <h3 className="user-scoreinfo">
+                    {" "}
+                    Time: {timeToDisplay(entry.time)}
+                  </h3>{" "}
+                  <br></br>
                 </div>
-            </div>
-            
-            <Button className='abort' onClick={handleCloseLeaderboard}>Exit</Button>
-                   
+              );
+            } else {
+              return (
+                <div className="score-listing">
+                  <p className="user-header"> {index + 1}. Incomplete</p>
+                </div>
+              );
+            }
+          })}
         </div>
-    )
+      </div>
+      {/* Current User  */}
+      <div className="myscore-container">
+        <div className="score-listing">
+          <p className="user-header"> Your Score:</p> <br></br>
+          <p className="user-header"> User: {myscore.userName}</p>
+          <h2 className="user-scoreinfo"> Score: {myscore.score}</h2>
+          <h3 className="user-scoreinfo">
+            {" "}
+            Time: {timeToDisplay(myscore.time)}
+          </h3>{" "}
+          <br></br>
+        </div>
+      </div>
 
+      <Button className="abort" onClick={handleCloseLeaderboard}>
+        Exit
+      </Button>
+    </div>
+  );
 }
 
 //Adapted from difficulty sort on backend

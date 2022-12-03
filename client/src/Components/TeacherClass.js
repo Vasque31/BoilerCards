@@ -27,6 +27,17 @@ function TeacherClass() {
    const [dest, setDest] = useState(getCookie('classCode'));
    const [showSaved, setShowSaved] = useState(false);
 
+   useEffect(() => {
+    const getLibrary = async () => {
+      let res = await axios.post("http://localhost:3001/class", {
+        classCode: getCookie('classCode'),
+      });
+      console.log(res.data);
+      setLibrary(res.data);
+      localStorage.setItem("class", JSON.stringify(res.data));
+    };
+    getLibrary();
+  }, []);
      /** handlers **/
 
     const handleSeeStudentGrade = (uName) => {
@@ -106,7 +117,7 @@ function TeacherClass() {
             list[i][name]=r.target.result;
         };
         fileReader.readAsDataURL(e.target.files[0]);
-        setinputList(list);
+       inputList(list);
     }
     {/*Student list handlers */}
     const [showStudentList, setShowStudentList] = useState(false);
@@ -117,6 +128,7 @@ function TeacherClass() {
             classCode:getCookie('classCode')
         });
         handlerefresh();
+        setShowRemoveStudent(false)
         if (res.data === true) {
             alert("Student has been kicked");
         }
@@ -131,6 +143,19 @@ function TeacherClass() {
             alert("Class Deleted");
         }
     }
+    const [showRemoveStudent, setShowRemoveStudent] = useState(false);
+    const [student, setStudent] = useState('');
+    const handleShowList = () => {
+        setShowStudentList(true)
+    }
+    const handleShowRemove = (id) => {
+        setShowRemoveStudent(true);
+        setStudent(id);
+    }
+    const handleCloseRemoveStudent = () => {
+        setShowRemoveStudent(false)
+    }
+    const [showDeleteClass, setShowDeleteClass] = useState(false);
     return (
         <div>
             <TeacherHeader/>
@@ -145,12 +170,12 @@ function TeacherClass() {
 
             <div style={{paddingLeft: '22rem', paddingRight: '25rem', paddingTop: '1.5rem',display: 'flex', justifyContent: 'flex'}}>
                 <div>
-                    <Button variant='light' onClick={() => setShowStudentList(true)}>Students</Button> 
+                    <Button variant='light' onClick={() => handleShowList()}>Students</Button> 
                     <div style={{paddingTop: '0.25rem'}}>
                     <Button variant='dark' style={{color: 'gold'}} onClick={(e) => setShow(true)}>Create FlashCard Set</Button>
                     </div>
                     <div >
-                        <Button variant='danger' onClick={() => handleDeleteClass()}>Delete Class</Button>
+                        <Button variant='danger' onClick={() => setShowDeleteClass(true)}>Delete Class</Button>
                     </div>
                 </div>
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -247,7 +272,7 @@ function TeacherClass() {
                                 <Button variant='warning' className= "library-buttons" onClick={() => handleSeeStudentGrade(item)}>
                                     {item}
                                 </Button>
-                                <Button variant='danger' value={item._id} onClick={() => handleRemoveStudent(item)} className= "library-buttons">
+                                <Button variant='danger' value={item._id} onClick={() => handleShowRemove(item)} className= "library-buttons">
                                     remove
                                 </Button>
                                 &nbsp; &nbsp;
@@ -274,6 +299,27 @@ function TeacherClass() {
                     <Button onClick={() => handleCloseSaved()}> Acknowledge </Button>
                 </Modal.Footer>
             </Modal>
+            {/* Delete Confirm */}
+            <Modal show={showRemoveStudent} onHide={() => handleCloseRemoveStudent}>
+                <Modal.Header closeButton={() => handleCloseRemoveStudent} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to Kick Student?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleRemoveStudent(student)}> Delete </Button>
+                    <Button onClick={() => handleCloseRemoveStudent()}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>  
+            <Modal show={showDeleteClass} onHide={() => setShowDeleteClass(false)}>
+                <Modal.Header closeButton={() => setShowDeleteClass(false)} style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Modal.Title>Delete Confirmation</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete {library.className}?</Modal.Body>
+                <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
+                    <Button onClick={() => handleDeleteClass}> Delete </Button>
+                    <Button onClick={() => setShowDeleteClass(false)}> Cancel </Button>
+                </Modal.Footer>
+            </Modal>  
     </div>
     );
 }

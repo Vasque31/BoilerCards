@@ -348,6 +348,7 @@ function Header() {
                     <Modal
                       show={show}
                       onHide={handleClose}
+                      backdrop="static"
                       dialogClassName="general-box-createflash"
                     >
                       <Modal.Header style={{backgroundColor: 'black', color: 'gold'}}>

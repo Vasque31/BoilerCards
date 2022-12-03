@@ -61,7 +61,7 @@ recordRoutes.route("/createaccount").post(async function (req, res) {
 });
 recordRoutes.route("/checkEmail").post(async function (req, res) {
   const email = req.body.email;
-  const bool = await userdata.GetEmailAsync(client, email);
+  const bool = await userdata.GetAsync(client, email);
   if (bool != false) {
     res.json(true);
   } else {
@@ -112,6 +112,9 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
   const uid = req.body.uid;
   const newfolder = new Folder(foldername, uid);
   var label = req.body.label;
+  if (label == null) {
+    label = "General";
+  }
   label = label.toLowerCase();
   newfolder.label = label;
   const object = await Flashcarddata.Createfolder(client, newfolder);
@@ -362,6 +365,7 @@ function insertionSort(arr, n) {
 }
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
+  console.log(folderid);
   var folder = await Flashcarddata.GetFolderasync(
     client,
     ObjectId(folderid.toString())
@@ -378,6 +382,7 @@ recordRoutes.route("/folder").post(async function (req, res) {
     ObjectId(folderid.toString())
   );
   const user = await userdata.GetAsyncbyid(client, ObjectId(folder.owner));
+  console.log(folder.owner);
   const foldermap = new Map(Object.entries(user.folder));
   foldermap.set(folder._id, folder);
   user.folder = Object.fromEntries(foldermap);
@@ -404,7 +409,12 @@ recordRoutes.route("/edit").post(async function (req, res) {
   );
   oldflashcard.front = req.body.newfront;
   oldflashcard.back = req.body.newback;
-  oldflashcard.difficulty = req.body.newDiff;
+  if (req.body.newDiff == null) {
+    oldflashcard.difficulty = 3;
+  } else {
+    oldflashcard.difficulty = req.body.newDiff;
+  }
+
   result = await Flashcarddata.UpdateFlashcard(
     client,
     ObjectId(flashcardid),
@@ -838,9 +848,6 @@ recordRoutes.route("/searchsubject").post(async function (req, res) {
       var newresult = Array.from(map.values());
       //console.log(newresult);
       for (var j = 0; j < newresult.length; j++) {
-        if (flashcardset.private == true) {
-          continue;
-        }
         var flashcardset = await Flashcarddata.GetFlashcardsetasync(
           client,
           ObjectId(newresult[j]._id)
@@ -1080,18 +1087,18 @@ recordRoutes.route("/storeScore").post(async function (req, res) {
   if (result != false) {
     const scoremap = new Map(Object.entries(result.student));
     console.log(scoremap);
-
     if (scoremap.get(userName) == null) {
       scoremap.set(userName, scoreResult);
       console.log(scoremap);
     } else {
-      if (NumberInt(scoremap.get(userName).score).value < score.value) {
+      if (NumberInt(scoremap.get(userName).score).value < score) {
+        console.log("no");
         scoremap.set(userName, scoreResult);
       }
       console.log(NumberInt(scoremap.get(userName).score).value);
       if (
-        NumberInt(scoremap.get(userName).score).value == score.value &&
-        NumberInt(scoremap.get(userName).time).value > time.value
+        NumberInt(scoremap.get(userName).score).value == score &&
+        NumberInt(scoremap.get(userName).time).value > time
       ) {
         scoremap.set(userName, scoreResult);
       }
@@ -1181,7 +1188,7 @@ recordRoutes.route("/leaveClassbyName").post(async function (req, res) {
   console.log(classMap);
   user.class = Object.fromEntries(classMap);
   console.log(user);
-  await userdata.UpdateUser(client, userName, user);
+  await userdata.UpdateUser(client, user._id, user);
   res.json(true);
 });
 recordRoutes.route("/deleteClass").post(async function (req, res) {

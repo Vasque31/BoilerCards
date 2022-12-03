@@ -8,66 +8,59 @@ import "./Leaderboard.css";
 import { getCookie } from "react-use-cookie";
 
 function StudentGrade() {
-    const navigate = useNavigate();
-    const [library, setLibrary] = useState(JSON.parse(localStorage.getItem('class')));
-    const [studentSelected, setStudentSelected] = useState(getCookie('selectedStudent'));
-
-
-    const handleReturn = () => {
-        navigate(-1);
+  const navigate = useNavigate();
+  const studentList = JSON.parse(localStorage.getItem("studentList"));
+  console.log(studentList);
+  const [studentSelected, setStudentSelected] = useState(
+    getCookie("selectedStudent")
+  );
+  var time = 0;
+  var score = 0;
+  for (var i = 0; i < studentList.length; i++) {
+    if (studentSelected === studentList[i].name) {
+      console.log("yes");
+      console.log(studentList[i]);
+      if (studentList[i].score != null) {
+        time = timeToDisplay(studentList[i].score.time);
+        score = studentList[i].score.score;
+      } else {
+        time = timeToDisplay(0);
+        score = "incomplete";
+      }
     }
+  }
+  const handleReturn = () => {
+    navigate(-1);
+  };
 
-    function timeToDisplay(time) {
-        if (time == -1) return (<div>Incomplete</div>);
-        return(<div>{(time - (time % 100))/100}.{(time % 100)/10}sec</div>);
-    }
+  function timeToDisplay(time) {
+    if (time == -1) return <div>Incomplete</div>;
+    return (time - (time % 100)) / 100 + "." + (time % 100) / 10;
+  }
 
-    //get object with key, Work around for ".get not a function"
-    function getObjWithKey(map, key) {
-        var arr = Object.values(map);
-        for (var i = 0; i < arr.length; i++) {
-            if (arr[i] == key) return arr[i];
-        }
-        return {};
-    }
+  //get object with key, Work around for ".get not a function"
 
-//library = class
-//student = a username of a selected student
-return(
-<div>
-    <div className="scores-board">
-        <div className="scores-container" class='flex-container'>
-        {library.flashcardset.map((item) => {
-            console.log(item);
-            console.log(item.student);
-            console.log(studentSelected);
-            var obj = getObjWithKey(item.student, studentSelected);
-            if (obj.score != null && obj.time != null) {
-                return (
-                    <div className="student-listing">
-                        <p className="user-header"> {item.setname}</p>
-                            <h2 className="user-scoreinfo"> Score: {obj.score}</h2>
-                            <h3 className="user-scoreinfo"> Time: {timeToDisplay(obj.time)}</h3>
-                    </div>
-                );
-            } else {
-                return(
-                <div className="sudent-listing">
-                    <p className="user-header"> {item.setname}</p>
-                        <h2 className="user-scoreinfo"> Incomplete </h2>
-                </div>
-                );
-            }
-
-
-        })}
+  //library = class
+  //student = a username of a selected student
+  return (
+    <div>
+      <div className="scores-board">
+        <div className="scores-container" class="flex-container"></div>
+        <div style={{fontSize: '2rem'}}>
+        Username: {studentSelected}
         </div>
+        <div style={{fontSize: '1.5rem'}}>
+        Score: {score}
+        </div>
+        <div style={{fontSize: '1.5rem'}}>
+        Time: {time}
+        </div>
+      </div>
+      <Button className="abort" onClick={handleReturn}>
+        Exit
+      </Button>
     </div>
-    <Button className='abort' onClick={handleReturn}>Exit</Button>
-</div>
-
-    
-);
+  );
 }
 
 export default StudentGrade;
