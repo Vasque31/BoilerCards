@@ -180,12 +180,15 @@ function SignInPage() {
     });
     console.log(signin);
     let data = signin.data;
+    console.log(data);
     setCookie("userid", data, { path: "/" });
     setCookie("remember", true, { path: "/" });
+    setCookie("username", email, { path: "/" });
     console.log(getCookie("userid"));
     let loadspace = await axios.post("http://localhost:3001/loadspace", {
       uid: data,
     });
+    localStorage.setItem("libdata", JSON.stringify(loadspace.data));
     libstorage = loadspace.data;
     navigate("/HomePage");
   };

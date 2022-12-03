@@ -61,7 +61,7 @@ recordRoutes.route("/createaccount").post(async function (req, res) {
 });
 recordRoutes.route("/checkEmail").post(async function (req, res) {
   const email = req.body.email;
-  const bool = await userdata.GetEmailAsync(client, email);
+  const bool = await userdata.GetAsync(client, email);
   if (bool != false) {
     res.json(true);
   } else {
@@ -112,6 +112,9 @@ recordRoutes.route("/createfolder").post(async function (req, res) {
   const uid = req.body.uid;
   const newfolder = new Folder(foldername, uid);
   var label = req.body.label;
+  if (label == null) {
+    label = "General";
+  }
   label = label.toLowerCase();
   newfolder.label = label;
   const object = await Flashcarddata.Createfolder(client, newfolder);
@@ -362,6 +365,7 @@ function insertionSort(arr, n) {
 }
 recordRoutes.route("/folder").post(async function (req, res) {
   const folderid = req.body.folderid;
+  console.log(folderid);
   var folder = await Flashcarddata.GetFolderasync(
     client,
     ObjectId(folderid.toString())
@@ -378,6 +382,7 @@ recordRoutes.route("/folder").post(async function (req, res) {
     ObjectId(folderid.toString())
   );
   const user = await userdata.GetAsyncbyid(client, ObjectId(folder.owner));
+  console.log(folder.owner);
   const foldermap = new Map(Object.entries(user.folder));
   foldermap.set(folder._id, folder);
   user.folder = Object.fromEntries(foldermap);
