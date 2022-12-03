@@ -1,39 +1,43 @@
+.quiz-container {
+  display: flex;
+}
 .quiz-div {
-    position: absolute;
-    left: 200px;
-    top: 150px;
-    height: 300px;
-    width: 700px;
-    background-color: black;
-    color: gold;
+  position: fixed;
+  left: 800px;
+  top: 300px;
+  height: 450px;
+  width: 700px;
+  border-width: 3;
+  border-color: azure;
+  color: gold;
 }
 
 .back {
-    position: absolute;
-    top: 50px;
-    left: 50px;
+  position: absolute;
+  top: 50px;
+  left: 50px;
 }
 
 .info-text {
-    position: relative;
-    top: 0px;
-    left: 120px;
-    color: gold;
+  position: relative;
+  top: 0px;
+  left: 120px;
+  color: gold;
+  font-size: xx-large;
 }
 
 .select-button {
-    position: relative;
-    left: 50px;
+  position: relative;
+  left: 50px;
 }
 
 .type-button {
-    position: relative;
-    left: 150px;
+  position: relative;
+  left: 150px;
 }
 
 .leaderboard-button {
-    position: relative;
-    right: 190px;
-    top: 80px;
+  position: relative;
+  right: 190px;
+  top: 80px;
 }
-
