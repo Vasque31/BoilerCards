@@ -1,7 +1,21 @@
 .input-container-quiz {
   position: fixed;
-  left: 750px;
-  top: 300px;
+  left: 350px;
+  top: 200px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+  border-color: gold;
+  border-style: solid;
+}
+
+.timer {
+  text-align: right;
+  color: gold;
+  position: absolute;
+  top: -3.2rem;
+  right: 0rem;
 }
 
 .input-field {
