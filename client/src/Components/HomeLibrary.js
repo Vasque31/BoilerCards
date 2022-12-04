@@ -86,16 +86,6 @@ function HomeLibrary() {
   return (
     <div className="box">
       <h1 className="section-title">My Library</h1>
-      <div style={{ paddingTop: "0.5rem" }}>
-        <Button
-          variant="link"
-          size="sm"
-          className="see-more"
-          onClick={handleSeeMore}
-        >
-          See All
-        </Button>
-      </div>
       <div className="library-box">
         <Dropdown as={ButtonGroup} style={{ float: "left"}}>
           <Button variant="secondary">Sort By</Button>
@@ -131,6 +121,15 @@ function HomeLibrary() {
               </row>
             );
           })}
+          &nbsp; &nbsp;
+        <Button
+          variant="outline-warning"
+          className="see-more"
+          onClick={handleSeeMore}
+        >
+          See All
+        </Button>
+
         </table>
       </div>
     </div>
