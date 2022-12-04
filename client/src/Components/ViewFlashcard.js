@@ -43,6 +43,7 @@ function ViewFlashcard() {
         classCode: getCookie("classCode"),
       });
       localStorage.setItem("class", JSON.stringify(res.data));
+      
     };
     getLibrary();
   }, []);
