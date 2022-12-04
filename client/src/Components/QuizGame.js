@@ -222,21 +222,22 @@ function QuizGame() {
         {" "}
         Exit Quiz{" "}
       </Button>
-
-      <h1 className="pad" style={{ textAlign: "center", color: "gold" }}>
-        {" "}
-        Prompt:{" "}
-      </h1>
-      <br></br>
-      <h1 className="pad" style={{ textAlign: "center", color: "gold" }}>
-        {" "}
-        {cardsQuiz[currPrompt].front}
-      </h1>
+      <div style={{paddingLeft: '15rem', paddingRight: '15rem'}}>
+      <div className="bigbox">
+        <h1 style={{ textAlign: "center", color: "gold"}}>
+          Prompt/Question:
+        </h1>
+        <br></br>
+        <h1 style={{ textAlign: "center", color: "gold" }}>
+          {cardsQuiz[currPrompt].front}
+        </h1>
+      
       <br></br>
       <h1 style={{ textAlign: "center", color: "gold" }}> Answer Choices:</h1>
       <br></br>
 
       {/** Buttons for answer choices **/}
+      
       {currQuestion.map((item) => {
         console.log(item);
         console.log(cardsQuiz[item.Index].front);
@@ -245,7 +246,7 @@ function QuizGame() {
           //Correct answer
           return (
             <div style={{ textAlign: "center", justifyContent: "center" }}>
-              <Button size="lg" onClick={handleSelectCorrectAnswer}>
+              <Button size="lg" variant= "light" onClick={handleSelectCorrectAnswer}>
                 {" "}
                 {cardsQuiz[item.Index].back}
               </Button>
@@ -257,7 +258,7 @@ function QuizGame() {
         //Incorrect answer
         return (
           <div style={{ textAlign: "center", justifyContent: "center" }}>
-            <Button size="lg" onClick={handleSelectIncorrectAnswer}>
+            <Button size="lg" variant= "light" onClick={handleSelectIncorrectAnswer}>
               {" "}
               {cardsQuiz[item.Index].back}
             </Button>
@@ -266,7 +267,8 @@ function QuizGame() {
           </div>
         );
       })}
-
+      </div>
+      </div>
       {/** Finished Quiz **/}
       <Modal show={showContinueorExit} onHide={() => handleHideExit}>
         <Modal.Header>
