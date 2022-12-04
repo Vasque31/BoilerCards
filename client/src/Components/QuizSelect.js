@@ -30,23 +30,7 @@ function QuizSelect() {
       </Button>
       <div>
         <br></br>
-        <div className="quiz-div">
-          <p className="info-text">Select quiz type</p>
-          <br></br>
-          <Button
-            className="select-button"
-            show={showSelection}
-            onClick={handleTypeQuiz}
-          >
-            Type Answer
-          </Button>
-          <Button
-            className="type-button"
-            show={showSelection}
-            onClick={handleChoiceQuiz}
-          >
-            Select Answer
-          </Button>
+        <div className="d-grid gap-2">
           <Button
             className="leaderboard-button"
             show={showSelection}
@@ -54,6 +38,28 @@ function QuizSelect() {
           >
             Leaderboard
           </Button>
+        </div>
+        <div className="quiz-div">
+          <p className="info-text">Select quiz type</p>
+          <div>
+          <Button
+            className="select-button"
+            show={showSelection}
+            onClick={handleTypeQuiz}
+            size='lg'
+          >
+            Type Answer
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+            className="type-button"
+            show={showSelection}
+            onClick={handleChoiceQuiz}
+            size='lg'
+          >
+            Select Answer
+          </Button>
+          </div>
         </div>
       </div>
       <br></br>
