@@ -212,17 +212,14 @@ function QuizGame() {
 
   return (
     <div>
-      <h1 style={{ textAlign: "right", color: "gold" }}> Timer: </h1>
-      <h1 style={{ textAlign: "right", color: "gold" }}>
-        {" "}
-        {(time - (time % 100)) / 100}.{(time % 100) / 10}sec{" "}
-      </h1>
-
       <Button className="abort" onClick={handleShowAbortQuiz}>
         {" "}
         Exit Quiz{" "}
       </Button>
-      <div style={{paddingLeft: '15rem', paddingRight: '15rem'}}>
+      <div style={{paddingLeft: '15rem', paddingRight: '15rem', paddingTop: '7.5rem'}}>
+      <h1 style={{ textAlign: "right", color: "gold"}}>
+        Timer: {(time - (time % 100)) / 100}.{(time % 100) / 10}sec{" "}
+      </h1>
       <div className="bigbox">
         <h1 style={{ textAlign: "center", color: "gold"}}>
           Prompt/Question:
