@@ -1223,6 +1223,8 @@ recordRoutes.route("/deleteClass").post(async function (req, res) {
 recordRoutes.route("/send").post(async function (req, res) {
   const setID = req.body.setID;
   const userName = req.body.userName;
+  console.log(setID);
+  console.log("yes");
   const user = await userdata.GetAsync(client, userName);
   console.log(user);
   if (user != false) {
@@ -1237,6 +1239,7 @@ recordRoutes.route("/send").post(async function (req, res) {
       set.belongfolder = folder._id;
       const oldMap = set.flashcard;
       set.flashcard = Object.fromEntries(new Map());
+      set.student = Object.fromEntries(new Map());
       console.log("this is new set");
       console.log(set);
       const result = await Flashcarddata.CreateSet(client, set);

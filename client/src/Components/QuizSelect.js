@@ -4,63 +4,67 @@ import { useNavigate } from "react-router-dom";
 import "./QuizSelect.css";
 
 function QuizSelect() {
+  const [showSelection, setShowSelection] = useState(true);
+  const navigate = useNavigate();
 
-    const [showSelection, setShowSelection] = useState(true);
-    const navigate = useNavigate();
+  const handleTypeQuiz = () => {
+    navigate("/typedquiz");
+  };
 
+  const handleChoiceQuiz = () => {
+    navigate("/quizgame");
+  };
 
-    const handleTypeQuiz = () => {
+  const handleLeaderboard = () => {
+    navigate("/leaderboard");
+  };
 
-        navigate("/typedquiz");
-    }
+  const handleReturnToSet = () => {
+    navigate(-1);
+  };
 
-    const handleChoiceQuiz = () => {
-
-
-        navigate("/quizgame");
-    }
-
-    const handleLeaderboard = () => {
-
-
-        navigate("/leaderboard");
-    }
-
-
-
-    const handleReturnToSet = () => {
-
-        navigate(-1);
-    }
-
-
-
-    return(
-        <div>
-            <Button className="back" onClick={handleReturnToSet}>
-                Back to set
-            </Button>
-            <br></br>
-            <div className="quiz-div">
-                <p className="info-text">Select quiz type</p>
-                <br></br>
-                <Button className="select-button" show={showSelection} onClick={handleTypeQuiz}>
-                    Type Answer
-                </Button>
-                <Button className="type-button" show={showSelection} onClick={handleChoiceQuiz}>
-                    Select Answer
-                </Button>
-                <Button className="leaderboard-button" show={showSelection} onClick={handleLeaderboard}>
-                    Leaderboard
-                </Button>
-            </div>
-            <br></br>
-            
+  return (
+    <div className="quiz-container">
+      <Button className="back" onClick={handleReturnToSet}>
+        Back to set
+      </Button>
+      <div>
+        <br></br>
+        <div className="d-grid gap-2">
+          <Button
+            className="leaderboard-button"
+            show={showSelection}
+            onClick={handleLeaderboard}
+          >
+            Leaderboard
+          </Button>
         </div>
-    );
-
-
-
+        <div className="quiz-div">
+          <p className="info-text">Select quiz type</p>
+          <div>
+          <Button
+            className="select-button"
+            show={showSelection}
+            onClick={handleTypeQuiz}
+            size='lg'
+          >
+            Type Answer
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+            className="type-button"
+            show={showSelection}
+            onClick={handleChoiceQuiz}
+            size='lg'
+          >
+            Select Answer
+          </Button>
+          </div>
+        </div>
+      </div>
+      <br></br>
+    </div>
+  );
 }
 
 export default QuizSelect;

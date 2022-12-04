@@ -61,14 +61,19 @@ function Leaderboard() {
 
   //return score element of given user(username)
   function getMyScore(scoreArray, user) {
+    let found = false;
     for (var i = 0; i < scoreArray.length; i++) {
       console.log(i);
       console.log(scoreArray[i]);
-      if (user == scoreArray[i].userName) {
+      if (user === scoreArray[i].userName) {
         console.log("to return my score");
         console.log(scoreArray[i]);
         setMyScore(scoreArray[i]);
+        found = true;
       }
+    }
+    if (found === false) {
+      setMyScore({ userName: user, score: "Incomplete", time: -1 });
     }
   }
 

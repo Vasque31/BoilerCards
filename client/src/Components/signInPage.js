@@ -183,7 +183,9 @@ function SignInPage() {
     console.log(data);
     setCookie("userid", data, { path: "/" });
     setCookie("remember", true, { path: "/" });
+    setCookie("teacher", false, { path: "/" });
     setCookie("username", email, { path: "/" });
+    setCookie("teacher", false, { path: "/" });
     console.log(getCookie("userid"));
     let loadspace = await axios.post("http://localhost:3001/loadspace", {
       uid: data,

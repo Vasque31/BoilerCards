@@ -1,39 +1,56 @@
+.quiz-container {
+  padding-top: 15rem;
+  padding-left: 25rem;
+  padding-right: 25rem
+}
 .quiz-div {
-    position: absolute;
-    left: 200px;
-    top: 150px;
-    height: 300px;
-    width: 700px;
-    background-color: black;
-    color: gold;
+    background-color: rgb(72, 72, 68);
+    border-style: solid;
+    border-color: gold;
+    text-align: center;
+    justify-content: center;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.leaderboard-div {
+  background-color: rgb(72, 72, 68);
+  border-style: solid;
+  border-color: gold;
+  text-align: center;
+  justify-content: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .back {
-    position: absolute;
-    top: 50px;
-    left: 50px;
+  position: absolute;
+  top: 180px;
+  left: 150px;
+  font-size: 1.5rem;
 }
 
 .info-text {
-    position: relative;
-    top: 0px;
-    left: 120px;
-    color: gold;
+  position: relative;
+  color: gold;
+  font-size: xx-large;
 }
 
 .select-button {
-    position: relative;
-    left: 50px;
+  position: relative;
+  
 }
 
 .type-button {
-    position: relative;
-    left: 150px;
+  position: relative;
 }
 
 .leaderboard-button {
-    position: relative;
-    right: 190px;
-    top: 80px;
+  position: relative;
+  text-align: center;
+  font-size: 1.5rem;
+  border-style: solid;
+  border-color: gold;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-
