@@ -41,6 +41,7 @@ function TypedQuiz() {
   );
   quizLength = cardsQuiz.length;
 
+  //timer set-up
   React.useEffect(() => {
     var clockInterval;
     if (timerToStart) {
@@ -167,11 +168,6 @@ function TypedQuiz() {
 
   return (
     <div>
-      <h1 style={{ textAlign: "right", color: "gold" }}> Timer: </h1>
-      <h1 style={{ textAlign: "right", color: "gold" }}>
-        {" "}
-        {(time - (time % 100)) / 100}.{(time % 100) / 10}sec{" "}
-      </h1>
 
       <Button className="abort" onClick={handleShowAbortQuiz}>
         {" "}
@@ -179,6 +175,9 @@ function TypedQuiz() {
       </Button>
 
       <div className="input-container-quiz">
+        <div className="timer">
+          <h1 style={{ textAlign: "right", color: "gold" }}> Timer: {" "}{(time - (time % 100)) / 100}.{(time % 100) / 10}sec{" "}</h1>
+        </div>
         <h1 style={{ textAlign: "center", color: "gold" }}> Prompt: </h1>
         <br></br>
         <h1 style={{ textAlign: "center", color: "gold" }}>
