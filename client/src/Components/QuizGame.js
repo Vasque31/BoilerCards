@@ -213,10 +213,9 @@ function QuizGame() {
   return (
     <div>
       <Button className="abort" onClick={handleShowAbortQuiz}>
-        {" "}
-        Exit Quiz{" "}
+        Exit Quiz
       </Button>
-      <div style={{paddingLeft: '15rem', paddingRight: '15rem', paddingTop: '7.5rem'}}>
+      <div style={{paddingLeft: '18rem', paddingRight: '18rem', paddingTop: '7.5rem'}}>
       <h1 style={{ textAlign: "right", color: "gold"}}>
         Timer: {(time - (time % 100)) / 100}.{(time % 100) / 10}sec{" "}
       </h1>

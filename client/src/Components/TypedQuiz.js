@@ -178,6 +178,7 @@ function TypedQuiz() {
         <div className="timer">
           <h1 style={{ textAlign: "right", color: "gold" }}> Timer: {" "}{(time - (time % 100)) / 100}.{(time % 100) / 10}sec{" "}</h1>
         </div>
+        <div className="textbox">
         <h1 style={{ textAlign: "center", color: "gold" }}> Prompt: </h1>
         <br></br>
         <h1 style={{ textAlign: "center", color: "gold" }}>
@@ -197,6 +198,7 @@ function TypedQuiz() {
         <Button className="input-field" onClick={handleTypedAnswer}>
           Submit Answer
         </Button>
+        </div>
       </div>
       {/** Finished Quiz **/}
       <Modal show={showContinueorExit} onHide={() => handleHideExit}>
