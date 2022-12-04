@@ -316,7 +316,7 @@ function TeacherClass() {
                 </Modal.Header>
                 <Modal.Body style={{backgroundColor: 'dimgrey', color: 'gold'}}> Are you sure you want to delete {library.className}?</Modal.Body>
                 <Modal.Footer style={{backgroundColor: 'black', color: 'gold'}}>
-                    <Button onClick={() => handleDeleteClass}> Delete </Button>
+                    <Button onClick={(e) => handleDeleteClass(e)}> Delete </Button>
                     <Button onClick={() => setShowDeleteClass(false)}> Cancel </Button>
                 </Modal.Footer>
             </Modal>  
