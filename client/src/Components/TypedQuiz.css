@@ -1,21 +1,18 @@
 .input-container-quiz {
-  position: fixed;
-  left: 350px;
-  top: 200px;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-bottom: 2rem;
-  padding-top: 2rem;
+  padding-top: 14rem;
+  padding-right: 25rem;
+  padding-left: 25rem;
+  text-align: center;
+}
+.textbox {
   border-color: gold;
   border-style: solid;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
-
 .timer {
   text-align: right;
   color: gold;
-  position: absolute;
-  top: -3.2rem;
-  right: 0rem;
 }
 
 .input-field {
@@ -24,7 +21,6 @@
 }
 
 .abort {
-  width: 200px;
-  position: relative;
-  left: 450px;
+  position: absolute;
+  top: 140px;
 }

@@ -1,5 +1,4 @@
 .abort {
-    width: 200px;
     position: absolute;
     top: 55px;
     left: 25px;
@@ -17,5 +16,4 @@
 
 .pad{
     padding: 20px;
-
 }
