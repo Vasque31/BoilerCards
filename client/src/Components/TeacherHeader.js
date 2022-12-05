@@ -236,9 +236,6 @@ function TeacherHeader() {
                          {/* Profile DropDown */}
                         
                         <NavDropdown title="Profile" id="basic-nav-dropdown" style={{paddingTop: '0.45rem'}}>
-                            <NavDropdown.Item href="#action/3.1">
-                                Account Data
-                            </NavDropdown.Item>
                             <NavDropdown.Item>
                                 <Link to="/settings">
                                     <Button variant="Light">
