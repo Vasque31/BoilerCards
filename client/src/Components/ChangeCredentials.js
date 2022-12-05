@@ -54,12 +54,10 @@ function ChangeCredentials() {
       console.log(newusername);
       let res = await axios.post("http://localhost:3001/changecredential", {
         oldusername: getCookie("username"),
-        newusername: newusername,
         oldpassword: oldpassword,
         newpassword: newpassword,
       });
       if (res.data === true) {
-        setCookie("username", newusername, { path: "/" });
         window.location.reload();
         handleShowSaved();
       } else {
@@ -80,27 +78,17 @@ function ChangeCredentials() {
         <Form.Group style={{ color: "gold" }}>
           <Form.Label>Old Password</Form.Label>
           <Form.Control
-            type="text"
+            type="password"
             name="oldpassword"
             placeholder="oldpassword"
             onChange={(e) => setOldPassword(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group style={{ color: "gold" }}>
-          <Form.Label>New Username</Form.Label>
-          <Form.Control
-            type="text"
-            name="newusername"
-            placeholder="newusername"
-            onChange={(e) => setNewUsername(e.target.value)}
-            value={newusername}
           />
         </Form.Group>
 
         <Form.Group style={{ color: "gold" }}>
           <Form.Label>New Password</Form.Label>
           <Form.Control
-            type="text"
+            type="password"
             name="newpassword"
             placeholder="newpassword"
             onChange={(e) => setNewPassword(e.target.value)}
