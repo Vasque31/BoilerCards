@@ -15,6 +15,7 @@ import saveicon from "../images/saveicon.png";
 import Dropdown from "react-bootstrap/Dropdown";
 import { FlashcardArray } from "react-quizlet-flashcard";
 import { Link } from "react-router-dom";
+import { getCookie } from "react-use-cookie";
 //export var flashcardid = null;
 export var image = "";
 
@@ -380,9 +381,10 @@ function RestrictedViewFlashcard() {
             <Dropdown.Item onClick={handleShowDownload}>
               Download this Set
             </Dropdown.Item>
+            {getCookie('teacher') !== 'true' &&
             <Dropdown.Item onClick={handleStartQuiz}>
               Quiz Yourself!
-            </Dropdown.Item>
+            </Dropdown.Item>}
             <Dropdown.Item onClick={handleShowSend}>
               Share this Flashcard Set
             </Dropdown.Item>
