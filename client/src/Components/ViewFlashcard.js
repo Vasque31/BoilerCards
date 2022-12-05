@@ -42,7 +42,12 @@ function ViewFlashcard() {
       res = await axios.post("http://localhost:3001/class", {
         classCode: getCookie("classCode"),
       });
-      localStorage.setItem("class", JSON.stringify(res.data));
+      if (res.data == false) {
+        localStorage.setItem("class", JSON.stringify({"_id":"","className":"","classCode":"","teacher":"","student":{},"flashcardset":[{"_id":"","setname":"","flashcard":{},"belongfolder":"","private":"","flagged":"","student":{}}]}));
+      } else {
+        localStorage.setItem("class", JSON.stringify(res.data));
+      }
+      
     };
     getLibrary();
   }, []);

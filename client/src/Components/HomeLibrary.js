@@ -32,6 +32,7 @@ function HomeLibrary() {
   );
   const [folders, setFolders] = useState([]);
   useEffect(() => {
+    localStorage.setItem("class", JSON.stringify({"_id":"","className":"","classCode":"","teacher":"","student":{},"flashcardset":[{"_id":"","setname":"","flashcard":{},"belongfolder":"","private":"","flagged":"","student":{}}]}));
     const getLibrary = async () => {
       let res = await axios.post("http://localhost:3001/loadspace", {
         uid: getCookie("userid"),

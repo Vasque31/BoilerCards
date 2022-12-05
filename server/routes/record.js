@@ -97,8 +97,6 @@ recordRoutes.route("/changecredential").post(async function (req, res) {
   if (result.password == oldpassword) {
     const newuserinfo = result;
     const newpassword = req.body.newpassword;
-    const newusername = req.body.newusername;
-    newuserinfo.username = newusername;
     newuserinfo.password = newpassword;
     await userdata.UpdateAsync(client, oldusername, newuserinfo);
     res.json(true);
@@ -1287,6 +1285,7 @@ recordRoutes.route("/getScoreList").post(async function (req, res) {
     client,
     ObjectId(setID)
   );
+  console.log(setInfo);
   var studentList = new Map(Object.entries(Class.student));
   var scoreMap = new Map(Object.entries(setInfo.student));
   console.log(studentList);
