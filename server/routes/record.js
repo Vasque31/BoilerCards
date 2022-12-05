@@ -477,36 +477,38 @@ recordRoutes.route("/deletefolder").post(async function (req, res) {
     var setmap = new Map(Object.entries(subjmap.map));
     var foldermap = setmap;
     foldermap = foldermap.get(folder.label);
-    foldermap = new Map(Object.entries(foldermap));
-    foldermap.delete(folder._id.toString());
-    setmap.set(folder.label, foldermap);
-    console.log("foldermap.lengthis " + foldermap.length);
-    if (foldermap.size == 0) {
-      setmap.delete(folder.label);
-      var changesubjectarray = await Flashcarddata.GetLabel(
-        client,
-        ObjectId("637287af2c8cf8c067cd2e59")
-      );
-      var changesubjectarraymap = new Map(
-        Object.entries(changesubjectarray.Map)
-      );
-      console.log("change subject is " + changesubjectarraymap);
-      changesubjectarraymap.delete(folder.label);
-      changesubjectarraymap = Object.fromEntries(changesubjectarraymap);
-      changesubjectarray.Map = changesubjectarraymap;
+    if (foldermap != null) {
+      foldermap = new Map(Object.entries(foldermap));
+      foldermap.delete(folder._id.toString());
+      setmap.set(folder.label, foldermap);
+      console.log("foldermap.lengthis " + foldermap.length);
+      if (foldermap.size == 0) {
+        setmap.delete(folder.label);
+        var changesubjectarray = await Flashcarddata.GetLabel(
+          client,
+          ObjectId("637287af2c8cf8c067cd2e59")
+        );
+        var changesubjectarraymap = new Map(
+          Object.entries(changesubjectarray.Map)
+        );
+        console.log("change subject is " + changesubjectarraymap);
+        changesubjectarraymap.delete(folder.label);
+        changesubjectarraymap = Object.fromEntries(changesubjectarraymap);
+        changesubjectarray.Map = changesubjectarraymap;
+        await Flashcarddata.UpdateLabel(
+          client,
+          ObjectId("637287af2c8cf8c067cd2e59"),
+          changesubjectarray
+        );
+      }
+      setmap = Object.fromEntries(setmap);
+      subjmap.map = setmap;
       await Flashcarddata.UpdateLabel(
         client,
-        ObjectId("637287af2c8cf8c067cd2e59"),
-        changesubjectarray
+        ObjectId("637287af2c8cf8c067cd2e58"),
+        subjmap
       );
     }
-    setmap = Object.fromEntries(setmap);
-    subjmap.map = setmap;
-    await Flashcarddata.UpdateLabel(
-      client,
-      ObjectId("637287af2c8cf8c067cd2e58"),
-      subjmap
-    );
   }
   const user = await userdata.GetAsyncbyid(client, ObjectId(folder.owner));
   const map = new Map(Object.entries(user.folder));
@@ -538,6 +540,7 @@ recordRoutes.route("/groupcopy").post(async function (req, res) {
     const newset = oldset;
     delete newset._id;
     newset.belongfolder = dest;
+    newset.private = true;
     const result = await Flashcarddata.CreateSet(client, newset);
     const map = new Map(Object.entries(folder.flashcardset));
     map.set(
@@ -584,6 +587,7 @@ recordRoutes.route("/copy").post(async function (req, res) {
   const newset = oldset;
   delete newset._id;
   newset.belongfolder = dest;
+  newset.private = true;
   const result = await Flashcarddata.CreateSet(client, newset);
   const map = new Map(Object.entries(folder.flashcardset));
   map.set(
@@ -738,7 +742,7 @@ recordRoutes.route("/addlabel").post(async function (req, res) {
     labelmap.map = new Map(Object.entries(labelmap.map));
   }
   var oldmap = labelmap.map.get(oldlabel);
-  console.log(labelmap);
+  //console.log(labelmap);
   if (oldmap == null) {
     const newMap = new Map();
     newMap.set(ObjectId(folder._id), ObjectId(folder._id));
@@ -753,14 +757,11 @@ recordRoutes.route("/addlabel").post(async function (req, res) {
       client,
       ObjectId("637287af2c8cf8c067cd2e58")
     );
-    labelmap = await Flashcarddata.GetLabel(
-      client,
-      ObjectId("637287af2c8cf8c067cd2e58")
-    );
-    oldmap = labelmap.map.get(oldlabel);
+    oldmap = new Map(Object.entries(labelmap.map)).get(oldlabel);
   }
   oldmap = new Map(Object.entries(oldmap));
   oldmap.delete(folder._id.toString());
+  console.log(labelmap);
   labelmap.map.set(oldlabel, oldmap);
   if (oldmap.size == 0) {
     labelmap.map.delete(oldlabel);
@@ -768,6 +769,19 @@ recordRoutes.route("/addlabel").post(async function (req, res) {
       client,
       ObjectId("637287af2c8cf8c067cd2e59")
     );
+    if (changesubjectarray.Map == null) {
+      const map = new Map();
+      changesubjectarray.Map = Object.fromEntries(map);
+      await Flashcarddata.UpdateLabel(
+        client,
+        ObjectId("637287af2c8cf8c067cd2e59"),
+        changesubjectarray
+      );
+      var changesubjectarray = await Flashcarddata.GetLabel(
+        client,
+        ObjectId("637287af2c8cf8c067cd2e59")
+      );
+    }
     var changesubjectarraymap = new Map(Object.entries(changesubjectarray.Map));
     changesubjectarraymap.delete(oldlabel);
     console.log(changesubjectarraymap);
