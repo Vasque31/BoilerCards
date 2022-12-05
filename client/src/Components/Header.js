@@ -251,7 +251,6 @@ function Header() {
                 id="basic-nav-dropdown"
                 style={{ paddingTop: "0.45rem" }}
               >
-                <NavDropdown.Item href="#action/3.1">Class</NavDropdown.Item>
                 <NavDropdown.Item>
                   <Button variant="Light" onClick={handleShowFolder}>
                     Folder
@@ -518,9 +517,6 @@ function Header() {
                 id="basic-nav-dropdown"
                 style={{ paddingTop: "0.45rem" }}
               >
-                <NavDropdown.Item href="#action/3.1">
-                  Account Data
-                </NavDropdown.Item>
                 <NavDropdown.Item>
                   <Link to="/settings">
                     <Button variant="Light">Settings</Button>
