@@ -127,10 +127,6 @@ function Folder() {
         setShowFlashcardsetDeleteConfirm(true);
     }
     const handleShowFlashcardsetCopy = async (id) =>{
-        let res = await axios.post("http://localhost:3001/loadspace", {
-            uid:getCookie('userid'),
-        });
-        setCopyDestFolderList(res.data); //Map
         let resSet = await axios.post("http://localhost:3001/flsahcardset",{
             setid:id,
         });
@@ -702,7 +698,7 @@ function Folder() {
                                 <div>
                                     <select name="selectList" id="selectList" onChange={(e) => setCopyDestFolderSelect(e.currentTarget.value)}>
                                                 <option value="">---Choose---</option>
-                                                {Object.values(copyDestFolderList).map(item => {
+                                                {Object.values(library.folder).map(item => {
                                                     return (
                                                         <option value={item._id}>{item.foldername}</option>    
                                                     );
