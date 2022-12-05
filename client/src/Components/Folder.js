@@ -89,8 +89,9 @@ function Folder() {
             label:newLabel,
             folderid: folder._id
         });
-        handlerefresh();
         handleCloseChangeLabel();
+        window.location.reload(false);
+
     }
 
     const handleAddGroup = (e, i) => {
@@ -207,7 +208,7 @@ function Folder() {
             handleCloseFlashsetDelCon(); //remove confirmation upon success
             handleShowSaved();
         }
-        handlerefresh();
+        window.location.reload(false);
     }
 
     {/* Click Flashcard Handler */}
@@ -242,7 +243,7 @@ function Folder() {
     const handleFolderNameChange = (e) => {
         setTMPName(e.target.value); 
         console.log(TMPName);
-        handlerefresh();
+        window.location.reload(false);
         /*let res = await axios.post("http://localhost:3001/renamefolder", {
             folderid: library._id,
             newname: e.target.value,
@@ -277,7 +278,7 @@ function Folder() {
             handleShowSaved();
         }
         handleClose();
-        handlerefresh();
+        window.location.reload(false);
         console.log(flashcardInfo);
     }
     const handleClose = () => {
@@ -300,7 +301,7 @@ function Folder() {
         if(res.data===true){
             handleShowSaved();
         }
-        handlerefresh();
+        window.location.reload(false);
         handleCloseSetting();
     }
 
@@ -318,11 +319,13 @@ function Folder() {
                 groups:selected,
                 dest:destFolder,
             });
-            handlerefresh();
+            
             handleselectall();
             if (res.data == true) {
                 handleShowSaved();
             }
+            window.location.reload(false);
+
             }
     
     }
@@ -332,12 +335,14 @@ function Folder() {
             groups:selected,
             folder:folder,
         });
-        handlerefresh();
+
         handleselectall();
         handleCloseFlashcardsetGroupDeleteConfirmation();
         if (res.data == true) {
             handleShowSaved();
         }
+        window.location.reload(false);
+
     }
 
     const handleGroupMove = async() => {
@@ -347,11 +352,13 @@ function Folder() {
             dest: destFolder,
             folder:folder,
         });
-        handlerefresh();
+
         handleselectall();
         if (res.data == true) {
             handleShowSaved();
         }
+        window.location.reload(false);
+
     }
     }
 
