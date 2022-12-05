@@ -4,8 +4,10 @@ import Button from 'react-bootstrap/Button'
 function DownloadFlashcard() {
     const [flashcards, setFlashcards] = useState(JSON.parse(localStorage.getItem('flashcards')));
     return (
-        <div style={{backgroundColor: "white"}}>
-            <Table striped bordered hover>
+        <div style={{backgroundColor: "white", paddingRight:"10rem", paddingLeft:"10rem"}}>
+            <br/><br/>
+            <h1 style={{textAlign:"center"}}>BOILERCARDS<br/><br/></h1>
+            <Table striped bordered hover style={{paddingRight:"3rem", paddingLeft:"3rem"}}>
                     <thead>
                         <tr>
                             <th>Front</th>

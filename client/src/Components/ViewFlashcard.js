@@ -425,15 +425,10 @@ function ViewFlashcard() {
                 Share this Flashcard Set
               </Dropdown.Item>
             )}
+            <Dropdown.Item onClick={handleFlag}>Flag</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <Button
-          style={{ float: "right" }}
-          variant="danger"
-          onClick={handleFlag}
-        >
-          Flag
-        </Button>
+        
         <Modal
           show={showDownload}
           onHide={handleCloseDownload}
